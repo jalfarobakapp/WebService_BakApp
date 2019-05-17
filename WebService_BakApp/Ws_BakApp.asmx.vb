@@ -198,49 +198,6 @@ Public Class Ws_BakApp
 
     End Function
 
-    '<WebMethod(0)> _
-    '<Script.Services.ScriptMethod(ResponseFormat=ResponseFormat.Json,UseHttpGet=True, XmlSerializeString=False)> _
-
-    'Public Class WSProva
-    'Inherits System.Web.Services.WebService
-    '<ScriptMethod(ResponseFormat.Json, True, False)> _
-
-    'End Class
-
-    '<WebMethod(True)> _
-    'Function Fx_GetTabla(ByVal Consulta_Sql As String) As DataTable
-    '_Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
-    'Dim _Tbl As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
-    'Return _Tbl
-    'End Function
-
-    '<WebMethod(True)> _
-    'Function Fx_GetDataRow(ByVal Consulta_Sql As String) As DataRow
-    '_Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
-    'Dim _Dr As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
-    'Return _Dr
-    'End Function
-
-    '  Public Class WSProva
-    'Inherits System.Web.Services.WebService
-
-
-    'Public Sub ProvaJSONinFile()
-
-    'Dim js As New JavaScriptSerializer
-
-    'Dim p1 As New Persona("Dani", "12345678J")
-
-    'Dim contentDisposition As String = " filename=prova.json"
-    '   Context.Response.AddHeader("Content-Disposition", contentDisposition)
-    '   Context.Response.ContentType = "application/json"
-    '   Context.Response.Write(js.Serialize(p1))
-    '   Context.Response.End()
-
-    '    End Sub
-    'End Class
-
-
 #Region "JSON"
 
     <WebMethod(True)> _
@@ -281,7 +238,7 @@ Public Class Ws_BakApp
 
     End Sub
 
-    <WebMethod(True)> _
+    <WebMethod(True)>
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)> _
     Public Sub Sb_Ds_Json_Prueba(ByVal Consulta_Sql As String)
 
@@ -305,9 +262,6 @@ Public Class Ws_BakApp
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)> _
     Public Sub Sb_GetDataSet_Json(ByVal Consulta_Sql As String)
 
-        'Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = 670916" & vbCrLf & _
-        '               "Select * From MAEDDO Where IDMAEEDO = 670916"
-
         Dim js As New JavaScriptSerializer
 
         _Sql = New Class_SQL
@@ -318,10 +272,6 @@ Public Class Ws_BakApp
         Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
         Context.Response.Flush()
 
-        'Dim _JSon As String = Context.ToString
-
-        'Sb_Json2Ds(_JSon)
-
         Context.Response.End()
 
     End Sub
@@ -330,9 +280,6 @@ Public Class Ws_BakApp
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)> _
     Public Sub Sb_Buscar_Productos_Json(ByVal _Codigo As String, _
                                         ByVal _Descripcion As String)
-
-        'Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = 670916" & vbCrLf & _
-        '               "Select * From MAEDDO Where IDMAEEDO = 670916"
 
         Dim js As New JavaScriptSerializer
 
@@ -344,10 +291,6 @@ Public Class Ws_BakApp
         Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
         Context.Response.Flush()
 
-        'Dim _JSon As String = Context.ToString
-
-        'Sb_Json2Ds(_JSon)
-
         Context.Response.End()
 
     End Sub
@@ -355,13 +298,15 @@ Public Class Ws_BakApp
     <WebMethod(True)> _
   Public Sub Sb_Json2Ds(ByVal _Json As String)
 
-        _Json = "{'Tabla 1': [{""Name"":""AAA"",""Age"":""22"",""Job"":""PPP""}," & _
-                             "{""Name"":""BBB"",""Age"":""25"",""Job"":""QQQ""}," & _
+        If String.IsNullOrEmpty(_Json) Then
+            _Json = "{'Tabla 1': [{""Name"":""AAA"",""Age"":""22"",""Job"":""PPP""}," &
+                             "{""Name"":""BBB"",""Age"":""25"",""Job"":""QQQ""}," &
                              "{""Name"":""CCC"",""Age"":""38"",""Job"":""RRR""}]}"
+
+        End If
 
         Dim _Tbl As DataTable = Fx_de_Json_a_Datatable(_Json)
 
-        
     End Sub
 
 #End Region
