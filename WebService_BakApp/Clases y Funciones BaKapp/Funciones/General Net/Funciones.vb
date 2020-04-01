@@ -158,7 +158,12 @@ Public Module Funciones
         Return vls_TextoEncriptado
     End Function
 
-    Function Fx_Proximo_NroDocumento(ByVal _NrNumeroDoco As String) As String
+    Function Fx_Proximo_NroDocumento(_NrNumeroDoco As String,
+                                     _Cant_Caracteres As Integer) As String
+
+        If String.IsNullOrEmpty(_NrNumeroDoco) Then
+            _NrNumeroDoco = StrDup(_Cant_Caracteres, "0")
+        End If
 
         Dim _Pos As Integer = 0
         Dim _Prefijo As String
@@ -166,13 +171,15 @@ Public Module Funciones
         Dim _NvoNumero1 As Integer
         Dim _NvoNumero2 As String
 
-        Do While _Pos < 10
+        Do While _Pos < _Cant_Caracteres
+
             _Pos += 1
-            Dim _Caracter As String = Right(_NrNumeroDoco, 11 - _Pos)
+
+            Dim _Caracter As String = Right(_NrNumeroDoco, (_Cant_Caracteres + 1) - _Pos)
 
             If IsNumeric(_Caracter) Then
                 _Prefijo = Left(_NrNumeroDoco, _Pos - 1)
-                _Cadena = Right(_NrNumeroDoco, 11 - _Pos)
+                _Cadena = Right(_NrNumeroDoco, (_Cant_Caracteres + 1) - _Pos)
                 Exit Do
             End If
 
@@ -184,6 +191,7 @@ Public Module Funciones
         Return _NvoNumero2
 
     End Function
+
 
     Function RutDigito(ByVal numero As String) As String
 
@@ -1016,7 +1024,7 @@ Error_Numero:
             Else
                 Do While CBool(_Existe_Doc)
 
-                    Dim _Proximo_Nro As String = Fx_Proximo_NroDocumento(_NrNumeroDoco)
+                    Dim _Proximo_Nro As String = Fx_Proximo_NroDocumento(_NrNumeroDoco, 10)
                     Consulta_sql = "UPDATE CONFIEST SET " & _TipoDoc & " = '" & _Proximo_Nro & "' WHERE EMPRESA = '" & _Empresa &
                                    "' AND  MODALIDAD = '" & _Modalidad_Seleccionada & "'"
 

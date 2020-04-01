@@ -4,7 +4,7 @@ Imports System.Web.Services
 
 Public Class Class_SQL
 
-    Dim _SQL_String_conexion As String = System.Configuration.ConfigurationManager.ConnectionStrings("db_central").ToString()
+    Dim _SQL_String_conexion As String = System.Configuration.ConfigurationManager.ConnectionStrings("db_bakapp").ToString()
     Dim _Error As String
     Dim _Cn As New SqlConnection
 

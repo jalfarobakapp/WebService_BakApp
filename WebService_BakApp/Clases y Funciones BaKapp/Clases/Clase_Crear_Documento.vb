@@ -1835,7 +1835,7 @@ Public Class Clase_Crear_Documento
 
             If Not String.IsNullOrEmpty(Trim(_Nudo_Modalidad)) Then
 
-                Dim _ProxNumero As String = Fx_Proximo_NroDocumento(_Nudo)
+                Dim _ProxNumero As String = Fx_Proximo_NroDocumento(_Nudo, 10)
 
                 _Consulta_sql = "UPDATE CONFIEST SET " & _Tido & " = '" & _ProxNumero & "'" & vbCrLf & _
                                 "WHERE EMPRESA = '" & _Empresa & "' AND  MODALIDAD = '" & _Modalidad & "'"

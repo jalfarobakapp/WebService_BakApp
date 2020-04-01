@@ -176,7 +176,7 @@ Public Class Ws_BakApp
 
     <WebMethod(True)> _
     Function Fx_Cadena_Conexion_SQL() As String
-        Return System.Configuration.ConfigurationManager.ConnectionStrings("db_central").ToString()
+        Return System.Configuration.ConfigurationManager.ConnectionStrings("db_bakapp").ToString()
     End Function
 
     <WebMethod(True)> _
@@ -258,8 +258,8 @@ Public Class Ws_BakApp
 
     End Sub
 
-    <WebMethod(True)> _
-    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)> _
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Sb_GetDataSet_Json(ByVal Consulta_Sql As String)
 
         Dim js As New JavaScriptSerializer
@@ -276,15 +276,93 @@ Public Class Ws_BakApp
 
     End Sub
 
-    <WebMethod(True)> _
-    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)> _
-    Public Sub Sb_Buscar_Productos_Json(ByVal _Codigo As String, _
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Fx_GetModalidad_Gral(ByVal _Global_BaseBk As String)
+
+        Dim Consulta_Sql As String
+        Consulta_Sql = "Select " & vbCrLf &
+                       "Empresa, Pr_AutoPr_Crear_Codigo_Principal_Automatico, Pr_AutoPr_Correlativo_Por_Iniciales, Pr_AutoPr_Correlativo_General, " & vbCrLf &
+                       "Pr_AutoPr_Tablas_Para_Iniciales_Cod_Automatico, Pr_AutoPr_Max_Cant_Caracteres_Del_Codigo, Pr_AutoPr_Ultimo_Codigo_Creado_Correlativo_General, " & vbCrLf &
+                       "Pr_Desc_Producto_Solo_Mayusculas, Pr_Creacion_Exigir_Precio, Pr_Creacion_Exigir_Clasificacion_busqueda, Pr_Creacion_Exigir_Codigo_Alternativo, " & vbCrLf &
+                       "Tbl_Ranking, Revisa_Taza_Cambio, Revisar_Taza_Solo_Mon_Extranjeras, Vnta_Dias_Venci_Coti, Vnta_TipoValor_Bruto_Neto, Vnta_EntidadXdefecto, " & vbCrLf &
+                       "Vnta_SucEntXdefecto, Vnta_Producto_NoCreado, Vnta_Preguntar_Documento, SOC_CodTurno, SOC_Buscar_Producto, SOC_Aprueba_Solo_G1, " & vbCrLf &
+                       "SOC_Aprueba_G1_y_G2, SOC_Prod_Crea_Solo_Marcas_Proveedor, SOC_Prod_Crea_Max_Carac_Nom, SOC_Valor_1ra_Aprobacion, SOC_Dias_Apela, " & vbCrLf &
+                       "SOC_Tipo_Creacion_Producto_Normal_Matriz, Precio_Costos_Desde, Precios_Venta_Desde_Random, Precios_Venta_Desde_BakApp, " & vbCrLf &
+                       "Vnta_Redondear_Dscto_Cero, Nodo_Raiz_Asociados, Vnta_Ofrecer_Otras_Bod_Stock_Insuficiente, Conservar_Responzable_Doc_Relacionado, " & vbCrLf &
+                       "Preguntar_Si_Cambia_Responsable_Doc_Relacionado, ServTecnico_Empresa, ServTecnico_Sucursal, ServTecnico_Bodega" &
+                       vbCrLf &
+                       vbCrLf &
+                       "From " & _Global_BaseBk & "Zw_Configuracion" & vbCrLf &
+                       "Where Modalidad = '  '"
+
+        Dim js As New JavaScriptSerializer
+
+        _Sql = New Class_SQL
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Buscar_Productos_Json(ByVal _Codigo As String,
                                         ByVal _Descripcion As String)
 
         Dim js As New JavaScriptSerializer
 
         _Sql = New Class_SQL
         Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Traer_Productos_Json(ByVal Codigo As String, ByVal Empresa As String, Sucursal As String, Bodega As String, Lista As String)
+
+        Consulta_sql = My.Resources.Recursos_Sql.SqlQuery_Traer_Producto
+        Consulta_sql = Replace(Consulta_sql, "#Codigo#", Codigo)
+        Consulta_sql = Replace(Consulta_sql, "#Empresa#", Empresa)
+        Consulta_sql = Replace(Consulta_sql, "#Sucursal#", Sucursal)
+        Consulta_sql = Replace(Consulta_sql, "#Bodega#", Bodega)
+        Consulta_sql = Replace(Consulta_sql, "#Lista#", Lista)
+
+        _Sql = New Class_SQL
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Traer_Entidad_Json(_Koen As String, _Suen As String)
+
+        _Sql = New Class_SQL
+        Dim _Ds As DataSet = Fx_Traer_Datos_Entidad(_Koen, _Suen)
+
+        Dim js As New JavaScriptSerializer
 
         Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
         Context.Response.ContentType = "application/json"
