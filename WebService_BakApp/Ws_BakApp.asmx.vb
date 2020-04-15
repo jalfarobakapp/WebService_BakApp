@@ -331,7 +331,13 @@ Public Class Ws_BakApp
 
     <WebMethod(True)>
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
-    Public Sub Sb_Traer_Productos_Json(ByVal Codigo As String, ByVal Empresa As String, Sucursal As String, Bodega As String, Lista As String)
+    Public Sub Sb_Traer_Productos_Json(Codigo As String,
+                                       Empresa As String,
+                                       Sucursal As String,
+                                       Bodega As String,
+                                       Lista As String,
+                                       UnTrans As Integer,
+                                       Koen As String)
 
         Consulta_sql = My.Resources.Recursos_Sql.SqlQuery_Traer_Producto
         Consulta_sql = Replace(Consulta_sql, "#Codigo#", Codigo)
@@ -339,10 +345,49 @@ Public Class Ws_BakApp
         Consulta_sql = Replace(Consulta_sql, "#Sucursal#", Sucursal)
         Consulta_sql = Replace(Consulta_sql, "#Bodega#", Bodega)
         Consulta_sql = Replace(Consulta_sql, "#Lista#", Lista)
+        Consulta_sql = Replace(Consulta_sql, "#UnTrans#", UnTrans)
+
 
         _Sql = New Class_SQL
         Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
 
+        Dim _PorIla As Double = _Sql.Fx_Trae_Dato("TABIM", "Isnull(Sum(POIM),0)", "KOIM In (SELECT KOIM FROM TABIMPR Where KOPR = '" & Codigo & "')")
+
+        Consulta_sql = "SELECT Top 1 *,--PP01UD,PP02UD,DTMA01UD As DSCTOMAX,ECUACION,
+                        (SELECT top 1 MELT FROM TABPP Where KOLT = '" & Lista & "') as MELT FROM TABPRE
+                        Where KOLT = '" & Lista & "' And KOPR = '" & Codigo & "'"
+        Dim _RowPrecios As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+        Dim _Ecuacion As String
+
+        If UnTrans = 1 Then
+            _Ecuacion = _RowPrecios.Item("ECUACION")
+        Else
+            _Ecuacion = _RowPrecios.Item("ECUACION2")
+        End If
+
+        Dim _DescMaximo = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "DTMA0" & UnTrans & "UD", "EDTMA0" & UnTrans & "UD", Nothing, True, Koen)
+
+        Dim _Campo_Precio
+        Dim _Campo_Ecuacion
+
+        If UnTrans = 1 Then
+            _Campo_Precio = "PP01UD"
+            _Campo_Ecuacion = "ECUACION"
+        Else
+            _Campo_Precio = "PP02UD"
+            _Campo_Ecuacion = "ECUACIONU2"
+        End If
+
+        '_PrecioLinea = Fx_Precio_Formula_Random(_RowPrecios, _Campo_Precio, _Campo_Ecuacion, Nothing, True, _Koen)
+
+        Dim _Precio As Double = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, _Campo_Precio, _Campo_Ecuacion, Nothing, True, Koen)
+        'Dim _PrecioListaUd2 = Fx_Funcion_Ecuacion_Random(_Ecuacion2, Codigo, 2, _RowPrecios, 0, 0, 0)
+
+        _Ds.Tables(0).Rows(0).Item("Ecuacion") = _Ecuacion.Trim
+        _Ds.Tables(0).Rows(0).Item("DescMaximo") = _DescMaximo
+        _Ds.Tables(0).Rows(0).Item("Precio") = _Precio
+        _Ds.Tables(0).Rows(0).Item("PorIla") = _PorIla
 
         Dim js As New JavaScriptSerializer
 
