@@ -11,8 +11,8 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyTitle("WebService_BakApp")> 
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("WebService_BakApp")> 
-<Assembly: AssemblyCopyright("Copyright ©  2017")> 
+<Assembly: AssemblyProduct("WebService_BakApp")>
+<Assembly: AssemblyCopyright("Copyright ©  2020")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
