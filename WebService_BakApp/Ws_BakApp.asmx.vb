@@ -368,25 +368,31 @@ Public Class Ws_BakApp
 
         Dim _DescMaximo = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "DTMA0" & UnTrans & "UD", "EDTMA0" & UnTrans & "UD", Nothing, True, Koen)
 
-        Dim _Campo_Precio
-        Dim _Campo_Ecuacion
-
-        If UnTrans = 1 Then
-            _Campo_Precio = "PP01UD"
-            _Campo_Ecuacion = "ECUACION"
-        Else
-            _Campo_Precio = "PP02UD"
-            _Campo_Ecuacion = "ECUACIONU2"
-        End If
+        'Dim _Campo_Precio
+        'Dim _Campo_Ecuacion
 
         '_PrecioLinea = Fx_Precio_Formula_Random(_RowPrecios, _Campo_Precio, _Campo_Ecuacion, Nothing, True, _Koen)
 
-        Dim _Precio As Double = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, _Campo_Precio, _Campo_Ecuacion, Nothing, True, Koen)
-        'Dim _PrecioListaUd2 = Fx_Funcion_Ecuacion_Random(_Ecuacion2, Codigo, 2, _RowPrecios, 0, 0, 0)
+        Dim _Precio As Double
+        'Dim _StockBodega As Double
+
+        Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, Koen)
+        Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, Koen)
+
+        If UnTrans = 1 Then
+            _Precio = _PrecioListaUd1
+        Else
+            _Precio = _PrecioListaUd2
+        End If
+
+        '_StockBodega = _Ds.Tables(0).Rows(0).Item("StockUd" & UnTrans)
 
         _Ds.Tables(0).Rows(0).Item("Ecuacion") = _Ecuacion.Trim
         _Ds.Tables(0).Rows(0).Item("DescMaximo") = _DescMaximo
         _Ds.Tables(0).Rows(0).Item("Precio") = _Precio
+        _Ds.Tables(0).Rows(0).Item("PrecioListaUd1") = _PrecioListaUd1
+        _Ds.Tables(0).Rows(0).Item("PrecioListaUd2") = _PrecioListaUd2
+
         _Ds.Tables(0).Rows(0).Item("PorIla") = _PorIla
 
         Dim js As New JavaScriptSerializer
