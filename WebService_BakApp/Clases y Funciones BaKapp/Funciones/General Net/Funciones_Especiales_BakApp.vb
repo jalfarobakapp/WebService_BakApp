@@ -358,7 +358,7 @@ Public Module Funciones_Especiales_BakApp
 
         Consulta_sql = "Select " & _Campo_Formula_Stock & " As Stock_Disponible" & vbCrLf &
                        "From MAEST" & vbCrLf &
-                       "Left Join " & _Global_BaseBk & "Zw_Prod_Stock On EMPRESA = Empresa And KOSU = Sucursal And KOBO = Bodega And KOPR = Codigo" & vbCrLf &
+                       "Left Join " & Global_BaseBk & "Zw_Prod_Stock On EMPRESA = Empresa And KOSU = Sucursal And KOBO = Bodega And KOPR = Codigo" & vbCrLf &
                        "Where" & vbCrLf &
                        "EMPRESA = '" & _Empresa & "' And KOSU = '" & _Sucursal & "'" & Space(1) &
                        "And KOBO = '" & _Bodega & "' And KOPR = '" & _Codigo & "'"

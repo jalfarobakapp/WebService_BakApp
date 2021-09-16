@@ -1,11 +1,8 @@
-﻿Imports System.Data
-Imports System.Data.SqlClient
-'Imports System.Windows.Forms
-
+﻿Imports System.Data.SqlClient
 
 Public Class Clase_Crear_Documento
 
-    Dim _Sql As New Class_SQL '(_Global_Cadena_De_Conexion_SQL)
+    Dim _Sql As New Class_SQL
 
 #Region "VARIABLES ENCABEZADO"
 
@@ -75,7 +72,7 @@ Public Class Clase_Crear_Documento
     'TipoMoneda
 #End Region
 
-    Public Sub New(ByVal Global_BaseBk As String, ByVal Funcionario As String)
+    Public Sub New(Global_BaseBk As String, Funcionario As String)
         _Global_BaseBk = Global_BaseBk
         _Funcionario = Funcionario
     End Sub

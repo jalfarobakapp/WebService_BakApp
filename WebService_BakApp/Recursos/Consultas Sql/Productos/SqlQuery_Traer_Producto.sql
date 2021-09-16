@@ -7,7 +7,8 @@ Declare @Codigo as varchar(20),
 
 Select @Codigo = '#Codigo#',@Empresa = '#Empresa#',@Sucursal = '#Sucursal#',@Bodega = '#Bodega#',@Lista = '#Lista#',@UnTrans = #UnTrans#
 
-Select  @Empresa As 'Empresa',
+Select  Cast(0 As Int) As 'Id_DocEnc',
+		@Empresa As 'Empresa',
 		@Sucursal As 'Sucursal',
 		@Bodega As 'Bodega',
 		Mp.KOPR As 'Codigo',
@@ -21,7 +22,7 @@ Select  @Empresa As 'Empresa',
 		Mp.UD02PR As 'Ud02PR',
 		Mp.POIVPR As 'PorIva',
 		Cast(0 As Float) As 'PorIla',
-		Case @UnTrans When 1 Then Ms.STFI1 When 2 Then Ms.STFI2 End As 'StockBodega',
+		Case @UnTrans When 1 Then Isnull(Ms.STFI1,0) When 2 Then Isnull(Ms.STFI2,0) End As 'StockBodega',
 		--Mp.STFI2 As 'STFI2_Cons',
 		Mp.LISCOSTO As 'CodLista',
 		Cast(0 as Bit) as 'Prct',
@@ -42,15 +43,13 @@ Select  @Empresa As 'Empresa',
 		--Rtrim(Ltrim(Isnull(Tp.ECUACIONU2,''))) As 'ECUACIONU2',
 		--Ms.STFI1 As StockUd1,
 		--Ms.STFI2 As StockUd2,
-		Mpm.PM As 'PmLinea',
+		Isnull(Mpm.PM,0) As 'PmLinea',
 		--Mpm.PPUL01 As Precio_UC1,
 		--Mpm.PPUL02 As Precio_UC2,
-		Mps.PMSUC As 'PmSucLinea',
-		Mpm.PMIFRS As 'PmIFRS',
+		Isnull(Mps.PMSUC,0) As 'PmSucLinea',
+		Isnull(Mpm.PMIFRS,0) As 'PmIFRS',
 		Tbpp.DATOSUBIC As 'UbicacionBod'
---Into #Paso
 From MAEPR Mp
-	--Left Join TABPRE Tp On Tp.KOLT = @Lista And Tp.KOPR = Mp.KOPR 
 		Left Join MAEST Ms On Ms.EMPRESA = @Empresa And Ms.KOSU = @Sucursal And Ms.KOBO = @Bodega And Ms.KOPR = Mp.KOPR
 			Left Join MAEPREM Mpm On Ms.KOPR = Mpm.KOPR And Mpm.EMPRESA = @Empresa
 				Left Join MAEPMSUC Mps On Mps.EMPRESA = @Empresa And Mps.KOSU = @Sucursal And Mps.KOPR = Mp.KOPR
