@@ -664,7 +664,201 @@ Public Class Ws_BakApp
 
     End Sub
 
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Sub Sb_Traer_Descuentos_Seteados_Desde_Lista(_Empresa As String,
+                                                 _Sucursa As String,
+                                                 _Codigo As String,
+                                                 _CodLista As String,
+                                                 _Prct As Boolean,
+                                                 _Tict As String,
+                                                 _PorIva As Double,
+                                                 _PorIla As Double,
+                                                 _CantUd1 As Double,
+                                                 _CantUd2 As Double,
+                                                 _Koen As String,
+                                                 _ChkValoresNeto As Boolean)
 
+        Dim _TblDscto As DataTable
+
+        _Sql = New Class_SQL
+
+        Consulta_sql = "Select Top 1 TABPRE.*,TABPP.MELT From TABPRE 
+                        Inner Join TABPP On TABPP.KOLT = TABPRE.KOLT
+                        Where TABPRE.KOLT = '" & _CodLista & "' And KOPR = '" & _Codigo & "'"
+
+        Dim _Row_Tabpre As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+
+        Consulta_sql = "Select Top 1 *,(SELECT top 1 MELT FROM TABPP Where KOLT = '" & _CodLista & "') As MELT From TABPRE
+                        Where KOLT = '" & _CodLista & "' And KOPR = '" & _Codigo & "'"
+        Dim _RowPrecios As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+        Consulta_sql = "Declare @Campos Int
+
+                        Set @Campos =(Select Count(*) From PNOMDIM Where DEPENDENCI = 'Por_tabpp' And NOMBRE = CODIGO And CODIGO <> 'PASO01P')
+
+                        Select TOP 1 OPERA,Cast(SUBSTRING( OPERA,28,@Campos*2) As Varchar(200)) As Opera_Rev 
+                        INTO #Paso
+                        From TABPP Where OPERA LIKE 'XX%'
+
+                         Update #Paso Set Opera_Rev = REPLACE(Opera_Rev,'  ','Dp,')
+                         Update #Paso Set Opera_Rev = REPLACE(Opera_Rev,' 1','Dv,')
+                         Update #Paso Set Opera_Rev = REPLACE(Opera_Rev,' 2','Rp,')
+                         Update #Paso Set Opera_Rev = REPLACE(Opera_Rev,' 3','Rv,')
+
+                        Select * From #Paso
+                        Drop Table #Paso"
+
+        Dim _Row_Opera As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+        If Not IsNothing(_Row_Opera) Then
+
+            Dim _Opera = _Row_Opera.Item("Opera_Rev")
+            Dim _Opera_Rev = Split(_Opera, ",")
+
+            Consulta_sql = "Select Top 1 * From TABPRE Where KOLT = '" & _CodLista & "' And KOPR = '" & _Codigo & "'"
+            Dim _TblTabpre As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+
+            ' Asi es como actua el campo OPERA, este campo define como se comportaran los campos adicionales a partir del campo nro 29 en adelante
+
+            '       28 - Ultimo Campo EDTMA02UD
+
+            '        '' = Descuento Porcentaje
+            '        1  = Descuento Valor
+            '        2  = Recargo Porcentaje
+            '        3  = Recargo Valor
+
+            Dim _Campos_Adicionales = String.Empty
+            Dim _j = 0
+            Dim _a = 0
+
+            Consulta_sql = "Select Cast('' As Varchar(20)) As Tcampo,Cast(0 As Float) As Dscto,Cast(0 As Float) As Valor" & Environment.NewLine &
+                           "Where 1 < 0"
+            _TblDscto = _Sql.Fx_Get_Tablas(Consulta_sql)
+
+            For _i = 28 To _TblTabpre.Columns.Count - 1
+
+                Dim _Columna As DataColumn = _TblTabpre.Columns(_i)
+                Dim _Nombre_Columna As String = _Columna.ColumnName
+
+                If Mid(_Nombre_Columna, 1, 5) <> "FORM_" Then
+
+                    '_Campos_Adicionales += "[" & _Nombre_Columna & "] [CHAR] (121) Default ''," & Environment.NewLine
+
+                    Dim _Valor As Double = NuloPorNro(_Row_Tabpre.Item(_Nombre_Columna), 0)
+                    Dim _Valor_Fx As Double
+
+                    'Dim _Koen = _TblEncabezado.Rows(0).Item("CodEntidad")
+
+                    Dim _Campo_Ecuacion As String = "FORM_" & numero_(_i + 1, 3)
+
+                    _Valor_Fx = Fx_Precio_Formula_Random(_Empresa, _Sucursa, _RowPrecios, _Nombre_Columna, _Campo_Ecuacion, Nothing, True, _Koen)
+
+                    If _Valor = 0 Then _Valor = _Valor_Fx
+
+                    'Dim _DocEn_Neto_Bruto = _TblEncabezado.Rows(0).Item("DocEn_Neto_Bruto")
+
+                    If CBool(_Valor) Then
+
+                        Dim _TCampo = _Opera_Rev(_j)
+                        Dim _Dscto As Double
+                        Dim _Incorporar_Dscto As Boolean
+
+                        Select Case _TCampo
+                            Case "Dp"
+                                'Porcentaje
+                                '_Array_Dsctos(_a, 0) = _TCampo
+                                '_Array_Dsctos(_a, 1) = _Valor
+                                '_Array_Dsctos(_a, 2) = 0
+                                _Dscto = _Valor
+                                _Valor = 0
+                                _Incorporar_Dscto = True
+                            Case "Dv" ', "Rv"
+                                _Valor = _Valor '* -1
+                                _Dscto = 0
+                                _Incorporar_Dscto = True
+                                '_Array_Dsctos(_a, 0) = _TCampo
+                                '_Array_Dsctos(_a, 1) = 0
+                                '_Array_Dsctos(_a, 2) = _Valor
+                            Case "Rp"
+
+                            Case "Rv"
+
+                                'If _Prct And _Tict = "R" Then
+
+                                Dim _Iva = _PorIva / 100
+                                Dim _Ila = _PorIla / 100
+
+                                Dim _Impuestos As Double = 1 + (_Iva + _Ila)
+
+                                Dim _Melt = _Row_Tabpre.Item("MELT")
+
+                                If _Melt = "B" Then
+
+                                    If _ChkValoresNeto Then
+                                        _Valor = Math.Round(_Valor / _Impuestos, 3)
+                                    Else
+                                        _Valor = _Valor * _Impuestos
+                                    End If
+
+                                Else
+
+                                    If Not _ChkValoresNeto Then
+                                        _Valor = Math.Round(_Valor * _Impuestos, 0)
+                                    End If
+
+                                End If
+
+                                '_Fila.Cells("Recargo_Campo").Value = _Nombre_Columna
+                                '_Fila.Cells("Recargo_Valor").Value = _Valor
+
+                        End Select
+
+                        If _Incorporar_Dscto Then
+
+                            Dim NewFila As DataRow
+                            NewFila = _TblDscto.NewRow
+                            With NewFila
+                                .Item("TCampo") = _TCampo
+                                .Item("Dscto") = _Dscto
+                                .Item("Valor") = _Valor
+                                _TblDscto.Rows.Add(NewFila)
+                            End With
+
+                        End If
+
+                    End If
+
+                    _j += 1
+
+                End If
+
+                'ReDim Preserve _Array_Dsctos(1, 2)
+
+            Next
+
+            Dim _Ds As New DataSet
+
+            If CBool(_TblDscto.Rows.Count) Then
+                _Ds.Tables.Add(_TblDscto)
+            Else
+                Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'Sin Datos...' As Error"
+                _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+            End If
+
+            Dim js As New JavaScriptSerializer
+
+            Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+            Context.Response.ContentType = "application/json"
+            Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+            Context.Response.Flush()
+
+            Context.Response.End()
+
+        End If
+
+    End Sub
 
     <WebMethod(True)> _
   Public Sub Sb_Json2Ds(ByVal _Json As String)
