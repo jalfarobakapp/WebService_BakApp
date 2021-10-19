@@ -674,8 +674,6 @@ Public Class Ws_BakApp
                                                  _Tict As String,
                                                  _PorIva As Double,
                                                  _PorIla As Double,
-                                                 _CantUd1 As Double,
-                                                 _CantUd2 As Double,
                                                  _Koen As String,
                                                  _ChkValoresNeto As Boolean)
 
@@ -846,6 +844,8 @@ Public Class Ws_BakApp
                 Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'Sin Datos...' As Error"
                 _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
             End If
+
+            _Ds.Tables(0).TableName = "Table"
 
             Dim js As New JavaScriptSerializer
 
