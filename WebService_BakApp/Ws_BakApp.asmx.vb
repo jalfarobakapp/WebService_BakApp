@@ -6,12 +6,13 @@ Imports Newtonsoft.Json
 Imports System.Web
 Imports System.Web.Script.Services
 Imports System.Web.Script.Serialization
+Imports Newtonsoft.Json.Linq
 
 ' Para permitir que se llame a este servicio web desde un script, usando ASP.NET AJAX, quite la marca de comentario de la siguiente línea.
 ' <System.Web.Script.Services.ScriptService()> _
-<System.Web.Services.WebService(Namespace:="http://BakApp")> _
-<System.Web.Services.WebServiceBinding(ConformsTo:=WsiProfiles.BasicProfile1_1)> _
-<ToolboxItem(False)> _
+<System.Web.Services.WebService(Namespace:="http://BakApp")>
+<System.Web.Services.WebServiceBinding(ConformsTo:=WsiProfiles.BasicProfile1_1)>
+<ToolboxItem(False)>
 Public Class Ws_BakApp
     Inherits System.Web.Services.WebService
 
@@ -24,47 +25,47 @@ Public Class Ws_BakApp
 
     End Sub
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function Fx_Probar_Conexion_BD() As String
         _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
         Dim _Error As String = _Sql.Fx_Probar_Conexion
         Return _Error '"Hola a todos" 'http://localhost:34553
     End Function
 
-    <WebMethod()> _
-   Public Function Fx_Cadena_Conexion(ByVal Cadena_Conexion_SQL_Server As String) As String
+    <WebMethod()>
+    Public Function Fx_Cadena_Conexion(ByVal Cadena_Conexion_SQL_Server As String) As String
         '_Global_Cadena_Conexion_SQL_Server = Cadena_Conexion_SQL_Server
         _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
         Dim _Error As String = _Sql.Fx_Probar_Conexion
         Return _Error
     End Function
 
-    <WebMethod(True)> _
+    <WebMethod(True)>
     Function Fx_GetDataSet(ByVal Consulta_Sql As String) As DataSet
         _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
         Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_Sql)
         Return _Ds
     End Function
 
-    <WebMethod(True)> _
-    Function Fx_Trae_Dato_String(ByVal _Tabla As String, _
-                                 ByVal _Campo As String, _
+    <WebMethod(True)>
+    Function Fx_Trae_Dato_String(ByVal _Tabla As String,
+                                 ByVal _Campo As String,
                                  ByVal _Condicion As String) As String
         _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
         Dim _Dato As String = _Sql.Fx_Trae_Dato(_Tabla, _Campo, _Condicion, , False, "")
         Return _Dato
     End Function
 
-    <WebMethod(True)> _
-    Function Fx_Trae_Dato_Numero(ByVal _Tabla As String, _
-                                 ByVal _Campo As String, _
+    <WebMethod(True)>
+    Function Fx_Trae_Dato_Numero(ByVal _Tabla As String,
+                                 ByVal _Campo As String,
                                  ByVal _Condicion As String) As String
         _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
         Dim _Dato As Double = _Sql.Fx_Trae_Dato(_Tabla, _Campo, _Condicion, , True, 0)
         Return _Dato
     End Function
 
-    <WebMethod(True)> _
+    <WebMethod(True)>
     Function Fx_Ej_consulta_IDU(ByVal Consulta_Sql As String) As String
         _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
 
@@ -75,7 +76,7 @@ Public Class Ws_BakApp
         End If
     End Function
 
-    <WebMethod(True)> _
+    <WebMethod(True)>
     Function Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(ByVal Consulta_Sql As String) As String
         _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
 
@@ -86,42 +87,42 @@ Public Class Ws_BakApp
         End If
     End Function
 
-    <WebMethod(True)> _
-    Function Fx_Cuenta_Registros(ByVal _Tabla As String, _
+    <WebMethod(True)>
+    Function Fx_Cuenta_Registros(ByVal _Tabla As String,
                                  ByVal _Condicion As String) As Double
         _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
         Dim _Dato As Double = _Sql.Fx_Cuenta_Registros(_Tabla, _Condicion)
         Return _Dato
     End Function
 
-    <WebMethod(True)> _
-    Function Fx_Crear_Documento(ByVal _Global_BaseBk As String, _
-                                ByVal _Funcionario As String, _
-                                ByVal _Tido As String, _
-                                ByVal _Nudo As String, _
-                                ByVal _Es_ValeTransitorio As Boolean, _
-                                ByVal _EsElectronico As Boolean, _
-                                ByVal _Ds_Matriz_Documento As DataSet, _
+    <WebMethod(True)>
+    Function Fx_Crear_Documento(ByVal _Global_BaseBk As String,
+                                ByVal _Funcionario As String,
+                                ByVal _Tido As String,
+                                ByVal _Nudo As String,
+                                ByVal _Es_ValeTransitorio As Boolean,
+                                ByVal _EsElectronico As Boolean,
+                                ByVal _Ds_Matriz_Documento As DataSet,
                                 ByVal _Es_Ajuste As Boolean) As String
 
         Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
 
         Dim _Idmaeedo As String
-        _Idmaeedo = _New_Doc.Fx_Crear_Documento(_Tido, _
-                                                    _Nudo, _
-                                                    _Es_ValeTransitorio, _
-                                                    _EsElectronico, _
-                                                    _Ds_Matriz_Documento, _
+        _Idmaeedo = _New_Doc.Fx_Crear_Documento(_Tido,
+                                                    _Nudo,
+                                                    _Es_ValeTransitorio,
+                                                    _EsElectronico,
+                                                    _Ds_Matriz_Documento,
                                                     _Es_Ajuste)
 
         Return _Idmaeedo
 
     End Function
 
-    <WebMethod(True)> _
-   Function Fx_Editar_Documento(ByVal _Global_BaseBk As String, _
-                                ByVal _Idmaeedo_Dori As Integer, _
-                                ByVal _Funcionario As String, _
+    <WebMethod(True)>
+    Function Fx_Editar_Documento(ByVal _Global_BaseBk As String,
+                                ByVal _Idmaeedo_Dori As Integer,
+                                ByVal _Funcionario As String,
                                 ByVal _Ds_Matriz_Documento As DataSet) As Integer
 
         Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
@@ -133,9 +134,9 @@ Public Class Ws_BakApp
 
     End Function
 
-    <WebMethod(True)> _
-    Function Fx_Cambiar_Numeracion_Modalidad(ByVal _Tido As String, _
-                                             ByVal _Nudo As String, _
+    <WebMethod(True)>
+    Function Fx_Cambiar_Numeracion_Modalidad(ByVal _Tido As String,
+                                             ByVal _Nudo As String,
                                              ByVal _Modalidad As String) As Double
         _Sql = New Class_SQL
         Dim _Dato As Double = Fx_Cambiar_Numeracion_Modalidad(_Tido, _Nudo, _Modalidad)
@@ -148,45 +149,45 @@ Public Class Ws_BakApp
         Modificar
     End Enum
 
-    <WebMethod(True)> _
-   Function Fx_EliminarAnular_Doc(ByVal _Idmaeedo_Dori As Integer, _
-                                  ByVal _Funcionario As String, _
+    <WebMethod(True)>
+    Function Fx_EliminarAnular_Doc(ByVal _Idmaeedo_Dori As Integer,
+                                  ByVal _Funcionario As String,
                                   ByVal _Accion As _Enum_Accion_EA) As Boolean
         _Sql = New Class_SQL
 
         Dim Cl_ClarDoc As New Clase_EliminarAnular_Documento
 
-        If Cl_ClarDoc.Fx_EliminarAnular_Doc(_Idmaeedo_Dori, _
-                                            _Funcionario, _
-                                            _Accion, _
+        If Cl_ClarDoc.Fx_EliminarAnular_Doc(_Idmaeedo_Dori,
+                                            _Funcionario,
+                                            _Accion,
                                             False) Then
             Return True
         End If
 
     End Function
 
-    <WebMethod(True)> _
-   Function Fx_Traer_Numero_Documento(ByVal _Tido As String, _
-                                      ByVal _NumeroDoc As String, _
-                                      ByVal _Modalidad_Seleccionada As String, _
+    <WebMethod(True)>
+    Function Fx_Traer_Numero_Documento(ByVal _Tido As String,
+                                      ByVal _NumeroDoc As String,
+                                      ByVal _Modalidad_Seleccionada As String,
                                       ByVal _Empresa As String) As String
         Dim _NroDocumento As String = Traer_Numero_Documento(_Tido, _NumeroDoc, _Modalidad_Seleccionada, _Empresa)
 
         Return _NroDocumento
     End Function
 
-    <WebMethod(True)> _
+    <WebMethod(True)>
     Function Fx_Cadena_Conexion_SQL() As String
         Return System.Configuration.ConfigurationManager.ConnectionStrings("db_bakapp").ToString()
     End Function
 
-    <WebMethod(True)> _
+    <WebMethod(True)>
     Function Fx_Conectado_Web_Service() As Boolean
         Return True
     End Function
 
-    <WebMethod(True)> _
-   Function Fx_Login_Usuario_Soap(ByVal _Clave As String) As DataSet
+    <WebMethod(True)>
+    Function Fx_Login_Usuario_Soap(ByVal _Clave As String) As DataSet
 
         Dim _Pw = Fx_TraeClaveRD(_Clave)
 
@@ -841,7 +842,8 @@ Public Class Ws_BakApp
             If CBool(_TblDscto.Rows.Count) Then
                 _Ds.Tables.Add(_TblDscto)
             Else
-                Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'Sin Datos...' As Error"
+                Consulta_sql = "Select Cast('' As Varchar(20)) As Tcampo,Cast(0 As Float) As Dscto,Cast(0 As Float) As Valor"
+                'Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'Sin Datos...' As Error"
                 _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
             End If
 
@@ -860,8 +862,8 @@ Public Class Ws_BakApp
 
     End Sub
 
-    <WebMethod(True)> _
-  Public Sub Sb_Json2Ds(ByVal _Json As String)
+    <WebMethod(True)>
+    Public Sub Sb_Json2Ds(ByVal _Json As String)
 
         If String.IsNullOrEmpty(_Json) Then
             _Json = "{'Tabla 1': [{""Name"":""AAA"",""Age"":""22"",""Job"":""PPP""}," &
@@ -871,6 +873,50 @@ Public Class Ws_BakApp
         End If
 
         Dim _Tbl As DataTable = Fx_de_Json_a_Datatable(_Json)
+
+    End Sub
+
+    <WebMethod(True)>
+    Public Sub Sb_Json_ImpBk(_Json As String, _NombreTabla As String)
+
+        '_Json = Replace(_Json, """", "'")
+        _Json = Replace(_Json, "\/", "/")
+        _Json = _Json.Trim
+        Dim _Json2 = Mid(_Json, 2, _Json.Length - 1)
+        _Json2 = Mid(_Json2, 1, _Json2.Length - 1)
+
+        Dim RutaArchivo As String = "D:\JsonB4Android\" & _NombreTabla & ".json"
+        Dim Cuerpo = _Json
+
+        Dim oSW As New System.IO.StreamWriter(RutaArchivo)
+
+        oSW.WriteLine(Cuerpo)
+        oSW.Close()
+
+
+        Dim dataSet As DataSet = JsonConvert.DeserializeObject(Of DataSet)(_Json2)
+
+        _Sql = New Class_SQL
+        Dim _Ds As DataSet
+
+        Dim _Existe = System.IO.File.Exists(RutaArchivo)
+
+        If Not _Existe Then
+            Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'' As Error"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+        Else
+            Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'" & Replace(_Sql.Pro_Error, "'", "''") & "' As Error"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End If
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
 
     End Sub
 
