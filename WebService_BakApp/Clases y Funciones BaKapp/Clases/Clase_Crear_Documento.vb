@@ -3,6 +3,7 @@
 Public Class Clase_Crear_Documento
 
     Dim _Sql As New Class_SQL
+    Dim _Error As String
 
 #Region "VARIABLES ENCABEZADO"
 
@@ -3185,6 +3186,997 @@ Public Class Clase_Crear_Documento
         Finally
             _Sql.Sb_Cerrar_Conexion(cn2)
         End Try
+
+    End Function
+
+    Function Fx_Crear_Documento_En_BakApp_Casi2(_NombreEquipo As String,
+                                                _Tbl_Encabezado As DataTable,
+                                                _Tbl_Detalle As DataTable,
+                                                _Tbl_Descuentos As DataTable,
+                                                _Tbl_Impuestos As DataTable,
+                                                _Tbl_Observaciones As DataTable,
+                                                _Tbl_Mevento_Edo As DataTable,
+                                                _Tbl_Mevento_Edd As DataTable,
+                                                _Tbl_Referencias_DTE As DataTable,
+                                                _Tbl_Permisos As DataTable,
+                                                _EsAjuste As Boolean,
+                                                _Stand_by As Boolean,
+                                                _Desde As String) As Integer
+
+#Region "Variables"
+
+        Dim _Id_DocEnc As Integer
+
+        Dim _Tido As String
+        Dim _Modalidad As String
+        Dim _Empresa As String
+        Dim _TipoDoc As String
+        Dim _SubTido As String
+        Dim _NroDocumento As String
+        Dim _Es_ValeTransitorio As Boolean
+
+        Dim _Sucursal_Doc As String
+
+        Dim _CodFuncionario As String
+        Dim _CodEntidad As String
+        Dim _CodSucEntidad As String
+        Dim _FechaEmision As String
+        Dim _ListaPrecios As String
+        Dim _CantTotal As String
+        Dim _CantDesp As String
+        Dim _Centro_Costo As String
+        Dim _Moneda_Doc As String
+        Dim _DocEn_Neto_Bruto As String
+        Dim _Valor_Dolar As String
+
+        Dim _TotalNetoDoc As String
+        Dim _TotalIvaDoc As String
+        Dim _TotalIlaDoc As String
+        Dim _TotalBrutoDoc As String
+        Dim _Fecha_1er_Vencimiento As String
+        Dim _FechaUltVencimiento As String
+        Dim _FechaRecepcion As String
+
+        Dim _Nombre_Entidad As String
+        Dim _Cuotas As String
+        Dim _Dias_1er_Vencimiento As String
+        Dim _Dias_Vencimiento As String
+        Dim _CodEntidadFisica As String
+        Dim _CodSucEntidadFisica As String
+        Dim _Nombre_Entidad_Fisica As String
+        Dim _Contacto_Ent As String
+        Dim _NomFuncionario As String
+        Dim _Es_Electronico As String
+        Dim _TipoMoneda As String
+        Dim _Vizado As String
+
+        Dim _Tasadorig_Doc As String
+
+        Dim _Fun_Auto_Deuda_Ven As String
+        Dim _Fun_Auto_Stock_Ins As String
+        Dim _Fun_Auto_Cupo_Exe As String
+        Dim _Fun_Auto_Sol_Compra As String
+
+        Dim _NroLinea As String
+
+        Dim _Sucursal_Linea As String
+        Dim _Bodega_Linea As String
+
+        Dim _Codigo As String
+        Dim _Descripcion As String
+        Dim _Rtu As String
+
+        Dim _CodVendedor As String
+        Dim _Tict As String
+        Dim _Prct As String
+        Dim _Tipr As String
+        Dim _Cantidad As String
+        Dim _Precio As String
+        Dim _CantUd1 As String
+        Dim _CantUd2 As String
+        Dim _Lincondest As String
+        Dim _CDespUd1 As String
+        Dim _CDespUd2 As String
+        Dim _Estado As String
+        Dim _UnTrans As String
+        Dim _UdTrans As String
+        Dim _Ud01PR As String
+        Dim _Ud02PR As String
+        Dim _CodLista As String
+        Dim _Moneda As String
+        Dim _Tipo_Moneda As String
+        Dim _Tipo_Cambio As String
+        Dim _DescuentoPorc As String
+        Dim _DescuentoValor As String
+        Dim _PorIla As String
+        Dim _Operacion As String
+        Dim _Potencia As String
+
+        Dim _PrecioNetoUd As String
+        Dim _PrecioBrutoUd As String
+        Dim _PrecioNetoUdLista As String
+        Dim _PrecioBrutoUdLista As String
+        Dim _PorIva As String
+        Dim _NroDscto As String
+        Dim _NroImpuestos As String
+        Dim _DsctoRealPorc As String
+        Dim _DsctoRealValor As String
+        Dim _DsctoNeto As String
+        Dim _DsctoBruto As String
+        Dim _ValSubNetoLinea As String
+        Dim _StockBodega As String
+        Dim _UbicacionBod As String
+        Dim _SubTotal As String
+        Dim _ValNetoLinea As String
+        Dim _ValIlaLinea As String
+        Dim _ValIvaLinea As String
+        Dim _ValBrutoLinea As String
+        Dim _FechaEmision_Linea As String
+        Dim _FechaRecepcion_Linea As String
+        Dim _Observa As String
+        Dim _PrecioNetoRealUd1 As String
+        Dim _PrecioNetoRealUd2 As String
+        Dim _PmLinea As String
+        Dim _PmSucLinea As String
+        Dim _CodigoProv As String
+        Dim _TipoValor As String
+        Dim _ValVtaDescMax As String
+        Dim _ValVtaStockInf As String
+        Dim _DescMaximo As String
+
+        Dim _Idmaeedo_Dori As String
+        Dim _Idmaeddo_Dori As String
+        Dim _CantUd1_Dori As String
+        Dim _CantUd2_Dori As String
+
+        Dim _Emprepa As String
+        Dim _Tidopa As String
+        Dim _NudoPa As String
+        Dim _Endopa As String
+        Dim _Nulidopa As String
+
+        Dim _DsctoGlobalSuperado As String
+        Dim _Tiene_Dscto As String
+        Dim _CantidadCalculo As String
+        Dim _PrecioCalculo As String
+        Dim _OCCGenerada As String
+        Dim _Bloqueapr As String
+        Dim _CodFunAutoriza As String
+        Dim _CodPermiso As String
+        Dim _Nuevo_Producto As String
+        Dim _Solicitado_bodega As String
+        Dim _Centro_Costo_Linea As String
+        Dim _Proyecto As String
+
+        Dim _Id_Oferta As Integer
+        Dim _Es_Padre_Oferta As Integer
+        Dim _Oferta As String
+        Dim _Padre_Oferta As Integer
+        Dim _Aplica_Oferta As Integer
+        Dim _Hijo_Oferta As Integer
+        Dim _Cantidad_Oferta As String
+        Dim _Porcdesc_Oferta As String
+
+        Dim _Tasadorig As Double
+
+        Dim _Reserva_NroOCC As Integer
+        Dim _Reserva_Idmaeedo As Integer
+
+
+        Dim myTrans As SqlClient.SqlTransaction
+        Dim Comando As SqlClient.SqlCommand
+
+        'Dim Tbl_Encabezado As DataTable = _Bd_Documento.Tables("Encabezado_Doc")
+
+        'Dim _Tbl_Mevento_Edo As DataTable = _Bd_Documento.Tables("Mevento_Edo")
+        'Dim _Tbl_Mevento_Edd As DataTable = _Bd_Documento.Tables("Mevento_Edd")
+        'Dim _Tbl_Referencias_DTE As DataTable = _Bd_Documento.Tables("Referencias_DTE")
+
+        Dim cn2 As New SqlConnection
+        Dim SQL_ServerClass As New Class_SQL()
+
+#End Region
+
+        SQL_ServerClass.Sb_Abrir_Conexion(cn2)
+
+        Try
+
+            With _Tbl_Encabezado.Rows(0)
+
+                _Modalidad = .Item("Modalidad")
+
+                _TipoDoc = .Item("TipoDoc")
+                _SubTido = .Item("Subtido")
+                _NroDocumento = Traer_Numero_Documento(_Tido, .Item("NroDocumento"), _Modalidad, _Empresa)
+
+                If String.IsNullOrEmpty(_NroDocumento) Then
+                    Return 0
+                End If
+
+                .Item("NroDocumento") = _NroDocumento
+
+                If String.IsNullOrEmpty(Trim(_NroDocumento)) Then
+                    Return 0
+                End If
+
+                If Not IsNothing(_Tbl_Referencias_DTE) Then
+                    For Each _Fila As DataRow In _Tbl_Referencias_DTE.Rows
+                        _Fila.Item("Tido") = _Tido
+                        _Fila.Item("Nudo") = _Nudo
+                    Next
+                End If
+
+                _Empresa = .Item("Empresa").ToString
+
+                _Sucursal_Doc = .Item("Sucursal")
+                _CodFuncionario = .Item("CodFuncionario")
+
+                _CodEntidad = .Item("CodEntidad")
+                _CodSucEntidad = .Item("CodSucEntidad")
+
+                _FechaEmision = Format(.Item("FechaEmision"), "yyyyMMdd")
+                _ListaPrecios = .Item("ListaPrecios")
+                _CantTotal = De_Num_a_Tx_01(.Item("CantTotal"), 5)
+                _CantDesp = De_Num_a_Tx_01(.Item("CantDesp"), 5)
+
+                _Centro_Costo = NuloPorNro(.Item("Centro_Costo"), "")
+                _Moneda_Doc = .Item("Moneda_Doc")
+                _DocEn_Neto_Bruto = .Item("DocEn_Neto_Bruto")
+                _Valor_Dolar = De_Num_a_Tx_01(.Item("Valor_Dolar"), False, 5)
+                _Tipo_Moneda = .Item("TipoMoneda")
+
+                _Tasadorig_Doc = De_Num_a_Tx_01(.Item("Tasadorig_Doc"), False, 5)
+
+                Dim _TotalNetoDoc_2 = .Item("TotalNetoDoc")
+                Dim _TotalIvaDoc_2 = .Item("TotalIvaDoc")
+                Dim _TotalIlaDoc_2 = .Item("TotalIlaDoc")
+                Dim _TotalBrutoDoc_2 = .Item("TotalBrutoDoc")
+
+                _TotalNetoDoc = De_Num_a_Tx_01(.Item("TotalNetoDoc"), False, 5)
+                _TotalIvaDoc = De_Num_a_Tx_01(.Item("TotalIvaDoc"), False, 5)
+                _TotalIlaDoc = De_Num_a_Tx_01(.Item("TotalIlaDoc"), False, 5)
+                _TotalBrutoDoc = De_Num_a_Tx_01(.Item("TotalBrutoDoc"), False, 5)
+
+                _Fecha_1er_Vencimiento = Format(.Item("Fecha_1er_Vencimiento"), "yyyyMMdd")
+                _FechaUltVencimiento = Format(.Item("FechaUltVencimiento"), "yyyyMMdd")
+
+                _FechaRecepcion = Format(.Item("FechaRecepcion"), "yyyyMMdd")
+
+                _Nombre_Entidad = .Item("Nombre_Entidad").ToString
+                _Cuotas = .Item("Cuotas").ToString
+                _Dias_1er_Vencimiento = .Item("Dias_1er_Vencimiento").ToString
+                _Dias_Vencimiento = .Item("Dias_Vencimiento").ToString
+                _CodEntidadFisica = NuloPorNro(.Item("CodEntidadFisica").ToString, "")
+                _CodSucEntidadFisica = NuloPorNro(.Item("CodSucEntidadFisica").ToString, "")
+                _Nombre_Entidad_Fisica = .Item("Nombre_Entidad_Fisica").ToString
+                _Contacto_Ent = NuloPorNro(.Item("Contacto_Ent").ToString, "")
+                _NomFuncionario = .Item("NomFuncionario").ToString
+                _Es_Electronico = Convert.ToInt32(.Item("Es_Electronico"))
+                _TipoMoneda = .Item("TipoMoneda").ToString
+                _Vizado = Convert.ToInt32(.Item("Vizado"))
+
+                _Fun_Auto_Deuda_Ven = .Item("Fun_Auto_Deuda_Ven").ToString
+                _Fun_Auto_Stock_Ins = .Item("Fun_Auto_Stock_Ins").ToString
+                _Fun_Auto_Cupo_Exe = .Item("Fun_Auto_Cupo_Exe").ToString
+                _Fun_Auto_Sol_Compra = .Item("Fun_Auto_Sol_Compra").ToString
+
+                _Centro_Costo = .Item("Centro_Costo").ToString
+
+                _Reserva_NroOCC = Convert.ToInt32(.Item("Reserva_NroOCC"))
+                _Reserva_Idmaeedo = Convert.ToInt32(.Item("Reserva_Idmaeedo"))
+
+            End With
+
+            '------------------------------------------------------------------------------------------------------------
+
+        Catch ex As Exception
+            'MessageBoxEx.Show(ex.Message)
+            Return 0
+        End Try
+
+        Try
+
+            myTrans = cn2.BeginTransaction()
+
+            Consulta_sql = "INSERT INTO " & _Global_BaseBk & "Zw_Casi_DocEnc (Empresa,TipoDoc,NroDocumento,CodEntidad,CodSucEntidad,Stand_by)" & vbCrLf &
+                           "VALUES ( '" & _Empresa & "','" & _TipoDoc & "','" & _NroDocumento &
+                           "','" & _CodEntidad & "','" & _CodSucEntidad & "'," & Convert.ToInt32(_Stand_by) & ")"
+
+            Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+            Comando.Transaction = myTrans
+            Comando.ExecuteNonQuery()
+
+            Comando = New SqlCommand("SELECT @@IDENTITY AS 'Identity'", cn2)
+            Comando.Transaction = myTrans
+            Dim dfd1 As SqlDataReader = Comando.ExecuteReader()
+            While dfd1.Read()
+                _Id_DocEnc = dfd1("Identity")
+            End While
+            dfd1.Close()
+
+            '_Bd_Documento.Tables("Detalle_Doc").Dispose()
+            'Dim _Tbl_Detalle As DataTable = _Bd_Documento.Tables("Detalle_Doc")
+
+            Dim Contador As Integer = 1
+
+            For Each FDetalle As DataRow In _Tbl_Detalle.Rows
+
+                Dim Estado As DataRowState = FDetalle.RowState
+
+                Consulta_sql = String.Empty
+
+                If Not Estado = DataRowState.Deleted Then
+
+                    With FDetalle
+
+                        Id_Linea = .Item("Id")
+
+                        _NroLinea = numero_(Contador, 5)
+
+                        _Sucursal_Linea = .Item("Sucursal")
+                        _Bodega_Linea = .Item("Bodega")
+                        _Codigo = .Item("Codigo")
+                        _Descripcion = .Item("Descripcion")
+                        _Rtu = De_Num_a_Tx_01(.Item("Rtu"), False, 5)
+
+                        _CodVendedor = .Item("CodFuncionario") ' FUNCIONARIO ' Codigo de funcionario
+
+                        _Tict = .Item("Tict")
+                        _Prct = .Item("Prct")
+                        _Tipr = .Item("Tipr")
+
+                        _Cantidad = De_Num_a_Tx_01(.Item("Cantidad"), False, 5)
+                        _Precio = De_Num_a_Tx_01(.Item("Precio"), False, 5)
+
+                        _CantUd1 = De_Num_a_Tx_01(.Item("CantUd1"), False, 5) ' Cantidad de la primera unidad
+                        _CantUd2 = De_Num_a_Tx_01(.Item("CantUd2"), False, 5) ' Cantidad de la segunda unidad
+
+                        _Lincondest = CInt(.Item("Lincondest")) * -1
+
+                        'CantidadTotal = CantidadTotal + Val(CAPRCO1)
+
+                        ' _CDespUd1, _CDespUd2 
+
+                        If CBool(_Lincondesp) Then
+                            _CDespUd1 = _CantUd1 ' Cantidad que mueve Stock Fisico, según el producto.
+                            _CDespUd2 = _CantUd2 ' Cantidad que mueve Stock Fisico, según el producto.
+                        Else
+                            _CDespUd1 = De_Num_a_Tx_01(NuloPorNro(.Item("CDespUd1"), 0), False, 5) ' Cantidad que mueve Stock Fisico, según el producto.
+                            _CDespUd2 = De_Num_a_Tx_01(NuloPorNro(.Item("CDespUd2"), 0), False, 5) ' Cantidad que mueve Stock Fisico, según el producto.
+                        End If
+
+                        _Estado = NuloPorNro(.Item("Estado"), "")
+
+                        Dim _CaprexUd1 = 0 ' Cantidad  
+                        Dim _CaprexUd2 = 0
+                        Dim _CaprncUd1 = 0 ' Cantidad de Nota de credito
+                        Dim _CaprncUd2 = 0
+
+                        _UnTrans = .Item("UnTrans")  ' Unidad de la transaccion
+                        _UdTrans = .Item("UdTrans")  ' Unidad de la transaccion
+
+                        _Ud01PR = .Item("Ud01PR")
+                        _Ud02PR = .Item("Ud02PR")
+                        _CodLista = .Item("CodLista") 'LISTADEPRECIO
+                        _Moneda = .Item("Moneda")
+                        _Tipo_Moneda = .Item("Tipo_Moneda")
+                        _Tipo_Cambio = De_Num_a_Tx_01(.Item("Tipo_Cambio"), False, 5)
+
+                        Dim _Tasadorig_Det As String = De_Num_a_Tx_01(.Item("Tasadorig"), False, 5)
+
+                        _DescuentoPorc = De_Num_a_Tx_01(.Item("DescuentoPorc"), False, 5)
+                        _DescuentoValor = De_Num_a_Tx_01(.Item("DescuentoValor"), False, 5)
+
+                        _PorIla = De_Num_a_Tx_01(.Item("PorIla"), False, 5)
+
+                        _Operacion = .Item("Operacion")
+                        _Potencia = De_Num_a_Tx_01(.Item("Potencia"), False, 5)
+
+                        Dim Campo = "Precio"
+
+                        _PrecioNetoUd = De_Num_a_Tx_01(.Item("PrecioNetoUd"), False, 5)
+                        _PrecioBrutoUd = De_Num_a_Tx_01(.Item("PrecioBrutoUd"), False, 5)
+                        _PrecioNetoUdLista = De_Num_a_Tx_01(NuloPorNro(Of Double)(.Item("PrecioNetoUdLista"), 0), False, 5)
+                        _PrecioBrutoUdLista = De_Num_a_Tx_01(.Item("PrecioBrutoUdLista"), False, 0) ' PRECIO BRUTO DE LA LISTA
+
+                        _PorIva = De_Num_a_Tx_01(.Item("PorIva"), True)
+                        _NroDscto = De_Num_a_Tx_01(.Item("NroDscto"), True)
+
+                        _NroImpuestos = De_Num_a_Tx_01(.Item("NroImpuestos"), True)
+
+                        _DsctoRealPorc = De_Num_a_Tx_01(.Item("DsctoRealPorc"), False, 5)
+                        _DsctoRealValor = De_Num_a_Tx_01(.Item("DsctoRealValor"), False, 5)
+                        _DsctoNeto = De_Num_a_Tx_01(.Item("DsctoNeto"), False, 5)
+                        _DsctoBruto = De_Num_a_Tx_01(.Item("DsctoBruto"), False, 5) 'ValDscto
+                        _ValSubNetoLinea = 0 'De_Num_a_Tx_01(.Item("ValSubNetoLinea"), False, 5)
+
+                        _StockBodega = De_Num_a_Tx_01(.Item("StockBodega"), False, 5)
+                        _UbicacionBod = NuloPorNro(.Item("UbicacionBod"), "")
+
+                        _SubTotal = De_Num_a_Tx_01(.Item("SubTotal"), False, 5)
+
+                        _ValNetoLinea = De_Num_a_Tx_01(.Item("ValNetoLinea"), False, 5)
+                        _ValIlaLinea = De_Num_a_Tx_01(.Item("ValIlaLinea"), False, 5)
+                        _ValIvaLinea = De_Num_a_Tx_01(.Item("ValIvaLinea"), False, 5)
+                        _ValBrutoLinea = De_Num_a_Tx_01(.Item("ValBrutoLinea"), False, 5)
+
+                        _FechaEmision_Linea = _Feemdo 'Format(Now.Date, "yyyyMMdd") '""20121127"
+                        _FechaRecepcion_Linea = _Feemdo 'Format(Now.Date, "yyyyMMdd")
+
+                        _Observa = NuloPorNro(.Item("Observa"), "")
+
+                        _Centro_Costo_Linea = NuloPorNro(.Item("Centro_Costo"), "")
+                        _Proyecto = NuloPorNro(.Item("Proyecto"), "")
+
+                        _PrecioNetoRealUd1 = De_Num_a_Tx_01(.Item("PrecioNetoRealUd1"), False, 5)
+                        _PrecioNetoRealUd2 = De_Num_a_Tx_01(.Item("PrecioNetoRealUd2"), False, 5)
+                        _PmLinea = De_Num_a_Tx_01(NuloPorNro(.Item("PmLinea"), 0), False, 5)
+                        _PmSucLinea = De_Num_a_Tx_01(NuloPorNro(.Item("PmSucLinea"), 0), False, 5)
+
+                        _CodigoProv = NuloPorNro(.Item("CodigoProv"), "")
+                        _TipoValor = NuloPorNro(.Item("TipoValor"), "")
+
+                        _ValVtaDescMax = CInt(.Item("ValVtaDescMax")) * -1
+                        _ValVtaStockInf = CInt(.Item("ValVtaStockInf")) * -1
+
+                        _DescMaximo = De_Num_a_Tx_01(NuloPorNro(.Item("DescMaximo"), 0), False, 5)
+
+                        _Idmaeedo_Dori = .Item("Idmaeedo_Dori")
+                        _Idmaeddo_Dori = .Item("Idmaeddo_Dori")
+
+                        Dim CantUd1_Dori As Double = .Item("CantUd1_Dori")
+                        Dim CantUd2_Dori As Double = .Item("CantUd2_Dori")
+
+                        _CantUd1_Dori = De_Num_a_Tx_01(CantUd1_Dori, False, 5)
+                        _CantUd2_Dori = De_Num_a_Tx_01(CantUd2_Dori, False, 5)
+
+                        If String.IsNullOrEmpty(_Idmaeddo_Dori) Then _Idmaeddo_Dori = 0
+
+                        _Emprepa = NuloPorNro(.Item("Emprepa"), "")
+                        _Tidopa = NuloPorNro(.Item("Tidopa"), "")
+                        _NudoPa = NuloPorNro(.Item("NudoPa"), "")
+                        _Endopa = NuloPorNro(.Item("Endopa"), "")
+                        _Nulidopa = NuloPorNro(.Item("Nulidopa"), "")
+
+                        _DsctoGlobalSuperado = 0
+                        _Tiene_Dscto = CInt(.Item("Tiene_Dscto")) * -1
+                        _CantidadCalculo = De_Num_a_Tx_01(NuloPorNro(.Item("CantidadCalculo"), 0), False, 5)
+                        _PrecioCalculo = De_Num_a_Tx_01(NuloPorNro(.Item("PrecioCalculo"), 0), False, 5)
+                        _OCCGenerada = CInt(.Item("Tiene_Dscto")) * -1
+                        _Bloqueapr = NuloPorNro(.Item("Bloqueapr"), "")
+                        _CodFunAutoriza = NuloPorNro(.Item("CodFunAutoriza"), "")
+                        _CodPermiso = NuloPorNro(.Item("CodPermiso"), "")
+                        _Nuevo_Producto = CInt(.Item("Nuevo_Producto")) * -1
+                        _Solicitado_bodega = CInt(.Item("Nuevo_Producto")) * -1
+
+                        Dim _Crear_CPr = CInt(.Item("Crear_CPr")) * -1
+                        Dim _Id_CPr = .Item("Id_CPr")
+
+                        _Id_Oferta = .Item("Id_Oferta")
+                        _Es_Padre_Oferta = Convert.ToInt32(.Item("Es_Padre_Oferta"))
+                        _Oferta = .Item("Oferta")
+                        _Padre_Oferta = .Item("Padre_Oferta")
+                        _Aplica_Oferta = Convert.ToInt32(.Item("Aplica_Oferta"))
+                        _Hijo_Oferta = .Item("Hijo_Oferta")
+                        _Cantidad_Oferta = De_Num_a_Tx_01(.Item("Cantidad_Oferta"), False, 5)
+                        _Porcdesc_Oferta = De_Num_a_Tx_01(.Item("Porcdesc_Oferta"), False, 5)
+
+                        If Not String.IsNullOrEmpty(Trim(_Tict)) Then
+
+                            Dim _Uno = 1
+
+                            If _Tict = "D" Then
+                                _Uno = -1
+                            End If
+
+                            If _TipoValor = "N" Then
+                                _CantUd1 = De_Num_a_Tx_01(.Item("ValNetoLinea") * _Uno, False, 5)
+                            Else
+                                _CantUd1 = De_Num_a_Tx_01(.Item("ValBrutoLinea") * _Uno, 0)
+                            End If
+
+                            _CantUd2 = 0
+                            _Caprad2 = 0
+                            _Cafaco = 0
+                            _PrecioNetoUdLista = 0
+                            _PrecioNetoUd = 0
+                            _PrecioBrutoUdLista = 0
+                            _PrecioBrutoUd = 0
+                            _Prct = 1
+                            _PmLinea = 0
+                            _PmSucLinea = 0
+                            _Lincondesp = 1
+                            _NroDscto = 0
+                            _Estado = "C"
+                        Else
+                            _Cafaco = _CantUd1
+                        End If
+
+                        Consulta_sql = "Insert Into " & _Global_BaseBk & "Zw_Prod_Stock (Empresa,Sucursal,Bodega,Codigo)" & vbCrLf &
+                                       "Select '" & _Empresa & "','" & _Sucursal_Linea & "','" & _Bodega_Linea & "','" & _Codigo & "'" & vbCrLf &
+                                       "From MAEPR" & vbCrLf &
+                                       "Where KOPR Not In (Select Codigo From " & _Global_BaseBk & "Zw_Prod_Stock" & Space(1) &
+                                       "Where Empresa = '" & _Empresa & "' And Sucursal = '" & _Sucursal_Linea & "' And Bodega = '" & _Bodega_Linea & "' And" & Space(1) &
+                                       "Codigo = '" & _Codigo & "') And KOPR = '" & _Codigo & "'"
+                        Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                        Comando.Transaction = myTrans
+                        Comando.ExecuteNonQuery()
+
+                        If Not _Stand_by Then
+
+                            If _TipoDoc = "NVV" Then
+
+                                Consulta_sql = "Update " & _Global_BaseBk & "Zw_Prod_Stock Set" & vbCrLf &
+                                               "StComp1 = StComp1 +" & _CantUd1 & "," &
+                                               "StComp2 = StComp2 + " & _CantUd2 & vbCrLf &
+                                               "Where Empresa ='" & _Empresa & "' And Sucursal ='" & _Sucursal_Linea & "' And Bodega ='" & _Bodega_Linea &
+                                               "' And Codigo = '" & _Codigo & "'"
+
+                                Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                                Comando.Transaction = myTrans
+                                Comando.ExecuteNonQuery()
+
+                            End If
+
+                        End If
+
+                        _Descripcion = Replace(_Descripcion, "'", "''")
+
+                        Consulta_sql = "Insert Into " & _Global_BaseBk & "Zw_Casi_DocDet " & vbCrLf &
+                                       "(Id_DocEnc,Empresa,Sucursal,Bodega,UnTrans,Lincondest,NroLinea,Codigo,CodigoProv," &
+                                       "UdTrans,Cantidad,TipoValor,Precio,DescuentoPorc,DescuentoValor,Descripcion," &
+                                       "PrecioNetoUd,PrecioNetoUdLista,PrecioBrutoUd,PrecioBrutoUdLista,Rtu,Ud01PR,CantUd1," &
+                                       "CDespUd1,CaprexUd1,CaprncUd1,CodVendedor,Prct,Tict,Tipr,DsctoNeto,DsctoBruto,Ud02PR," &
+                                       "CantUd2,CDespUd2,CaprexUd2,CaprncUd12,ValVtaDescMax,ValVtaStockInf,CodLista," &
+                                       "DescMaximo,NroDscto,NroImpuestos,PorIva,PorIla,ValIvaLinea,ValIlaLinea,ValSubNetoLinea," &
+                                       "ValNetoLinea,ValBrutoLinea,PmLinea,PmSucLinea,PrecioNetoRealUd1,PrecioNetoRealUd2," &
+                                       "FechaEmision_Linea,FechaRecepcion_Linea," &
+                                       "Idmaeedo_Dori,Idmaeddo_Dori,CantUd1_Dori,CantUd2_Dori,Estado,Emprepa,Tidopa,NudoPa,Endopa,Nulidopa,SubTotal," &
+                                       "StockBodega,UbicacionBod,DsctoRealPorc,DsctoRealValor,DsctoGlobalSuperado,Tiene_Dscto,CantidadCalculo," &
+                                       "Operacion,Potencia,PrecioCalculo,OCCGenerada,Bloqueapr,Observa,CodFunAutoriza," &
+                                       "CodPermiso,Nuevo_Producto,Solicitado_bodega,Moneda,Tipo_Moneda,Tipo_Cambio,Crear_CPr,Id_CPr," &
+                                       "Centro_Costo,Proyecto,Tasadorig," &
+                                       "Id_Oferta,Es_Padre_Oferta,Oferta,Padre_Oferta,Aplica_Oferta,Hijo_Oferta," &
+                                       "Cantidad_Oferta,Porcdesc_Oferta) Values" & vbCrLf &
+                                       "(" & _Id_DocEnc & ",'" & _Empresa & "','" & _Sucursal_Linea & "','" & _Bodega_Linea & "'," & _UnTrans & "," & _Lincondest &
+                                       ",'" & _NroLinea & "','" & _Codigo & "','" & _CodigoProv & "','" & _UdTrans &
+                                       "'," & _Cantidad & ",'" & _TipoValor & "'," & _Precio & "," & _DescuentoPorc &
+                                       "," & _DescuentoValor & ",'" & _Descripcion & "'," & _PrecioNetoUd &
+                                       "," & _PrecioNetoUdLista & "," & _PrecioBrutoUd & "," & _PrecioBrutoUdLista &
+                                       "," & _Rtu & ",'" & _Ud01PR & "'," & _CantUd1 & "," & _CDespUd1 & "," & _CaprexUd1 &
+                                       "," & _CaprncUd1 & ",'" & _CodVendedor & "'," & _Prct & ",'" & _Tict & "','" & _Tipr &
+                                       "'," & _DsctoNeto & "," & _DsctoBruto & ",'" & _Ud02PR & "'," & _CantUd2 &
+                                       "," & _CDespUd2 & "," & _CaprexUd2 & "," & _CaprncUd2 & "," & _ValVtaDescMax &
+                                       "," & _ValVtaStockInf & ",'" & _CodLista & "'," & _DescMaximo & "," & _NroDscto &
+                                       "," & _NroImpuestos & "," & _PorIva & "," & _PorIla & "," & _ValIvaLinea &
+                                       "," & _ValIlaLinea & "," & _ValSubNetoLinea & "," & _ValNetoLinea &
+                                       "," & _ValBrutoLinea & "," & _PmLinea & "," & _PmSucLinea & "," & _PrecioNetoRealUd1 &
+                                       "," & _PrecioNetoRealUd2 & ",'" & _FechaEmision & "','" & _FechaRecepcion &
+                                       "'," & _Idmaeedo_Dori & "," & _Idmaeddo_Dori & "," & _CantUd1_Dori & "," & _CantUd2_Dori &
+                                       ",'" & _Estado & "','" & _Emprepa & "','" & _Tidopa & "','" & _NudoPa & "','" & _Endopa &
+                                       "','" & _Nulidopa & "'," & _SubTotal & "," & _StockBodega & ",'" & Trim(_UbicacionBod) & "'," & _DsctoRealPorc &
+                                       "," & _DsctoRealValor & "," & _DsctoGlobalSuperado & "," & _Tiene_Dscto & "," & _CantidadCalculo &
+                                       ",'" & _Operacion & "'," & _Potencia & "," & _PrecioCalculo & "," & _OCCGenerada &
+                                       ",'" & _Bloqueapr & "','" & _Observa & "','" & _CodFunAutoriza & "','" & _CodPermiso &
+                                       "'," & _Nuevo_Producto & "," & _Solicitado_bodega & ",'" & _Moneda & "','" & _Tipo_Moneda &
+                                       "'," & _Tipo_Cambio & "," & _Crear_CPr & "," & _Id_CPr & ",'" & _Centro_Costo_Linea &
+                                       "','" & _Proyecto & "'," & _Tasadorig_Det &
+                                       "," & _Id_Oferta & "," & _Es_Padre_Oferta & ",'" & _Oferta & "'," & _Padre_Oferta & "," & _Aplica_Oferta & "," & _Hijo_Oferta &
+                                       "," & _Cantidad_Oferta & "," & _Porcdesc_Oferta & ")"
+
+                        Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                        Comando.Transaction = myTrans
+                        Comando.ExecuteNonQuery()
+
+                        Dim _Id_DocDet As Integer
+
+                        Comando = New SqlCommand("SELECT @@IDENTITY AS 'Identity'", cn2)
+                        Comando.Transaction = myTrans
+                        dfd1 = Comando.ExecuteReader()
+                        While dfd1.Read()
+                            _Id_DocDet = dfd1("Identity")
+                        End While
+                        dfd1.Close()
+
+                        If CBool(_Crear_CPr) Then
+
+                            Consulta_sql = "Update " & _Global_BaseBk & "Zw_Prod_SolCreapr Set Id_DocDet = " & _Id_DocDet & vbCrLf &
+                                           "Where Id_CPr = " & _Id_CPr
+                            Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                            Comando.Transaction = myTrans
+                            Comando.ExecuteNonQuery()
+
+                        End If
+
+                    End With
+
+
+                    ' TABLA DE IMPUESTOS
+
+                    'Dim Tbl_Impuestos As DataTable = _Bd_Documento.Tables("Impuestos_Doc")
+
+                    If Not IsNothing(_Tbl_Impuestos) Then
+
+                        If Val(_NroImpuestos) > 0 And String.IsNullOrEmpty(Trim(_Tict)) Then
+
+                            For Each FImpto As DataRow In _Tbl_Impuestos.Rows 'Select("Id = " & Id_Linea)
+
+                                Dim _EstadoImp As DataRowState = FImpto.RowState
+
+                                If Not _EstadoImp = DataRowState.Deleted Then
+
+                                    Dim _Id = FImpto.Item("Id")
+
+                                    If _Id = Id_Linea Then
+
+                                        Dim _Poimli As String = De_Num_a_Tx_01(FImpto.Item("Poimli").ToString, False, 5)
+                                        Dim _Koimli As String = FImpto.Item("Koimli").ToString
+                                        Dim _Vaimli = De_Num_a_Tx_01(FImpto.Item("Vaimli").ToString, False, 5)
+
+                                        Consulta_sql = "INSERT INTO " & _Global_BaseBk & "Zw_Casi_DocImp (Id_DocEnc,Nulido,Koimli,Poimli,Vaimli,Lilg) VALUES " & vbCrLf &
+                                                       "(" & _Id_DocEnc & ",'" & _Nulido & "','" & _Koimli & "'," & _Poimli & "," & _Vaimli & ",'')"
+
+                                        Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                                        Comando.Transaction = myTrans
+                                        Comando.ExecuteNonQuery()
+
+                                        '-- 3RA TRANSACCION--------------------------------------------------------------------
+
+                                    End If
+
+                                End If
+
+                            Next
+
+                        End If
+
+                    End If
+
+                    ' TABLA DE DESCUENTOS
+                    'Dim _Tbl_Descuentos As DataTable = _Bd_Documento.Tables("Descuentos_Doc")
+
+                    If IsNothing(_Tbl_Descuentos) Then
+                        _Nudtli = 0
+                    Else
+                        _Nudtli = _Tbl_Descuentos.Rows.Count
+
+                        If Val(_Nudtli) > 0 And String.IsNullOrEmpty(Trim(_Tict)) Then
+
+                            For Each FDscto As DataRow In _Tbl_Descuentos.Rows
+
+                                Dim _EstadoDscto As DataRowState = FDscto.RowState
+
+                                If Not _EstadoDscto = DataRowState.Deleted Then
+
+                                    Dim _Id = FDscto.Item("Id")
+
+                                    If _Id = Id_Linea Then
+
+                                        Dim _Podt = De_Num_a_Tx_01(FDscto.Item("Podt").ToString, False, 5)
+                                        Dim _Vadt = De_Num_a_Tx_01(FDscto.Item("Vadt").ToString, False, 5)
+
+                                        Consulta_sql = "INSERT INTO " & _Global_BaseBk & "Zw_Casi_DocDsc (Id_DocEnc,Nulido,Kodt,Podt,Vadt)" & vbCrLf &
+                                           "values (" & _Id_DocEnc & ",'" & _NroLinea & "','D_SIN_TIPO'," & _Podt & "," & _Vadt & ")"
+
+                                        Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                                        Comando.Transaction = myTrans
+                                        Comando.ExecuteNonQuery()
+
+                                        '-- 4TA TRANSACCION--------------------------------------------------------------------
+
+                                    End If
+
+                                End If
+
+                            Next
+
+                        End If
+
+                    End If
+
+                    Contador += 1
+
+                End If
+
+            Next
+
+            If _Nuvedo = 0 Then _Nuvedo = 1
+
+            If _EsAjuste Then
+                _Marca = 1 ' Generalmente se marcan las GRI o GDI que son por ajuste
+                _SubTido = "AJU" ' Generalmente se Marcan las Guias de despacho o recibo
+                '_HH = 23 : _MM = 59 : _SS = 59
+            Else
+                _Marca = String.Empty
+                _SubTido = String.Empty
+            End If
+
+            Dim _HoraGrab = Hora_Grab_fx(_EsAjuste)
+
+            Dim _Espgdo As String = "P"
+            If _Tido = "OCC" Then _Espgdo = "S"
+
+            ' HAY QUE PONER EL CAMPO TIPO DE MONEDA  "TIMODO"
+            'Consulta_sql = "UPDATE " & _Global_BaseBk & "Zw_DocEnc SET Sucursal = '" & _Sucursal_Doc & "',TIGEDO='I',SUDO='" & _Sudo &
+            '               "',FechaEmision='" & _FechaEmision & "',CodFuncionario='" & _CodFuncionario & "',ESPGDO='" & _Espgdo & "',CAPRCO=" & _Caprco &
+            '               ",CAPRAD=" & _Caprad & ",MEARDO = '" & _Meardo & "',MODO = '" & _Modo &
+            '               "',TIMODO = '" & _Timodo & "',TAMODO = " & _Tamodo & ",VAIVDO = " & _Vaivdo & ",VAIMDO = " & _Vaimdo & vbCrLf &
+            '               ",VANEDO = " & _Vanedo & ",VABRDO = " & _Vabrdo & ",FE01VEDO = '" & _Fe01vedo &
+            '               "',FEULVEDO = '" & _Feulvedo & "',NUVEDO = " & _Nuvedo & ",FEER = '" & _Feer &
+            '               "',KOTU = '1',LCLV = NULL,LAHORA = GETDATE(), DESPACHO = 1,HORAGRAB = " & _HoraGrab &
+            '               ",FECHATRIB = NULL,NUMOPERVEN = 0,FLIQUIFCV = '" & _Feemdo & "',SUBTIDO = '" & _Subtido &
+            '               "',MARCA = '" & _Marca & "',ESDO = '',NUDONODEFI = " & CInt(_Es_ValeTransitorio) &
+            '               ",TIDOELEC = " & CInt(_Es_Documento_Electronico) & ",LUVTDO = '" & _Luvtdo & "'" & vbCrLf &
+            '               "WHERE IDMAEEDO=" & _Idmaeedo
+            'Empresa,TipoDoc,NroDocumento,CodEntidad,CodSucEntidad
+
+            Consulta_sql = "Update " & _Global_BaseBk & "Zw_Casi_DocEnc SET" & Environment.NewLine &
+                           "Modalidad = '" & _Modalidad & "'" & Environment.NewLine &
+                           ",Sucursal = '" & _Sucursal_Doc & "'" & Environment.NewLine &
+                           ",Nombre_Entidad = '" & _Nombre_Entidad & "'" & Environment.NewLine &
+                           ",FechaEmision = '" & _FechaEmision & "'" & Environment.NewLine &
+                           ",Fecha_1er_Vencimiento = '" & _Fecha_1er_Vencimiento & "'" & Environment.NewLine &
+                           ",FechaUltVencimiento = '" & _FechaUltVencimiento & "'" & Environment.NewLine &
+                           ",FechaRecepcion = '" & _FechaRecepcion & "'" & Environment.NewLine &
+                           ",Cuotas = '" & _Cuotas & "'" & Environment.NewLine &
+                           ",Dias_1er_Vencimiento = '" & _Dias_1er_Vencimiento & "'" & Environment.NewLine &
+                           ",Dias_Vencimiento = '" & _Dias_Vencimiento & "'" & Environment.NewLine &
+                           ",ListaPrecios = '" & _ListaPrecios & "'" & Environment.NewLine &
+                           ",CodEntidadFisica = '" & _CodEntidadFisica & "'" & Environment.NewLine &
+                           ",CodSucEntidadFisica = '" & _CodSucEntidadFisica & "'" & Environment.NewLine &
+                           ",Nombre_Entidad_Fisica = '" & _Nombre_Entidad_Fisica & "'" & Environment.NewLine &
+                           ",Contacto_Ent = '" & _Contacto_Ent & "'" & Environment.NewLine &
+                           ",CodFuncionario = '" & _CodFuncionario & "'" & Environment.NewLine &
+                           ",NomFuncionario = '" & _NomFuncionario & "'" & Environment.NewLine &
+                           ",Centro_Costo = '" & _Centro_Costo & "'" & Environment.NewLine &
+                           ",Moneda_Doc = '" & _Moneda_Doc & "'" & Environment.NewLine &
+                           ",Valor_Dolar = " & _Valor_Dolar & Environment.NewLine &
+                           ",TotalNetoDoc = " & _TotalNetoDoc & Environment.NewLine &
+                           ",TotalIvaDoc = " & _TotalIvaDoc & Environment.NewLine &
+                           ",TotalIlaDoc = " & _TotalIlaDoc & Environment.NewLine &
+                           ",TotalBrutoDoc = " & _TotalBrutoDoc & Environment.NewLine &
+                           ",CantTotal = " & _CantTotal & Environment.NewLine &
+                           ",CantDesp = " & _CantDesp & Environment.NewLine &
+                           ",DocEn_Neto_Bruto = '" & _DocEn_Neto_Bruto & "'" & Environment.NewLine &
+                           ",Es_ValeTransitorio = " & CInt(_Es_ValeTransitorio) & Environment.NewLine &
+                           ",Es_Electronico = " & _Es_Electronico & Environment.NewLine &
+                           ",TipoMoneda = '" & _TipoMoneda & "'" & Environment.NewLine &
+                           ",Vizado = '" & _Vizado & "'" & Environment.NewLine &
+                           ",Fun_Auto_Deuda_Ven = '" & _Fun_Auto_Deuda_Ven & "'" & Environment.NewLine &
+                           ",Fun_Auto_Stock_Ins = '" & _Fun_Auto_Stock_Ins & "'" & Environment.NewLine &
+                           ",Fun_Auto_Cupo_Exe = '" & _Fun_Auto_Cupo_Exe & "'" & Environment.NewLine &
+                           ",Fun_Auto_Sol_Compra = '" & _Fun_Auto_Sol_Compra & "'" & Environment.NewLine &
+                           ",SubTido = '" & _SubTido & "'" & Environment.NewLine &
+                           ",Reserva_NroOCC = " & _Reserva_NroOCC & Environment.NewLine &
+                           ",Reserva_Idmaeedo = " & _Reserva_Idmaeedo & Environment.NewLine &
+                           "Where Id_DocEnc = " & _Id_DocEnc
+
+            Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+            Comando.Transaction = myTrans
+            Comando.ExecuteNonQuery()
+
+            '=========================================== OBSERVACIONES ==================================================================
+
+            'Dim Tbl_Observaciones As DataTable = _Bd_Documento.Tables("Observaciones_Doc")
+
+            With _Tbl_Observaciones
+
+                Dim _Observaciones As String = .Rows(0).Item("Observaciones").ToString.Trim
+                Dim _Forma_pago As String = .Rows(0).Item("Forma_pago").ToString.Trim
+                Dim _Orden_compra As String = .Rows(0).Item("Orden_compra").ToString.Trim
+
+                Dim _Placa As String = .Rows(0).Item("Placa").ToString.Trim
+                Dim _CodRetirador As String = .Rows(0).Item("CodRetirador").ToString.Trim
+
+                For i = 0 To 34
+
+                    Dim Campo As String = "Obs" & i + 1
+                    Obs(i) = .Rows(0).Item(Campo)
+
+                Next
+
+                Consulta_sql = "Insert Into " & _Global_BaseBk & "Zw_Casi_DocObs (Id_DocEnc,Observaciones,Forma_pago,Orden_compra,Obs1," &
+                               "Obs2,Obs3,Obs4,Obs5,Obs6,Obs7,Obs8,Obs9,Obs10," &
+                               "Obs11,Obs12,Obs13,Obs14,Obs15,Obs16,Obs17,Obs18,Obs19,Obs20,Obs21,Obs22,Obs23,Obs24,Obs25,Obs26," &
+                               "Obs27,Obs28,Obs29,Obs30,Obs31,Obs32,Obs33,Obs34,Obs35,Placa,CodRetirador) Values " & vbCrLf &
+                               "(" & _Id_DocEnc & ",'" & _Observaciones & "','" & _Forma_pago & "','" & _Orden_compra &
+                               "','" & Obs(0) & "','" & Obs(1) & "','" & Obs(2) & "','" & Obs(3) & "','" & Obs(4) & "','" & Obs(5) &
+                               "','" & Obs(6) & "','" & Obs(7) & "','" & Obs(8) & "','" & Obs(9) & "','" & Obs(10) &
+                               "','" & Obs(11) & "','" & Obs(12) & "','" & Obs(13) & "','" & Obs(14) & "','" & Obs(15) &
+                               "','" & Obs(16) & "','" & Obs(17) & "','" & Obs(18) & "','" & Obs(19) & "','" & Obs(20) &
+                               "','" & Obs(21) & "','" & Obs(22) & "','" & Obs(23) & "','" & Obs(24) & "','" & Obs(25) &
+                               "','" & Obs(26) & "','" & Obs(27) & "','" & Obs(28) & "','" & Obs(29) & "','" & Obs(30) &
+                               "','" & Obs(31) & "','" & Obs(32) & "','" & Obs(33) & "','" & Obs(34) & "','" & _Placa & "','" & _CodRetirador & "')"
+
+
+                Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                Comando.Transaction = myTrans
+                Comando.ExecuteNonQuery()
+
+            End With
+            ' ====================================================================================================================================
+
+            If Not _Stand_by Then
+
+                'Dim _Tbl_Permisos As DataTable = _Bd_Documento.Tables("Permisos_Doc")
+
+                Consulta_sql = String.Empty
+
+                If Not IsNothing(_Tbl_Permisos) Then
+
+                    For Each _Fila As DataRow In _Tbl_Permisos.Rows
+
+                        Dim _CodPermiso_ = _Fila.Item("CodPermiso")
+                        Dim _DescripcionPermiso = _Fila.Item("DescripcionPermiso")
+                        Dim _Necesita_Permiso = Convert.ToInt32(_Fila.Item("Necesita_Permiso"))
+                        Dim _Autorizado = Convert.ToInt32(_Fila.Item("Autorizado"))
+                        Dim _CodFuncionario_Autoriza = _Fila.Item("CodFuncionario_Autoriza")
+                        Dim _NomFuncionario_Autoriza = _Fila.Item("NomFuncionario_Autoriza")
+                        Dim _NroRemota = _Fila.Item("NroRemota")
+                        Dim _Permiso_Presencial = Convert.ToInt32(_Fila.Item("Permiso_Presencial"))
+                        Dim _Solicitado_Por_Cadena = Convert.ToInt32(_Fila.Item("Solicitado_Por_Cadena"))
+
+                        If _Necesita_Permiso Then
+
+                            Consulta_sql += "Insert Into " & _Global_BaseBk & "Zw_Casi_DocPer (Id_DocEnc,CodPermiso,DescripcionPermiso,Necesita_Permiso,Autorizado," &
+                                    "CodFuncionario_Autoriza,NomFuncionario_Autoriza,NroRemota,Permiso_Presencial,Solicitado_Por_Cadena) Values 
+                                (" & _Id_DocEnc & ",'" & _CodPermiso_ & "','" & _DescripcionPermiso & "'," & _Necesita_Permiso & "," & _Autorizado & "," &
+                                    "'" & _CodFuncionario_Autoriza & "','" & _NomFuncionario_Autoriza &
+                                    "','" & _NroRemota & "'," & _Permiso_Presencial & "," & _Solicitado_Por_Cadena & ")" & Environment.NewLine
+
+                        End If
+
+                    Next
+
+                    Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                    Comando.Transaction = myTrans
+                    Comando.ExecuteNonQuery()
+
+                End If
+
+                Consulta_sql = Fx_Referencias_DTE(_Id_DocEnc, _Tbl_Referencias_DTE, True)
+
+                If Not String.IsNullOrEmpty(Consulta_sql) Then
+
+                    Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                    Comando.Transaction = myTrans
+                    Comando.ExecuteNonQuery()
+
+                End If
+
+            End If
+
+            ' ========================================== INCORPORAR EVENTOS =====================================================================
+
+            Consulta_sql = Fx_Tag_Mevento(_Id_DocEnc, _Tbl_Mevento_Edo)
+
+            If Not String.IsNullOrEmpty(Consulta_sql) Then
+
+                Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                Comando.Transaction = myTrans
+                Comando.ExecuteNonQuery()
+
+            End If
+
+            If _Sql.Fx_Existe_Tabla(_Global_BaseBk & "Zw_Casi_DocArc") Then
+
+                'Dim _NombreEquipo = _Global_Row_EstacionBk.Item("NombreEquipo")
+
+                Consulta_sql = "Update " & _Global_BaseBk & "Zw_Casi_DocArc Set Id_DocEnc = " & _Id_DocEnc & ",En_Construccion = 0,NombreEquipo = '' Where NombreEquipo = '" & _NombreEquipo & "'"
+                Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                Comando.Transaction = myTrans
+                Comando.ExecuteNonQuery()
+
+            End If
+
+            If _Reserva_NroOCC Then
+
+                Dim _Rs_Id_DocEnc As Integer = _Tbl_Encabezado.Rows(0).Item("Id_DocEnc")
+
+                Consulta_sql = "Delete " & _Global_BaseBk & "Zw_Casi_DocEnc Where Id_DocEnc = " & _Rs_Id_DocEnc & vbCrLf &
+                               "Delete " & _Global_BaseBk & "Zw_Casi_DocObs Where Id_DocEnc = " & _Rs_Id_DocEnc
+                Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                Comando.Transaction = myTrans
+                Comando.ExecuteNonQuery()
+
+            End If
+
+            'Throw New System.Exception("An exception has occurred.")
+
+            myTrans.Commit()
+            SQL_ServerClass.Sb_Cerrar_Conexion(cn2)
+
+            Return _Id_DocEnc
+
+        Catch ex As Exception
+
+            'Dim _Erro_VB As String = ex.Message & vbCrLf & ex.StackTrace & vbCrLf &
+            '                         "Código: " & _Koprct
+            'Clipboard.SetText(_Erro_VB)
+
+            'My.Computer.FileSystem.WriteAllText("ArchivoSalida", ex.Message & vbCrLf & ex.StackTrace, False)
+            'MessageBoxEx.Show(ex.Message, "Error", Windows.Forms.MessageBoxButtons.OK, Windows.Forms.MessageBoxIcon.Stop)
+            'myTrans.Rollback()
+
+            'MessageBoxEx.Show("Transaccion desecha", "Problema", Windows.Forms.MessageBoxButtons.OK, Windows.Forms.MessageBoxIcon.Stop)
+            'SQL_ServerClass.Sb_Cerrar_Conexion(cn2)
+            Return 0
+        End Try
+
+    End Function
+
+    Private Function Fx_Referencias_DTE(_Id_Doc As Integer,
+                                        _Tbl_Referencias_DTE As DataTable,
+                                        _Kasi As Boolean) As String
+
+        Dim _SqlQuery = String.Empty
+
+        If Not IsNothing(_Tbl_Referencias_DTE) Then
+
+            For Each _Fila As DataRow In _Tbl_Referencias_DTE.Rows
+
+                Dim _Estado As DataRowState = _Fila.RowState
+
+                If Not _Estado = DataRowState.Deleted Then
+
+                    Dim _Tido = _Fila.Item("Tido")
+                    Dim _Nudo = _Fila.Item("Nudo")
+                    Dim _NroLinRef = _Fila.Item("NroLinRef")
+                    Dim _TpoDocRef = _Fila.Item("TpoDocRef")
+                    Dim _FolioRef = _Fila.Item("FolioRef")
+                    Dim _FchRef = Format(_Fila.Item("FchRef"), "yyyyMMdd")
+                    Dim _CodRef = _Fila.Item("CodRef")
+                    Dim _RUTOt = _Fila.Item("RUTOt")
+                    Dim _IdAdicOtr = _Fila.Item("IdAdicOtr")
+                    Dim _RazonRef = _Fila.Item("RazonRef")
+
+                    _SqlQuery += "Insert Into " & _Global_BaseBk & "Zw_Referencias_Dte " &
+                                 "(Id_Doc,Tido,Nudo,NroLinRef,TpoDocRef,FolioRef,RUTOt,IdAdicOtr,FchRef,CodRef,RazonRef, Kasi)
+                              Values
+                              (" & _Id_Doc & ",'" & _Tido & "','" & _Nudo & "'," & _NroLinRef & "," & _TpoDocRef &
+                                  ",'" & _FolioRef & "','" & _RUTOt & "','" & _IdAdicOtr & "','" & _FchRef & "'," & _CodRef & ",'" & _RazonRef & "'," & Convert.ToInt32(_Kasi) & ")" & Environment.NewLine
+
+                End If
+
+            Next
+
+        End If
+
+        Return _SqlQuery
+
+    End Function
+
+    Private Function Fx_Tag_Mevento(_Id_DocEnc As Integer, _Tbl_Mevento As DataTable) As String
+
+        Dim _SqlQuery = String.Empty
+
+        If Not IsNothing(_Tbl_Mevento) Then
+
+            For Each _Fila As DataRow In _Tbl_Mevento.Rows
+
+                Dim _Archirve = _Fila.Item("ARCHIRVE")
+                Dim _Kofu = _Fila.Item("KOFU")
+                Dim _Fevento = _Fila.Item("FEVENTO")
+                Dim _Kotabla = _Fila.Item("KOTABLA")
+                Dim _Kocarac = _Fila.Item("KOCARAC")
+                Dim _Nokocarac = _Fila.Item("NOKOCARAC")
+                Dim _Archise = _Fila.Item("ARCHIRSE")
+                Dim _Idrse = _Fila.Item("IDRSE")
+                Dim _Fecharef = _Fila.Item("FECHAREF")
+                Dim _HoraGrab = _Fila.Item("HORAGRAB")
+                Dim _Link = _Fila.Item("LINK")
+                Dim _Kofudest = _Fila.Item("KOFUDEST")
+
+                _SqlQuery += "Insert Into " & _Global_BaseBk & "Zw_Casi_DocTag (Id_DocEnc,Archirve,Idrve,Kofu,Fevento,Kotabla,Kocarac,Nokocarac,Archirse,Idrse,Horagrab,Fecharef,Link,Kofudest)
+                              Values 
+                              (" & _Id_DocEnc & ",'" & _Archirve & "',0,'" & _Kofu & "',Getdate(),'" & _Kotabla & "','" & _Kocarac & "','" & _Nokocarac &
+                              "','" & _Archise & "'," & _Idrse & "," & _HoraGrab & ",Null,'" & _Link & "','" & _Kofudest & "')" & Environment.NewLine
+
+            Next
+
+        End If
+
+        Return _SqlQuery
 
     End Function
 

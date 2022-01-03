@@ -1,12 +1,8 @@
-﻿Imports System.Web.Services
-Imports System.Web.Services.Protocols
-Imports System.ComponentModel
-Imports Newtonsoft.Json
-
-Imports System.Web
-Imports System.Web.Script.Services
+﻿Imports System.ComponentModel
 Imports System.Web.Script.Serialization
-Imports Newtonsoft.Json.Linq
+Imports System.Web.Script.Services
+Imports System.Web.Services
+Imports Newtonsoft.Json
 
 ' Para permitir que se llame a este servicio web desde un script, usando ASP.NET AJAX, quite la marca de comentario de la siguiente línea.
 ' <System.Web.Script.Services.ScriptService()> _
@@ -893,7 +889,6 @@ Public Class Ws_BakApp
         oSW.WriteLine(Cuerpo)
         oSW.Close()
 
-
         Dim dataSet As DataSet = JsonConvert.DeserializeObject(Of DataSet)(_Json2)
 
         _Sql = New Class_SQL
@@ -920,10 +915,175 @@ Public Class Ws_BakApp
 
     End Sub
 
+    '#End Region
+
+    'Dim _Existe = System.IO.File.Exists(RutaArchivo)
+
+    'If Not _Existe Then
+    '    Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'' As Error"
+    '    _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+    'Else
+    '    Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'" & Replace(_Sql.Pro_Error, "'", "''") & "' As Error"
+    '    _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+    'End If
+
+    'Dim js As New JavaScriptSerializer
+
+    'Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+    'Context.Response.ContentType = "application/json"
+    'Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+    'Context.Response.Flush()
+
+    'Context.Response.End()
+
+    'End Sub
+
+
+    <WebMethod(True)>
+    Public Sub Sb_CreaDocumentoJsonBakapp(_EncabezadoJs As String, _DestalleJs As String, _DescuentosJs As String, _ObservacionesJs As String)
+
+        '_Json = Replace(_Json, """", "'")
+        '_Json = Replace(_Json, "\/", "/")
+        _EncabezadoJs = _EncabezadoJs.Trim
+        'Dim _Json2 = Mid(_Json, 2, _Json.Length - 1)
+        '_Json2 = Mid(_Json2, 1, _Json2.Length - 1)
+
+        'Dim RutaArchivo As String = "D:\JsonB4Android\" & _NombreTabla & ".json"
+        'Dim Cuerpo = _Json
+
+        'Dim oSW As New System.IO.StreamWriter(RutaArchivo)
+
+        'oSW.WriteLine(Cuerpo)
+        'oSW.Close()
+
+        Dim _Ds_Matriz_Documentos As New Ds_Matriz_Documentos
+
+        _Ds_Matriz_Documentos.Clear()
+        _Ds_Matriz_Documentos = New Ds_Matriz_Documentos
+
+        Dim _Json = Mid(_EncabezadoJs, 2, _EncabezadoJs.Length - 1)
+        _Json = Mid(_Json, 1, _Json.Length - 1)
+
+        Dim _Ds As DataSet = JsonConvert.DeserializeObject(Of DataSet)(_Json)
+        Dim _RowEncabezado As DataRow = _Ds.Tables(0).Rows(0)
+
+        With _RowEncabezado
+
+            Dim _TblEncabezado As DataTable = _Ds_Matriz_Documentos.Tables("Encabezado_Doc")
+
+            Dim NewFila As DataRow
+            NewFila = _TblEncabezado.NewRow
+
+            With NewFila
+
+                .Item("Id_DocEnc") = 0
+                .Item("Post_Venta") = False
+                .Item("Tipo_Documento") = _RowEncabezado.Item("TipoDoc")
+                .Item("Modalidad") = _RowEncabezado.Item("Modalidad")
+                .Item("Empresa") = _RowEncabezado.Item("Empresa")
+                .Item("Sucursal") = _RowEncabezado.Item("Sucursal")
+                .Item("TipoDoc") = _RowEncabezado.Item("TipoDoc")
+                .Item("SubTido") = _RowEncabezado.Item("Subtido")
+                .Item("NroDocumento") = _RowEncabezado.Item("NroDocumento")
+                .Item("CodEntidad") = _RowEncabezado.Item("CodEntidad")
+                .Item("CodSucEntidad") = _RowEncabezado.Item("CodSucEntidad")
+                .Item("CodSucEntidadFisica") = _RowEncabezado.Item("CodSucEntidadFisica")
+                .Item("CodSucEntidadFisica") = _RowEncabezado.Item("CodSucEntidadFisica")
+                .Item("ListaPrecios") = _RowEncabezado.Item("ListaPrecios")
+                .Item("CodFuncionario") = _RowEncabezado.Item("CodFuncionario")
+                .Item("NomFuncionario") = _RowEncabezado.Item("NomFuncionario")
+                .Item("Es_Electronico") = CBool(_RowEncabezado.Item("Es_Electronico"))
+
+                .Item("FechaEmision") = Fx_FechaStr2Datetime(_RowEncabezado.Item("FechaEmision"))
+                .Item("Fecha_1er_Vencimiento") = Fx_FechaStr2Datetime(_RowEncabezado.Item("Fecha_1er_Vencimiento"))
+                .Item("FechaUltVencimiento") = Fx_FechaStr2Datetime(_RowEncabezado.Item("FechaUltVencimiento"))
+                .Item("FechaRecepcion") = Fx_FechaStr2Datetime(_RowEncabezado.Item("FechaRecepcion"))
+                .Item("FechaMaxRecepcion") = .Item("FechaRecepcion") 'Fx_FechaStr2Datetime(_RowEncabezado.Item("FechaMaxRecepcion"))
+
+                .Item("Cuotas") = _RowEncabezado.Item("Cuotas")
+
+                .Item("Dias_1er_Vencimiento") = _RowEncabezado.Item("Dias_1er_Vencimiento")
+                .Item("Dias_Vencimiento") = _RowEncabezado.Item("Dias_Vencimiento")
+                .Item("Moneda_Doc") = _RowEncabezado.Item("Moneda_Doc")
+                .Item("Valor_Dolar") = _RowEncabezado.Item("Valor_Dolar")
+                .Item("DocEn_Neto_Bruto") = _RowEncabezado.Item("DocEn_Neto_Bruto")
+                .Item("TipoMoneda") = _RowEncabezado.Item("TipoMoneda")
+                .Item("Tasadorig_Doc") = _RowEncabezado.Item("Tasadorig_Doc")
+                .Item("Centro_Costo") = _RowEncabezado.Item("Centro_Costo")
+                .Item("Contacto_Ent") = _RowEncabezado.Item("Contacto_Ent")
+                .Item("TotalNetoDoc") = _RowEncabezado.Item("TotalNetoDoc")
+                .Item("TotalIvaDoc") = _RowEncabezado.Item("TotalIvaDoc")
+                .Item("TotalIlaDoc") = _RowEncabezado.Item("TotalIlaDoc")
+                .Item("TotalBrutoDoc") = _RowEncabezado.Item("TotalBrutoDoc")
+                .Item("CantTotal") = _RowEncabezado.Item("CantTotal")
+                .Item("CantDesp") = _RowEncabezado.Item("CantDesp")
+                .Item("Vizado") = CBool(_RowEncabezado.Item("Vizado"))
+                .Item("Idmaeedo_Origen") = 0 '_RowEncabezado.Item("Idmaeedo_Origen")
+                .Item("CodUsuario_Permiso_Dscto") = String.Empty ' _RowEncabezado.Item("CodUsuario_Permiso_Dscto")
+                .Item("Fun_Auto_Deuda_Ven") = _RowEncabezado.Item("Fun_Auto_Deuda_Ven")
+                .Item("Fun_Auto_Stock_Ins") = _RowEncabezado.Item("Fun_Auto_Stock_Ins")
+                .Item("Fun_Auto_Cupo_Exe") = _RowEncabezado.Item("Fun_Auto_Cupo_Exe")
+                .Item("Fun_Auto_Fecha_Des") = _RowEncabezado.Item("Fun_Auto_Fecha_Des")
+
+                .Item("Stand_by") = False
+                .Item("Libro") = _RowEncabezado.Item("Libro")
+                .Item("Fecha_Tributaria") = Fx_FechaStr2Datetime(_RowEncabezado.Item("Fecha_Tributaria"))
+
+                .Item("Reserva_NroOCC") = False
+                .Item("Reserva_Idmaeedo") = 0
+
+                .Item("Bodega_Destino") = _RowEncabezado.Item("Bodega_Destino")
+                .Item("TotalKilos") = 0
+
+                .Item("MinKgDesp") = 0
+                .Item("MinNetoDesp") = 0
+
+                _TblEncabezado.Rows.Add(NewFila)
+
+            End With
+
+        End With
+
+        _Sql = New Class_SQL
+        Dim _Ds2 As DataSet
+
+        Dim _Existe = System.IO.File.Exists(True)
+
+        If Not _Existe Then
+            Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'' As Error"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        Else
+            Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'" & Replace(_Sql.Pro_Error, "'", "''") & "' As Error"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End If
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds2, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
+    ''' <summary>
+    ''' Convierte la fecha desde un string en datetime
+    ''' </summary>
+    ''' <param name="_Fecha"></param>
+    ''' <returns></returns>
+    Function Fx_FechaStr2Datetime(_Fecha As String) As DateTime
+
+        Dim _Fecha_Datetime As DateTime
+
+        _Fecha_Datetime = DateTime.ParseExact(_Fecha, "MM/dd/yyyy", Globalization.CultureInfo.CurrentCulture, Globalization.DateTimeStyles.None)
+
+        Return _Fecha_Datetime
+
+    End Function
+
+
 #End Region
-
-
-
-
 
 End Class

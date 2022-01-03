@@ -105,6 +105,12 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Clases y Funciones BaKapp\Clases\DataSet\Ds_Matriz_Documentos.xsc">
+      <DependentUpon>Ds_Matriz_Documentos.xsd</DependentUpon>
+    </Content>
+    <Content Include="Clases y Funciones BaKapp\Clases\DataSet\Ds_Matriz_Documentos.xss">
+      <DependentUpon>Ds_Matriz_Documentos.xsd</DependentUpon>
+    </Content>
     <Content Include="Recursos\Consultas Sql\Entidades\SqlQuery_Datos_Entidad.sql" />
     <Content Include="Recursos\Consultas Sql\Productos\SqlQuery_Traer_Producto.sql" />
     <Content Include="Service1.svc" />
@@ -114,6 +120,15 @@
   <ItemGroup>
     <Compile Include="Clases y Funciones BaKapp\Clases\Clase_Crear_Documento.vb" />
     <Compile Include="Clases y Funciones BaKapp\Clases\Class_Llave_Equipo.vb" />
+    <Compile Include="Clases y Funciones BaKapp\Clases\DataSet\Ds_Matriz_Documentos.Designer.vb">
+      <DependentUpon>Ds_Matriz_Documentos.xsd</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Clases y Funciones BaKapp\Clases\DataSet\Ds_Matriz_Documentos.vb">
+      <SubType>code</SubType>
+      <DependentUpon>Ds_Matriz_Documentos.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Clases y Funciones BaKapp\Clases\Eliminar Anular Documento\Clase_EliminarAnular_Documento.vb" />
     <Compile Include="Clases y Funciones BaKapp\Clases\Class_Conectar_Base_BakApp.vb" />
     <Compile Include="Clases y Funciones BaKapp\Clases\Class_SQL.vb" />
@@ -184,6 +199,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Clases y Funciones BaKapp\Clases\DataSet\Ds_Matriz_Documentos.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>Ds_Matriz_Documentos.Designer.vb</LastGenOutput>
+    </None>
     <None Include="Clases y Funciones BaKapp\Clases\Eliminar Anular Documento\Recursos Sql\Revisar_sutentatorio.sql" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>

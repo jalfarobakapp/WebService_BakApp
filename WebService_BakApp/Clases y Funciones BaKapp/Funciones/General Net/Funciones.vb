@@ -1132,7 +1132,7 @@ Error_Numero:
 
     End Function
 
-    
+
     Function Fx_TraeClaveRD(ByVal Texto As String) As String
 
         Dim valorAscii As Integer
@@ -1165,6 +1165,30 @@ Error_Numero:
         Return PassEncriptado
 
     End Function
+
+    Public Function Hora_Grab_fx(_HoraAlFinalDelDia As Boolean) As String
+
+        Dim _HH_sistem As Date
+
+        _HH_sistem = FechaDelServidor()
+
+        Dim _HH, _MM, _SS As Double
+
+        _HH = _HH_sistem.Hour
+        _MM = _HH_sistem.Minute
+        _SS = _HH_sistem.Second
+
+        If _HoraAlFinalDelDia Then
+            _HH = 23 : _MM = 59 : _SS = 59
+        End If
+
+        Dim _HoraGrab As String = Math.Round((_HH * 3600) + (_MM * 60) + _SS, 0)
+
+        Return _HoraGrab
+
+    End Function
+
+
 
 End Module
 

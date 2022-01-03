@@ -422,4 +422,26 @@ Public Class Class_SQL
 
     End Function
 
+    Function Fx_Existe_Tabla(ByVal _Tabla As String) As Boolean
+
+        Dim _ConsultaSql As String
+
+        If _Tabla.Contains(_Global_BaseBk) Then
+
+            _Tabla = Replace(_Tabla, _Global_BaseBk, "")
+            _ConsultaSql = "USE " & Replace(_Global_BaseBk, ".dbo.", "") & "
+                            SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" & _Tabla & "'"
+
+        Else
+
+            _ConsultaSql = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" & _Tabla & "'"
+
+        End If
+
+        Dim _Tbl As DataTable = Fx_Get_Tablas(_ConsultaSql)
+
+        Return _Tbl.Rows.Count
+
+    End Function
+
 End Class
