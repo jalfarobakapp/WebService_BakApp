@@ -942,107 +942,141 @@ Public Class Ws_BakApp
     <WebMethod(True)>
     Public Sub Sb_CreaDocumentoJsonBakapp(_EncabezadoJs As String, _DestalleJs As String, _DescuentosJs As String, _ObservacionesJs As String)
 
-        '_Json = Replace(_Json, """", "'")
-        '_Json = Replace(_Json, "\/", "/")
         _EncabezadoJs = _EncabezadoJs.Trim
-        'Dim _Json2 = Mid(_Json, 2, _Json.Length - 1)
-        '_Json2 = Mid(_Json2, 1, _Json2.Length - 1)
-
-        'Dim RutaArchivo As String = "D:\JsonB4Android\" & _NombreTabla & ".json"
-        'Dim Cuerpo = _Json
-
-        'Dim oSW As New System.IO.StreamWriter(RutaArchivo)
-
-        'oSW.WriteLine(Cuerpo)
-        'oSW.Close()
+        _DestalleJs = _DestalleJs.Trim
+        _ObservacionesJs = _ObservacionesJs.Trim
 
         Dim _Ds_Matriz_Documentos As New Ds_Matriz_Documentos
 
         _Ds_Matriz_Documentos.Clear()
         _Ds_Matriz_Documentos = New Ds_Matriz_Documentos
 
-        Dim _Json = Mid(_EncabezadoJs, 2, _EncabezadoJs.Length - 1)
-        _Json = Mid(_Json, 1, _Json.Length - 1)
+        Fx_LlenarDatos(_Ds_Matriz_Documentos, _EncabezadoJs, "Encabezado_Doc")
+        _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Post_Venta") = False
+        _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Tipo_Documento") = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
 
-        Dim _Ds As DataSet = JsonConvert.DeserializeObject(Of DataSet)(_Json)
-        Dim _RowEncabezado As DataRow = _Ds.Tables(0).Rows(0)
+        Fx_LlenarDatos(_Ds_Matriz_Documentos, _DestalleJs, "Detalle_Doc")
+        Fx_LlenarDatos(_Ds_Matriz_Documentos, _DescuentosJs, "Descuentos_Doc")
+        Fx_LlenarDatos(_Ds_Matriz_Documentos, _ObservacionesJs, "Observaciones_Doc")
 
-        With _RowEncabezado
+        Dim _Funcionario As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("CodFuncionario")
+        _Global_BaseBk = "BAKAPP_VH.dbo."
+        Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
 
-            Dim _TblEncabezado As DataTable = _Ds_Matriz_Documentos.Tables("Encabezado_Doc")
+        Dim _Idmaeedo As String
+        _Idmaeedo = _New_Doc.Fx_Crear_Documento_En_BakApp_Casi2("Bakapp4ndroid", _Ds_Matriz_Documentos, False, True, "B4A")
+        'Return _Idmaeedo
 
-            Dim NewFila As DataRow
-            NewFila = _TblEncabezado.NewRow
+#Region "Insercion obsoleta"
 
-            With NewFila
 
-                .Item("Id_DocEnc") = 0
-                .Item("Post_Venta") = False
-                .Item("Tipo_Documento") = _RowEncabezado.Item("TipoDoc")
-                .Item("Modalidad") = _RowEncabezado.Item("Modalidad")
-                .Item("Empresa") = _RowEncabezado.Item("Empresa")
-                .Item("Sucursal") = _RowEncabezado.Item("Sucursal")
-                .Item("TipoDoc") = _RowEncabezado.Item("TipoDoc")
-                .Item("SubTido") = _RowEncabezado.Item("Subtido")
-                .Item("NroDocumento") = _RowEncabezado.Item("NroDocumento")
-                .Item("CodEntidad") = _RowEncabezado.Item("CodEntidad")
-                .Item("CodSucEntidad") = _RowEncabezado.Item("CodSucEntidad")
-                .Item("CodSucEntidadFisica") = _RowEncabezado.Item("CodSucEntidadFisica")
-                .Item("CodSucEntidadFisica") = _RowEncabezado.Item("CodSucEntidadFisica")
-                .Item("ListaPrecios") = _RowEncabezado.Item("ListaPrecios")
-                .Item("CodFuncionario") = _RowEncabezado.Item("CodFuncionario")
-                .Item("NomFuncionario") = _RowEncabezado.Item("NomFuncionario")
-                .Item("Es_Electronico") = CBool(_RowEncabezado.Item("Es_Electronico"))
+        'Dim _Json = Mid(_EncabezadoJs, 2, _EncabezadoJs.Length - 1)
+        '_Json = Mid(_Json, 1, _Json.Length - 1)
 
-                .Item("FechaEmision") = Fx_FechaStr2Datetime(_RowEncabezado.Item("FechaEmision"))
-                .Item("Fecha_1er_Vencimiento") = Fx_FechaStr2Datetime(_RowEncabezado.Item("Fecha_1er_Vencimiento"))
-                .Item("FechaUltVencimiento") = Fx_FechaStr2Datetime(_RowEncabezado.Item("FechaUltVencimiento"))
-                .Item("FechaRecepcion") = Fx_FechaStr2Datetime(_RowEncabezado.Item("FechaRecepcion"))
-                .Item("FechaMaxRecepcion") = .Item("FechaRecepcion") 'Fx_FechaStr2Datetime(_RowEncabezado.Item("FechaMaxRecepcion"))
+        'Dim _Ds As DataSet = JsonConvert.DeserializeObject(Of DataSet)(_Json)
+        'Dim _RowEncabezado As DataRow = _Ds.Tables(0).Rows(0)
 
-                .Item("Cuotas") = _RowEncabezado.Item("Cuotas")
+        'Dim NewFila As DataRow
 
-                .Item("Dias_1er_Vencimiento") = _RowEncabezado.Item("Dias_1er_Vencimiento")
-                .Item("Dias_Vencimiento") = _RowEncabezado.Item("Dias_Vencimiento")
-                .Item("Moneda_Doc") = _RowEncabezado.Item("Moneda_Doc")
-                .Item("Valor_Dolar") = _RowEncabezado.Item("Valor_Dolar")
-                .Item("DocEn_Neto_Bruto") = _RowEncabezado.Item("DocEn_Neto_Bruto")
-                .Item("TipoMoneda") = _RowEncabezado.Item("TipoMoneda")
-                .Item("Tasadorig_Doc") = _RowEncabezado.Item("Tasadorig_Doc")
-                .Item("Centro_Costo") = _RowEncabezado.Item("Centro_Costo")
-                .Item("Contacto_Ent") = _RowEncabezado.Item("Contacto_Ent")
-                .Item("TotalNetoDoc") = _RowEncabezado.Item("TotalNetoDoc")
-                .Item("TotalIvaDoc") = _RowEncabezado.Item("TotalIvaDoc")
-                .Item("TotalIlaDoc") = _RowEncabezado.Item("TotalIlaDoc")
-                .Item("TotalBrutoDoc") = _RowEncabezado.Item("TotalBrutoDoc")
-                .Item("CantTotal") = _RowEncabezado.Item("CantTotal")
-                .Item("CantDesp") = _RowEncabezado.Item("CantDesp")
-                .Item("Vizado") = CBool(_RowEncabezado.Item("Vizado"))
-                .Item("Idmaeedo_Origen") = 0 '_RowEncabezado.Item("Idmaeedo_Origen")
-                .Item("CodUsuario_Permiso_Dscto") = String.Empty ' _RowEncabezado.Item("CodUsuario_Permiso_Dscto")
-                .Item("Fun_Auto_Deuda_Ven") = _RowEncabezado.Item("Fun_Auto_Deuda_Ven")
-                .Item("Fun_Auto_Stock_Ins") = _RowEncabezado.Item("Fun_Auto_Stock_Ins")
-                .Item("Fun_Auto_Cupo_Exe") = _RowEncabezado.Item("Fun_Auto_Cupo_Exe")
-                .Item("Fun_Auto_Fecha_Des") = _RowEncabezado.Item("Fun_Auto_Fecha_Des")
+        'With _RowEncabezado
 
-                .Item("Stand_by") = False
-                .Item("Libro") = _RowEncabezado.Item("Libro")
-                .Item("Fecha_Tributaria") = Fx_FechaStr2Datetime(_RowEncabezado.Item("Fecha_Tributaria"))
+        '    Dim _TblEncabezado As DataTable = _Ds_Matriz_Documentos.Tables("Encabezado_Doc")
 
-                .Item("Reserva_NroOCC") = False
-                .Item("Reserva_Idmaeedo") = 0
+        '    NewFila = _TblEncabezado.NewRow
 
-                .Item("Bodega_Destino") = _RowEncabezado.Item("Bodega_Destino")
-                .Item("TotalKilos") = 0
+        '    With NewFila
 
-                .Item("MinKgDesp") = 0
-                .Item("MinNetoDesp") = 0
+        '        .Item("Id_DocEnc") = 0
+        '        .Item("Post_Venta") = False
+        '        .Item("Tipo_Documento") = _RowEncabezado.Item("TipoDoc")
+        '        .Item("Modalidad") = _RowEncabezado.Item("Modalidad")
+        '        .Item("Empresa") = _RowEncabezado.Item("Empresa")
+        '        .Item("Sucursal") = _RowEncabezado.Item("Sucursal")
+        '        .Item("TipoDoc") = _RowEncabezado.Item("TipoDoc")
+        '        .Item("SubTido") = _RowEncabezado.Item("Subtido")
+        '        .Item("NroDocumento") = _RowEncabezado.Item("NroDocumento")
+        '        .Item("CodEntidad") = _RowEncabezado.Item("CodEntidad")
+        '        .Item("CodSucEntidad") = _RowEncabezado.Item("CodSucEntidad")
+        '        .Item("CodSucEntidadFisica") = _RowEncabezado.Item("CodSucEntidadFisica")
+        '        .Item("CodSucEntidadFisica") = _RowEncabezado.Item("CodSucEntidadFisica")
+        '        .Item("ListaPrecios") = _RowEncabezado.Item("ListaPrecios")
+        '        .Item("CodFuncionario") = _RowEncabezado.Item("CodFuncionario")
+        '        .Item("NomFuncionario") = _RowEncabezado.Item("NomFuncionario")
+        '        .Item("Es_Electronico") = CBool(_RowEncabezado.Item("Es_Electronico"))
 
-                _TblEncabezado.Rows.Add(NewFila)
+        '        .Item("FechaEmision") = Fx_FechaStr2Datetime(_RowEncabezado.Item("FechaEmision"))
+        '        .Item("Fecha_1er_Vencimiento") = Fx_FechaStr2Datetime(_RowEncabezado.Item("Fecha_1er_Vencimiento"))
+        '        .Item("FechaUltVencimiento") = Fx_FechaStr2Datetime(_RowEncabezado.Item("FechaUltVencimiento"))
+        '        .Item("FechaRecepcion") = Fx_FechaStr2Datetime(_RowEncabezado.Item("FechaRecepcion"))
+        '        .Item("FechaMaxRecepcion") = .Item("FechaRecepcion")
 
-            End With
+        '        .Item("Cuotas") = _RowEncabezado.Item("Cuotas")
 
-        End With
+        '        .Item("Dias_1er_Vencimiento") = _RowEncabezado.Item("Dias_1er_Vencimiento")
+        '        .Item("Dias_Vencimiento") = _RowEncabezado.Item("Dias_Vencimiento")
+        '        .Item("Moneda_Doc") = _RowEncabezado.Item("Moneda_Doc")
+        '        .Item("Valor_Dolar") = _RowEncabezado.Item("Valor_Dolar")
+        '        .Item("DocEn_Neto_Bruto") = _RowEncabezado.Item("DocEn_Neto_Bruto")
+        '        .Item("TipoMoneda") = _RowEncabezado.Item("TipoMoneda")
+        '        .Item("Tasadorig_Doc") = _RowEncabezado.Item("Tasadorig_Doc")
+        '        .Item("Centro_Costo") = _RowEncabezado.Item("Centro_Costo")
+        '        .Item("Contacto_Ent") = _RowEncabezado.Item("Contacto_Ent")
+        '        .Item("TotalNetoDoc") = _RowEncabezado.Item("TotalNetoDoc")
+        '        .Item("TotalIvaDoc") = _RowEncabezado.Item("TotalIvaDoc")
+        '        .Item("TotalIlaDoc") = _RowEncabezado.Item("TotalIlaDoc")
+        '        .Item("TotalBrutoDoc") = _RowEncabezado.Item("TotalBrutoDoc")
+        '        .Item("CantTotal") = _RowEncabezado.Item("CantTotal")
+        '        .Item("CantDesp") = _RowEncabezado.Item("CantDesp")
+        '        .Item("Vizado") = CBool(_RowEncabezado.Item("Vizado"))
+        '        .Item("Idmaeedo_Origen") = 0
+        '        .Item("CodUsuario_Permiso_Dscto") = String.Empty
+        '        .Item("Fun_Auto_Deuda_Ven") = _RowEncabezado.Item("Fun_Auto_Deuda_Ven")
+        '        .Item("Fun_Auto_Stock_Ins") = _RowEncabezado.Item("Fun_Auto_Stock_Ins")
+        '        .Item("Fun_Auto_Cupo_Exe") = _RowEncabezado.Item("Fun_Auto_Cupo_Exe")
+        '        .Item("Fun_Auto_Fecha_Des") = _RowEncabezado.Item("Fun_Auto_Fecha_Des")
+
+        '        .Item("Stand_by") = False
+        '        .Item("Libro") = _RowEncabezado.Item("Libro")
+        '        .Item("Fecha_Tributaria") = Fx_FechaStr2Datetime(_RowEncabezado.Item("Fecha_Tributaria"))
+
+        '        .Item("Reserva_NroOCC") = False
+        '        .Item("Reserva_Idmaeedo") = 0
+
+        '        .Item("Bodega_Destino") = _RowEncabezado.Item("Bodega_Destino")
+        '        .Item("TotalKilos") = 0
+
+        '        .Item("MinKgDesp") = 0
+        '        .Item("MinNetoDesp") = 0
+
+        '        _TblEncabezado.Rows.Add(NewFila)
+
+        '    End With
+
+        'End With
+
+        '_Json = Mid(_ObservacionesJs, 2, _ObservacionesJs.Length - 1)
+        '_Json = Mid(_Json, 1, _Json.Length - 1)
+
+        '_Ds = JsonConvert.DeserializeObject(Of DataSet)(_Json)
+        'Dim _RowObservaciones As DataRow = _Ds.Tables(0).Rows(0)
+
+        'Dim _TblObservaciones As DataTable = _Ds_Matriz_Documentos.Tables("Observaciones_Doc")
+        'NewFila = _TblObservaciones.NewRow
+        'With NewFila
+        '    .Item("Observaciones") = _RowObservaciones.Item("Observaciones")
+        '    .Item("Forma_pago") = _RowObservaciones.Item("Forma_pago")
+        '    .Item("Orden_compra") = _RowObservaciones.Item("Orden_compra")
+        '    .Item("Placa") = _RowObservaciones.Item("Placa")
+        '    .Item("CodRetirador") = _RowObservaciones.Item("CodRetirador")
+
+        '    For i = 1 To 35
+        '        .Item("Obs" & i) = _RowObservaciones.Item("Obs" & i)
+        '    Next
+
+        '    _Ds_Matriz_Documentos.Tables("Observaciones_Doc").Rows.Add(NewFila)
+        'End With
+
+#End Region
 
         _Sql = New Class_SQL
         Dim _Ds2 As DataSet
@@ -1083,6 +1117,58 @@ Public Class Ws_BakApp
 
     End Function
 
+    Function Fx_LlenarDatos(ByRef _Ds_Matriz_Documentos As DataSet, _Json As String, _NomTabla As String)
+
+        Dim _Log = String.Empty
+
+        _Json = Mid(_Json, 2, _Json.Length - 1)
+        _Json = Mid(_Json, 1, _Json.Length - 1)
+
+        Dim _Ds As DataSet = JsonConvert.DeserializeObject(Of DataSet)(_Json)
+        'Dim _Row As DataRow = _Ds.Tables(0).Rows(0)
+
+        Dim NewFila As DataRow
+
+        Dim _Tbl As DataTable = _Ds_Matriz_Documentos.Tables(_NomTabla)
+
+        For Each _Row As DataRow In _Ds.Tables(0).Rows
+
+            NewFila = _Tbl.NewRow
+
+            With NewFila
+
+                Dim name(_Tbl.Columns.Count) As String
+                Dim i As Integer = 0
+                For Each column As DataColumn In _Tbl.Columns
+                    name(i) = column.ColumnName
+                    Dim _NomColumna As String = column.ColumnName
+                    Try
+                        If column.DataType.Name = "DateTime" Then
+                            .Item(_NomColumna) = Fx_FechaStr2Datetime(_Row.Item(_NomColumna))
+                        Else
+                            If column.DataType.Name = "Boolean" Then
+                                .Item(_NomColumna) = CBool(_Row.Item(_NomColumna))
+                            Else
+                                .Item(_NomColumna) = _Row.Item(_NomColumna)
+                            End If
+                        End If
+                    Catch ex As Exception
+                        _Log += ex.Message & vbCrLf
+                    End Try
+                    i += 1
+                Next
+
+                If _NomTabla = "Detalle_Doc" Or _NomTabla = "Descuentos_Doc" Then
+                    .Item("Id") = _Row.Item("Id_DocDet")
+                End If
+
+                _Tbl.Rows.Add(NewFila)
+
+            End With
+
+        Next
+
+    End Function
 
 #End Region
 

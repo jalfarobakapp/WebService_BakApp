@@ -3190,18 +3190,20 @@ Public Class Clase_Crear_Documento
     End Function
 
     Function Fx_Crear_Documento_En_BakApp_Casi2(_NombreEquipo As String,
-                                                _Tbl_Encabezado As DataTable,
-                                                _Tbl_Detalle As DataTable,
-                                                _Tbl_Descuentos As DataTable,
-                                                _Tbl_Impuestos As DataTable,
-                                                _Tbl_Observaciones As DataTable,
-                                                _Tbl_Mevento_Edo As DataTable,
-                                                _Tbl_Mevento_Edd As DataTable,
-                                                _Tbl_Referencias_DTE As DataTable,
-                                                _Tbl_Permisos As DataTable,
+                                                _Ds_Matriz_Documentos As DataSet,
                                                 _EsAjuste As Boolean,
                                                 _Stand_by As Boolean,
                                                 _Desde As String) As Integer
+
+        Dim _Tbl_Encabezado As DataTable = _Ds_Matriz_Documentos.Tables("Encabezado_Doc")
+        Dim _Tbl_Detalle As DataTable = _Ds_Matriz_Documentos.Tables("Detalle_Doc")
+        Dim _Tbl_Descuentos As DataTable = _Ds_Matriz_Documentos.Tables("Descuentos_Doc")
+        Dim _Tbl_Impuestos As DataTable = _Ds_Matriz_Documentos.Tables("Impuestos_Doc")
+        Dim _Tbl_Observaciones As DataTable = _Ds_Matriz_Documentos.Tables("Observaciones_Doc")
+        Dim _Tbl_Mevento_Edo As DataTable = Nothing ' _Ds_Matriz_Documentos.Tables("")
+        Dim _Tbl_Mevento_Edd As DataTable = Nothing ' _Ds_Matriz_Documentos.Tables("")
+        Dim _Tbl_Referencias_DTE As DataTable = Nothing ' _Ds_Matriz_Documentos.Tables("")
+        Dim _Tbl_Permisos As DataTable = Nothing ' _Ds_Matriz_Documentos.Tables("")
 
 #Region "Variables"
 
@@ -3481,6 +3483,8 @@ Public Class Clase_Crear_Documento
             Consulta_sql = "INSERT INTO " & _Global_BaseBk & "Zw_Casi_DocEnc (Empresa,TipoDoc,NroDocumento,CodEntidad,CodSucEntidad,Stand_by)" & vbCrLf &
                            "VALUES ( '" & _Empresa & "','" & _TipoDoc & "','" & _NroDocumento &
                            "','" & _CodEntidad & "','" & _CodSucEntidad & "'," & Convert.ToInt32(_Stand_by) & ")"
+
+            Dim _Sqlsrt As String = Consulta_sql
 
             Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
             Comando.Transaction = myTrans
