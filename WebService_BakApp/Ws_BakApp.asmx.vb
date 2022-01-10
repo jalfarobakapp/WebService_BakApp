@@ -963,9 +963,10 @@ Public Class Ws_BakApp
         _Global_BaseBk = "BAKAPP_VH.dbo."
         Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
 
+        _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("NroDocumento") = "NVVXXXXXXX"
+
         Dim _Idmaeedo As String
         _Idmaeedo = _New_Doc.Fx_Crear_Documento_En_BakApp_Casi2("Bakapp4ndroid", _Ds_Matriz_Documentos, False, True, "B4A")
-        'Return _Idmaeedo
 
 #Region "Insercion obsoleta"
 

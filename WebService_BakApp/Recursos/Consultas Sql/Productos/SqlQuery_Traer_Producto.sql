@@ -48,7 +48,11 @@ Select  Cast(0 As Int) As 'Id_DocEnc',
 		--Mpm.PPUL02 As Precio_UC2,
 		Isnull(Mps.PMSUC,0) As 'PmSucLinea',
 		Isnull(Mpm.PMIFRS,0) As 'PmIFRS',
-		Tbpp.DATOSUBIC As 'UbicacionBod'
+		Tbpp.DATOSUBIC As 'UbicacionBod',
+		'' As 'Moneda',
+		'' As 'Tipo_Moneda',
+		Cast(0 As Float) As 'Tipo_Cambio'
+
 From MAEPR Mp
 		Left Join MAEST Ms On Ms.EMPRESA = @Empresa And Ms.KOSU = @Sucursal And Ms.KOBO = @Bodega And Ms.KOPR = Mp.KOPR
 			Left Join MAEPREM Mpm On Ms.KOPR = Mpm.KOPR And Mpm.EMPRESA = @Empresa
