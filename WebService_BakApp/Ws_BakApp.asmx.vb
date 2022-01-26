@@ -29,7 +29,7 @@ Public Class Ws_BakApp
     End Function
 
     <WebMethod()>
-    Public Function Fx_Cadena_Conexion(ByVal Cadena_Conexion_SQL_Server As String) As String
+    Public Function Fx_Cadena_Conexion(Cadena_Conexion_SQL_Server As String) As String
         '_Global_Cadena_Conexion_SQL_Server = Cadena_Conexion_SQL_Server
         _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
         Dim _Error As String = _Sql.Fx_Probar_Conexion
@@ -37,32 +37,32 @@ Public Class Ws_BakApp
     End Function
 
     <WebMethod(True)>
-    Function Fx_GetDataSet(ByVal Consulta_Sql As String) As DataSet
+    Function Fx_GetDataSet(Consulta_Sql As String) As DataSet
         _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
         Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_Sql)
         Return _Ds
     End Function
 
     <WebMethod(True)>
-    Function Fx_Trae_Dato_String(ByVal _Tabla As String,
-                                 ByVal _Campo As String,
-                                 ByVal _Condicion As String) As String
+    Function Fx_Trae_Dato_String(_Tabla As String,
+                                 _Campo As String,
+                                 _Condicion As String) As String
         _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
         Dim _Dato As String = _Sql.Fx_Trae_Dato(_Tabla, _Campo, _Condicion, , False, "")
         Return _Dato
     End Function
 
     <WebMethod(True)>
-    Function Fx_Trae_Dato_Numero(ByVal _Tabla As String,
-                                 ByVal _Campo As String,
-                                 ByVal _Condicion As String) As String
+    Function Fx_Trae_Dato_Numero(_Tabla As String,
+                                 _Campo As String,
+                                 _Condicion As String) As String
         _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
         Dim _Dato As Double = _Sql.Fx_Trae_Dato(_Tabla, _Campo, _Condicion, , True, 0)
         Return _Dato
     End Function
 
     <WebMethod(True)>
-    Function Fx_Ej_consulta_IDU(ByVal Consulta_Sql As String) As String
+    Function Fx_Ej_consulta_IDU(Consulta_Sql As String) As String
         _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
 
         If _Sql.Fx_Ej_consulta_IDU(Consulta_Sql) Then
@@ -73,7 +73,7 @@ Public Class Ws_BakApp
     End Function
 
     <WebMethod(True)>
-    Function Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(ByVal Consulta_Sql As String) As String
+    Function Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(Consulta_Sql As String) As String
         _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
 
         If _Sql.Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(Consulta_Sql) Then
@@ -84,22 +84,22 @@ Public Class Ws_BakApp
     End Function
 
     <WebMethod(True)>
-    Function Fx_Cuenta_Registros(ByVal _Tabla As String,
-                                 ByVal _Condicion As String) As Double
+    Function Fx_Cuenta_Registros(_Tabla As String,
+                                 _Condicion As String) As Double
         _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
         Dim _Dato As Double = _Sql.Fx_Cuenta_Registros(_Tabla, _Condicion)
         Return _Dato
     End Function
 
     <WebMethod(True)>
-    Function Fx_Crear_Documento(ByVal _Global_BaseBk As String,
-                                ByVal _Funcionario As String,
-                                ByVal _Tido As String,
-                                ByVal _Nudo As String,
-                                ByVal _Es_ValeTransitorio As Boolean,
-                                ByVal _EsElectronico As Boolean,
-                                ByVal _Ds_Matriz_Documento As DataSet,
-                                ByVal _Es_Ajuste As Boolean) As String
+    Function Fx_Crear_Documento(_Global_BaseBk As String,
+                                _Funcionario As String,
+                                _Tido As String,
+                                _Nudo As String,
+                                _Es_ValeTransitorio As Boolean,
+                                _EsElectronico As Boolean,
+                                _Ds_Matriz_Documento As DataSet,
+                                _Es_Ajuste As Boolean) As String
 
         Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
 
@@ -116,10 +116,10 @@ Public Class Ws_BakApp
     End Function
 
     <WebMethod(True)>
-    Function Fx_Editar_Documento(ByVal _Global_BaseBk As String,
-                                ByVal _Idmaeedo_Dori As Integer,
-                                ByVal _Funcionario As String,
-                                ByVal _Ds_Matriz_Documento As DataSet) As Integer
+    Function Fx_Editar_Documento(_Global_BaseBk As String,
+                                _Idmaeedo_Dori As Integer,
+                                _Funcionario As String,
+                                _Ds_Matriz_Documento As DataSet) As Integer
 
         Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
 
@@ -131,9 +131,9 @@ Public Class Ws_BakApp
     End Function
 
     <WebMethod(True)>
-    Function Fx_Cambiar_Numeracion_Modalidad(ByVal _Tido As String,
-                                             ByVal _Nudo As String,
-                                             ByVal _Modalidad As String) As Double
+    Function Fx_Cambiar_Numeracion_Modalidad(_Tido As String,
+                                             _Nudo As String,
+                                             _Modalidad As String) As Double
         _Sql = New Class_SQL
         Dim _Dato As Double = Fx_Cambiar_Numeracion_Modalidad(_Tido, _Nudo, _Modalidad)
         Return _Dato
@@ -146,9 +146,9 @@ Public Class Ws_BakApp
     End Enum
 
     <WebMethod(True)>
-    Function Fx_EliminarAnular_Doc(ByVal _Idmaeedo_Dori As Integer,
-                                  ByVal _Funcionario As String,
-                                  ByVal _Accion As _Enum_Accion_EA) As Boolean
+    Function Fx_EliminarAnular_Doc(_Idmaeedo_Dori As Integer,
+                                  _Funcionario As String,
+                                  _Accion As _Enum_Accion_EA) As Boolean
         _Sql = New Class_SQL
 
         Dim Cl_ClarDoc As New Clase_EliminarAnular_Documento
@@ -163,10 +163,10 @@ Public Class Ws_BakApp
     End Function
 
     <WebMethod(True)>
-    Function Fx_Traer_Numero_Documento(ByVal _Tido As String,
-                                      ByVal _NumeroDoc As String,
-                                      ByVal _Modalidad_Seleccionada As String,
-                                      ByVal _Empresa As String) As String
+    Function Fx_Traer_Numero_Documento(_Tido As String,
+                                      _NumeroDoc As String,
+                                      _Modalidad_Seleccionada As String,
+                                      _Empresa As String) As String
         Dim _NroDocumento As String = Traer_Numero_Documento(_Tido, _NumeroDoc, _Modalidad_Seleccionada, _Empresa)
 
         Return _NroDocumento
@@ -183,7 +183,7 @@ Public Class Ws_BakApp
     End Function
 
     <WebMethod(True)>
-    Function Fx_Login_Usuario_Soap(ByVal _Clave As String) As DataSet
+    Function Fx_Login_Usuario_Soap(_Clave As String) As DataSet
 
         Dim _Pw = Fx_TraeClaveRD(_Clave)
 
@@ -198,9 +198,9 @@ Public Class Ws_BakApp
 
 #Region "JSON"
 
-    <WebMethod(True)> _
-    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)> _
-    Public Sub Sb_Login_Usuario_Json(ByVal _Clave As String)
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Login_Usuario_Json(_Clave As String)
 
         Dim js As New JavaScriptSerializer
 
@@ -219,9 +219,9 @@ Public Class Ws_BakApp
 
     End Sub
 
-    <WebMethod(True)> _
-    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)> _
-    Public Sub Sb_Ds_Json(ByVal Key As String, ByVal _Consulta_Sql As String)
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Ds_Json(Key As String, _Consulta_Sql As String)
 
         Dim js As New JavaScriptSerializer
 
@@ -237,8 +237,8 @@ Public Class Ws_BakApp
     End Sub
 
     <WebMethod(True)>
-    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)> _
-    Public Sub Sb_Ds_Json_Prueba(ByVal Consulta_Sql As String)
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Ds_Json_Prueba(Consulta_Sql As String)
 
         'Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = 670916" & vbCrLf & _
         '               "Select * From MAEDDO Where IDMAEEDO = 670916"
@@ -258,7 +258,7 @@ Public Class Ws_BakApp
 
     <WebMethod(True)>
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
-    Public Sub Sb_GetDataSet_Json(ByVal Consulta_Sql As String)
+    Public Sub Sb_GetDataSet_Json(Consulta_Sql As String)
 
         Dim js As New JavaScriptSerializer
 
@@ -318,8 +318,8 @@ Public Class Ws_BakApp
 
     <WebMethod(True)>
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
-    Public Sub Sb_Buscar_Productos_Json(ByVal _Codigo As String,
-                                        ByVal _Descripcion As String)
+    Public Sub Sb_Buscar_Productos_Json(_Codigo As String,
+                                        _Descripcion As String)
 
         Dim js As New JavaScriptSerializer
 
@@ -418,6 +418,86 @@ Public Class Ws_BakApp
 
         _Sql = New Class_SQL
         Dim _Ds As DataSet = Fx_Traer_Datos_Entidad(Koen, Suen)
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Traer_Concepto_Json(_Concepto As String,
+                                      _Empresa As String,
+                                      _Sucursal As String,
+                                      _Bodega As String,
+                                      _Lista As String,
+                                      _Koen As String)
+
+        _Sql = New Class_SQL
+        Dim _Ds As DataSet
+
+        Consulta_sql = "Select * From TABCT Where KOCT = '" & _Concepto & "'"
+        Dim _RowConcepto As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+        If Not IsNothing(_RowConcepto) Then
+
+            Dim _Descripcion As String = _RowConcepto.Item("NOKOCT").ToString.Trim
+            Dim _Iva As Integer = _RowConcepto.Item("POIVCT")
+            Dim _Tict As String = _RowConcepto.Item("TICT")
+
+            Dim _Valor_Concepto As Double
+
+            If Not String.IsNullOrEmpty(_Koen) Then
+                _Valor_Concepto = FX_Traer_Valor_Concepto(_Empresa, _RowConcepto, _Koen)
+            End If
+
+            If Not CBool(_Valor_Concepto) Then
+                _Valor_Concepto = _RowConcepto.Item("POCT")
+            End If
+
+            Consulta_sql = "Select  Cast(0 As Int) As 'Id_DocEnc',
+		                    '" & _Empresa & "' As Empresa,
+		                    '" & _Sucursal & "' As Sucursal,
+		                    '" & _Bodega & "' As Bodega,
+		                    '" & _Concepto & "' As Codigo,
+		                    '" & _Descripcion & "' As Descripcion,
+		                    1 As 'UnTrans',
+	                        '' As 'UdTrans',
+		                    1 As 'Rtu',
+		                    '' As 'Ud01PR',
+		                    '' As 'Ud02PR',
+		                    " & _Iva & " As 'PorIva',
+		                    Cast(0 As Float) As 'PorIla',
+		                    0 As 'StockBodega',
+		                    '" & _Lista & "' As 'CodLista',
+		                    Cast(1 as Bit) As 'Prct',
+		                    '" & _Tict & "' As 'Tict',
+		                    '' As 'Tipr',
+		                    Cast(0 As Float) As 'Precio',
+		                    Cast(0 As Float) As 'PrecioListaUd1',
+		                    Cast(0 As Float) As 'PrecioListaUd2',
+		                    " & De_Num_a_Tx_01(_Valor_Concepto, False, 5) & " As 'DescuentoPorc',
+		                    Cast(0 As Float) As 'DescMaximo',
+		                    Cast('' As Varchar(242)) As 'Ecuacion',
+		                    0 As 'PmLinea',
+		                    0 As 'PmSucLinea',
+		                    0 As 'PmIFRS',
+		                    '' As 'UbicacionBod',
+		                    '' As 'Moneda',
+		                    '' As 'Tipo_Moneda',
+		                    Cast(0 As Float) As 'Tipo_Cambio'"
+
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+            Dim a = Consulta_sql
+
+        End If
 
         Dim js As New JavaScriptSerializer
 
@@ -859,7 +939,7 @@ Public Class Ws_BakApp
     End Sub
 
     <WebMethod(True)>
-    Public Sub Sb_Json2Ds(ByVal _Json As String)
+    Public Sub Sb_Json2Ds(_Json As String)
 
         If String.IsNullOrEmpty(_Json) Then
             _Json = "{'Tabla 1': [{""Name"":""AAA"",""Age"":""22"",""Job"":""PPP""}," &
@@ -915,180 +995,71 @@ Public Class Ws_BakApp
 
     End Sub
 
-    '#End Region
-
-    'Dim _Existe = System.IO.File.Exists(RutaArchivo)
-
-    'If Not _Existe Then
-    '    Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'' As Error"
-    '    _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
-    'Else
-    '    Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'" & Replace(_Sql.Pro_Error, "'", "''") & "' As Error"
-    '    _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
-    'End If
-
-    'Dim js As New JavaScriptSerializer
-
-    'Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
-    'Context.Response.ContentType = "application/json"
-    'Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
-    'Context.Response.Flush()
-
-    'Context.Response.End()
-
-    'End Sub
-
 
     <WebMethod(True)>
     Public Sub Sb_CreaDocumentoJsonBakapp(_EncabezadoJs As String, _DestalleJs As String, _DescuentosJs As String, _ObservacionesJs As String)
 
-        _EncabezadoJs = _EncabezadoJs.Trim
-        _DestalleJs = _DestalleJs.Trim
-        _ObservacionesJs = _ObservacionesJs.Trim
+        Dim _Error As String
+        Dim _Idmaeedo As Integer
+        Dim _Tido As String
+        Dim _Nudo As String
 
-        Dim _Ds_Matriz_Documentos As New Ds_Matriz_Documentos
+        Try
 
-        _Ds_Matriz_Documentos.Clear()
-        _Ds_Matriz_Documentos = New Ds_Matriz_Documentos
+            _EncabezadoJs = _EncabezadoJs.Trim
+            _DestalleJs = _DestalleJs.Trim
+            _ObservacionesJs = _ObservacionesJs.Trim
 
-        Fx_LlenarDatos(_Ds_Matriz_Documentos, _EncabezadoJs, "Encabezado_Doc")
-        _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Post_Venta") = False
-        _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Tipo_Documento") = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
+            Dim _Ds_Matriz_Documentos As New Ds_Matriz_Documentos
 
-        Fx_LlenarDatos(_Ds_Matriz_Documentos, _DestalleJs, "Detalle_Doc")
-        Fx_LlenarDatos(_Ds_Matriz_Documentos, _DescuentosJs, "Descuentos_Doc")
-        Fx_LlenarDatos(_Ds_Matriz_Documentos, _ObservacionesJs, "Observaciones_Doc")
+            _Ds_Matriz_Documentos.Clear()
+            _Ds_Matriz_Documentos = New Ds_Matriz_Documentos
 
-        Dim _Funcionario As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("CodFuncionario")
-        _Global_BaseBk = "BAKAPP_VH.dbo."
-        Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _EncabezadoJs, "Encabezado_Doc")
 
-        _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("NroDocumento") = "NVVXXXXXXX"
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Post_Venta") = False
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Tipo_Documento") = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
 
-        Dim _Idmaeedo As String
-        _Idmaeedo = _New_Doc.Fx_Crear_Documento_En_BakApp_Casi2("Bakapp4ndroid", _Ds_Matriz_Documentos, False, True, "B4A")
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _DestalleJs, "Detalle_Doc")
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _DescuentosJs, "Descuentos_Doc")
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _ObservacionesJs, "Observaciones_Doc")
 
-#Region "Insercion obsoleta"
+            Dim _Funcionario As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("CodFuncionario")
+            _Global_BaseBk = "BAKAPP_VH.dbo."
+            Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
 
+            Dim _Modalidad As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Modalidad")
+            Dim _Empresa As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Empresa")
 
-        'Dim _Json = Mid(_EncabezadoJs, 2, _EncabezadoJs.Length - 1)
-        '_Json = Mid(_Json, 1, _Json.Length - 1)
+            _Tido = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
+            _Nudo = Traer_Numero_Documento2(_Tido, _Empresa, _Modalidad)
 
-        'Dim _Ds As DataSet = JsonConvert.DeserializeObject(Of DataSet)(_Json)
-        'Dim _RowEncabezado As DataRow = _Ds.Tables(0).Rows(0)
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("NroDocumento") = _Nudo
 
-        'Dim NewFila As DataRow
+            _Idmaeedo = _New_Doc.Fx_Crear_Documento2(_Tido, _Nudo, False, False, _Ds_Matriz_Documentos)
+            '_Idmaeedo = _New_Doc.Fx_Crear_Documento_En_BakApp_Casi2("Bakapp4ndroid", _Ds_Matriz_Documentos, False, True, "B4A")
 
-        'With _RowEncabezado
+            _Error = _New_Doc.Error
 
-        '    Dim _TblEncabezado As DataTable = _Ds_Matriz_Documentos.Tables("Encabezado_Doc")
-
-        '    NewFila = _TblEncabezado.NewRow
-
-        '    With NewFila
-
-        '        .Item("Id_DocEnc") = 0
-        '        .Item("Post_Venta") = False
-        '        .Item("Tipo_Documento") = _RowEncabezado.Item("TipoDoc")
-        '        .Item("Modalidad") = _RowEncabezado.Item("Modalidad")
-        '        .Item("Empresa") = _RowEncabezado.Item("Empresa")
-        '        .Item("Sucursal") = _RowEncabezado.Item("Sucursal")
-        '        .Item("TipoDoc") = _RowEncabezado.Item("TipoDoc")
-        '        .Item("SubTido") = _RowEncabezado.Item("Subtido")
-        '        .Item("NroDocumento") = _RowEncabezado.Item("NroDocumento")
-        '        .Item("CodEntidad") = _RowEncabezado.Item("CodEntidad")
-        '        .Item("CodSucEntidad") = _RowEncabezado.Item("CodSucEntidad")
-        '        .Item("CodSucEntidadFisica") = _RowEncabezado.Item("CodSucEntidadFisica")
-        '        .Item("CodSucEntidadFisica") = _RowEncabezado.Item("CodSucEntidadFisica")
-        '        .Item("ListaPrecios") = _RowEncabezado.Item("ListaPrecios")
-        '        .Item("CodFuncionario") = _RowEncabezado.Item("CodFuncionario")
-        '        .Item("NomFuncionario") = _RowEncabezado.Item("NomFuncionario")
-        '        .Item("Es_Electronico") = CBool(_RowEncabezado.Item("Es_Electronico"))
-
-        '        .Item("FechaEmision") = Fx_FechaStr2Datetime(_RowEncabezado.Item("FechaEmision"))
-        '        .Item("Fecha_1er_Vencimiento") = Fx_FechaStr2Datetime(_RowEncabezado.Item("Fecha_1er_Vencimiento"))
-        '        .Item("FechaUltVencimiento") = Fx_FechaStr2Datetime(_RowEncabezado.Item("FechaUltVencimiento"))
-        '        .Item("FechaRecepcion") = Fx_FechaStr2Datetime(_RowEncabezado.Item("FechaRecepcion"))
-        '        .Item("FechaMaxRecepcion") = .Item("FechaRecepcion")
-
-        '        .Item("Cuotas") = _RowEncabezado.Item("Cuotas")
-
-        '        .Item("Dias_1er_Vencimiento") = _RowEncabezado.Item("Dias_1er_Vencimiento")
-        '        .Item("Dias_Vencimiento") = _RowEncabezado.Item("Dias_Vencimiento")
-        '        .Item("Moneda_Doc") = _RowEncabezado.Item("Moneda_Doc")
-        '        .Item("Valor_Dolar") = _RowEncabezado.Item("Valor_Dolar")
-        '        .Item("DocEn_Neto_Bruto") = _RowEncabezado.Item("DocEn_Neto_Bruto")
-        '        .Item("TipoMoneda") = _RowEncabezado.Item("TipoMoneda")
-        '        .Item("Tasadorig_Doc") = _RowEncabezado.Item("Tasadorig_Doc")
-        '        .Item("Centro_Costo") = _RowEncabezado.Item("Centro_Costo")
-        '        .Item("Contacto_Ent") = _RowEncabezado.Item("Contacto_Ent")
-        '        .Item("TotalNetoDoc") = _RowEncabezado.Item("TotalNetoDoc")
-        '        .Item("TotalIvaDoc") = _RowEncabezado.Item("TotalIvaDoc")
-        '        .Item("TotalIlaDoc") = _RowEncabezado.Item("TotalIlaDoc")
-        '        .Item("TotalBrutoDoc") = _RowEncabezado.Item("TotalBrutoDoc")
-        '        .Item("CantTotal") = _RowEncabezado.Item("CantTotal")
-        '        .Item("CantDesp") = _RowEncabezado.Item("CantDesp")
-        '        .Item("Vizado") = CBool(_RowEncabezado.Item("Vizado"))
-        '        .Item("Idmaeedo_Origen") = 0
-        '        .Item("CodUsuario_Permiso_Dscto") = String.Empty
-        '        .Item("Fun_Auto_Deuda_Ven") = _RowEncabezado.Item("Fun_Auto_Deuda_Ven")
-        '        .Item("Fun_Auto_Stock_Ins") = _RowEncabezado.Item("Fun_Auto_Stock_Ins")
-        '        .Item("Fun_Auto_Cupo_Exe") = _RowEncabezado.Item("Fun_Auto_Cupo_Exe")
-        '        .Item("Fun_Auto_Fecha_Des") = _RowEncabezado.Item("Fun_Auto_Fecha_Des")
-
-        '        .Item("Stand_by") = False
-        '        .Item("Libro") = _RowEncabezado.Item("Libro")
-        '        .Item("Fecha_Tributaria") = Fx_FechaStr2Datetime(_RowEncabezado.Item("Fecha_Tributaria"))
-
-        '        .Item("Reserva_NroOCC") = False
-        '        .Item("Reserva_Idmaeedo") = 0
-
-        '        .Item("Bodega_Destino") = _RowEncabezado.Item("Bodega_Destino")
-        '        .Item("TotalKilos") = 0
-
-        '        .Item("MinKgDesp") = 0
-        '        .Item("MinNetoDesp") = 0
-
-        '        _TblEncabezado.Rows.Add(NewFila)
-
-        '    End With
-
-        'End With
-
-        '_Json = Mid(_ObservacionesJs, 2, _ObservacionesJs.Length - 1)
-        '_Json = Mid(_Json, 1, _Json.Length - 1)
-
-        '_Ds = JsonConvert.DeserializeObject(Of DataSet)(_Json)
-        'Dim _RowObservaciones As DataRow = _Ds.Tables(0).Rows(0)
-
-        'Dim _TblObservaciones As DataTable = _Ds_Matriz_Documentos.Tables("Observaciones_Doc")
-        'NewFila = _TblObservaciones.NewRow
-        'With NewFila
-        '    .Item("Observaciones") = _RowObservaciones.Item("Observaciones")
-        '    .Item("Forma_pago") = _RowObservaciones.Item("Forma_pago")
-        '    .Item("Orden_compra") = _RowObservaciones.Item("Orden_compra")
-        '    .Item("Placa") = _RowObservaciones.Item("Placa")
-        '    .Item("CodRetirador") = _RowObservaciones.Item("CodRetirador")
-
-        '    For i = 1 To 35
-        '        .Item("Obs" & i) = _RowObservaciones.Item("Obs" & i)
-        '    Next
-
-        '    _Ds_Matriz_Documentos.Tables("Observaciones_Doc").Rows.Add(NewFila)
-        'End With
-
-#End Region
+        Catch ex As Exception
+            _Error = ex.Message
+        End Try
 
         _Sql = New Class_SQL
         Dim _Ds2 As DataSet
 
-        Dim _Existe = System.IO.File.Exists(True)
+        If CBool(_Idmaeedo) Then
 
-        If Not _Existe Then
-            Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'' As Error"
+            Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _Idmaeedo
+            Dim _Row_Documento As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            _Tido = _Row_Documento.Item("TIDO")
+            _Nudo = _Row_Documento.Item("NUDO")
+
+            Consulta_sql = "Select " & _Idmaeedo & " As Idmaeedo,'" & _Tido & "' As Tido,'" & _Nudo & "' As 'Nudo',Cast(1 as Bit) As Respuesta,'' As Error"
             _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
         Else
-            Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'" & Replace(_Sql.Pro_Error, "'", "''") & "' As Error"
+            Consulta_sql = "Select 0 As Idmaeedo,Cast(1 as Bit) As Respuesta,'" & Replace(_Error, "'", "''") & "' As Error"
             _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
         End If
 

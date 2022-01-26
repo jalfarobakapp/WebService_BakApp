@@ -185,6 +185,10 @@ Public Module Funciones
 
         Loop
 
+        If String.IsNullOrEmpty(_Cadena) Then
+            _Cadena = 0
+        End If
+
         _NvoNumero1 = CInt(_Cadena) + 1
         _NvoNumero2 = _Prefijo & numero_(_NvoNumero1, Len(_Cadena))
 
@@ -974,10 +978,10 @@ Error_Numero:
 
     End Function
 
-    Function Traer_Numero_Documento(ByVal _TipoDoc As String, _
-                                    ByVal _NumeroDoc As String, _
-                                    ByVal _Modalidad_Seleccionada As String, _
-                                    ByVal _Empresa As String)
+    Function Traer_Numero_Documento(_TipoDoc As String,
+                                    _NumeroDoc As String,
+                                    _Modalidad_Seleccionada As String,
+                                    _Empresa As String)
 
         Dim _NrNumeroDoco As String
 
@@ -1064,6 +1068,218 @@ Error_Numero:
         Return _NrNumeroDoco
 
     End Function
+
+    Public Function Traer_Numero_Documento2(_Tido As String,
+                                            _Empresa As String,
+                                            _Modalidad As String,
+                                           Optional _NumeroDoc As String = "",
+                                           Optional _Modalidad_Seleccionada As String = "",
+                                           Optional _Mostrar_Mensaje As Boolean = True,
+                                           Optional _Cambiar_Numeracion As Boolean = True)
+
+        Dim _Sql As New Class_SQL()
+
+        Dim _Existe_Doc As Integer
+        Dim _TipGrab As String
+        Dim _Arr_Nudo(1) As String
+
+        Dim _NrNumeroDoco As String
+
+        If String.IsNullOrEmpty(_Modalidad_Seleccionada) Then
+            _Modalidad_Seleccionada = _Modalidad
+        End If
+
+        If String.IsNullOrEmpty(_NumeroDoc.Trim) Then
+            If _Tido = "GDV" Or _Tido = "GTI" Or _Tido = "GDP" Or _Tido = "GDD" Then
+                Consulta_sql = "Select GDV As NrNumeroDoco From CONFIEST Where EMPRESA = '" & _Empresa & "' AND MODALIDAD = '" & _Modalidad_Seleccionada & "'
+                                Union
+                                Select GTI As NrNumeroDoco From CONFIEST Where EMPRESA = '" & _Empresa & "' AND MODALIDAD = '" & _Modalidad_Seleccionada & "'
+                                Union
+                                Select GDP As NrNumeroDoco From CONFIEST Where EMPRESA = '" & _Empresa & "' AND MODALIDAD = '" & _Modalidad_Seleccionada & "'
+                                Union
+                                Select GDD As NrNumeroDoco From CONFIEST Where EMPRESA = '" & _Empresa & "' AND MODALIDAD = '" & _Modalidad_Seleccionada & "'
+                                Order By NrNumeroDoco Desc"
+                Dim _Tbl As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+                _NrNumeroDoco = _Tbl.Rows(0).Item("NrNumeroDoco")
+            Else
+                _NrNumeroDoco = _Sql.Fx_Trae_Dato("CONFIEST", _Tido, "EMPRESA = '" & _Empresa & "' AND MODALIDAD = '" & _Modalidad_Seleccionada & "'")
+            End If
+        Else
+            _NrNumeroDoco = _NumeroDoc
+        End If
+
+        If _Tido = "GDV" Or _Tido = "GTI" Or _Tido = "GDP" Or _Tido = "GDD" Then
+            _Existe_Doc = _Sql.Fx_Cuenta_Registros("MAEEDO", "EMPRESA = '" & _Empresa & "' And TIDO In ('GDV','GTI','GDP','GDD') And NUDO = '" & _NrNumeroDoco & "'")
+        Else
+            _Existe_Doc = _Sql.Fx_Cuenta_Registros("MAEEDO", "EMPRESA = '" & _Empresa & "' And TIDO = '" & _Tido & "' And NUDO = '" & _NrNumeroDoco & "'")
+        End If
+
+        _TipGrab = Fx_Tipo_Grab_Modalidad(_Tido, _NrNumeroDoco)
+
+        Dim Contador = 0
+
+
+        Dim _RowModalidad As DataRow
+
+        If _TipGrab = "EnBlanco" Then
+
+            Consulta_sql = "Select * From CONFIEST Where MODALIDAD = '" & _Modalidad_Seleccionada & "'"
+            _RowModalidad = _Sql.Fx_Get_DataRow(Consulta_sql)
+            _NrNumeroDoco = _RowModalidad.Item(_Tido)
+
+            If _Tido = "GDV" Or _Tido = "GTI" Or _Tido = "GDP" Or _Tido = "GDD" Then
+                Consulta_sql = "Select GDV As NrNumeroDoco From CONFIEST Where EMPRESA = '" & _Empresa & "' AND MODALIDAD = '  '
+                                Union
+                                Select GTI As NrNumeroDoco From CONFIEST Where EMPRESA = '" & _Empresa & "' AND MODALIDAD = '  '
+                                Union
+                                Select GDP As NrNumeroDoco From CONFIEST Where EMPRESA = '" & _Empresa & "' AND MODALIDAD = '  '
+                                Union
+                                Select GDD As NrNumeroDoco From CONFIEST Where EMPRESA = '" & _Empresa & "' AND MODALIDAD = '  '
+                                Order By NrNumeroDoco Desc"
+                Dim _Tbl As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+                _NrNumeroDoco = _Tbl.Rows(0).Item("NrNumeroDoco")
+            Else
+                _NrNumeroDoco = _Sql.Fx_Trae_Dato("CONFIEST", _Tido, "EMPRESA = '" & _Empresa & "' AND MODALIDAD = '  '")
+            End If
+
+            If _Cambiar_Numeracion Then
+
+                If _Tido = "GDV" Or _Tido = "GTI" Or _Tido = "GDP" Or _Tido = "GDD" Then
+                    _Existe_Doc = _Sql.Fx_Cuenta_Registros("MAEEDO", "EMPRESA = '" & _Empresa & "' And TIDO In ('GDV','GTI','GDP','GDD') And NUDO = '" & _NrNumeroDoco & "'")
+                Else
+                    _Existe_Doc = _Sql.Fx_Cuenta_Registros("MAEEDO", "EMPRESA = '" & _Empresa & "' And TIDO = '" & _Tido & "' And NUDO = '" & _NrNumeroDoco & "'")
+                End If
+
+                Do While CBool(_Existe_Doc)
+
+                    Dim _Proximo_Nro As String = Fx_Proximo_NroDocumento(_NrNumeroDoco, 10)
+
+                    If _Tido = "GDV" Or _Tido = "GTI" Or _Tido = "GDP" Or _Tido = "GDD" Then
+                        Consulta_sql = "UPDATE CONFIEST SET GDV = '" & _Proximo_Nro & "',GTI = '" & _Proximo_Nro & "',GDP = '" & _Proximo_Nro & "',GDD = '" & _Proximo_Nro & "'" & vbCrLf &
+                                       "WHERE EMPRESA = '" & _Empresa & "' AND MODALIDAD = '  '"
+                        _Sql.Fx_Ej_consulta_IDU(Consulta_sql)
+
+                        Consulta_sql = "Select GDV As NrNumeroDoco From CONFIEST Where EMPRESA = '" & _Empresa & "' AND MODALIDAD = '  '
+                                        Union
+                                        Select GTI As NrNumeroDoco From CONFIEST Where EMPRESA = '" & _Empresa & "' AND MODALIDAD = '  '
+                                        Union
+                                        Select GDP As NrNumeroDoco From CONFIEST Where EMPRESA = '" & _Empresa & "' AND MODALIDAD = '  '
+                                        Union
+                                        Select GDD As NrNumeroDoco From CONFIEST Where EMPRESA = '" & _Empresa & "' AND MODALIDAD = '  '
+                                        Order By NrNumeroDoco Desc"
+                        Dim _Tbl As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+                        _NrNumeroDoco = _Tbl.Rows(0).Item("NrNumeroDoco")
+                        _Existe_Doc = _Sql.Fx_Cuenta_Registros("MAEEDO", "EMPRESA = '" & _Empresa & "' And TIDO In ('GDV','GTI','GDP','GDD') And NUDO = '" & _NrNumeroDoco & "'")
+                    Else
+                        Consulta_sql = "UPDATE CONFIEST SET " & _Tido & " = '" & _Proximo_Nro & "'" & vbCrLf &
+                                       "WHERE EMPRESA = '" & _Empresa & "' AND MODALIDAD = '  '"
+                        _Sql.Fx_Ej_consulta_IDU(Consulta_sql)
+                        _NrNumeroDoco = _Sql.Fx_Trae_Dato("CONFIEST", _Tido, "EMPRESA = '" & _Empresa & "' AND MODALIDAD = '  '")
+                        _Existe_Doc = _Sql.Fx_Cuenta_Registros("MAEEDO", "EMPRESA = '" & _Empresa & "' And TIDO = '" & _Tido & "' And NUDO = '" & _NrNumeroDoco & "'")
+                    End If
+
+                Loop
+
+            End If
+
+        ElseIf _TipGrab = "Puros_Ceros" Then
+
+            If _Tido = "GDV" Or _Tido = "GTI" Or _Tido = "GDP" Or _Tido = "GDD" Then
+                _NrNumeroDoco = _Sql.Fx_Trae_Dato("MAEEDO", "COALESCE(MAX(NUDO),'0000000000')", "EMPRESA = '" & _Empresa & "' And TIDO In ('GDV','GTI','GDP','GDD')")
+            Else
+                _NrNumeroDoco = _Sql.Fx_Trae_Dato("MAEEDO", "COALESCE(MAX(NUDO),'0000000000')", "EMPRESA = '" & _Empresa & "' And TIDO = '" & _Tido & "'")
+            End If
+
+            _NrNumeroDoco = Fx_Rellena_ceros(_NrNumeroDoco, 10, True)
+
+            _Existe_Doc = 0
+
+        ElseIf _TipGrab = "Con_Numeración" Then
+
+            If _Cambiar_Numeracion Then
+
+                Dim _MaxCuenta = 100
+                Dim _Contador = 1
+                Dim _ngTiempoTranscurrido As Double
+                Dim _dteInicio As DateTime = DateTime.Now
+                Dim _dteFinal As DateTime
+
+                Do While CBool(_Existe_Doc)
+
+                    Dim _Proximo_Nro As String = Fx_Proximo_NroDocumento(_NrNumeroDoco, 10)
+
+                    If _Tido = "GDV" Or _Tido = "GTI" Or _Tido = "GDP" Or _Tido = "GDD" Then
+
+                        Consulta_sql = "UPDATE CONFIEST SET GDV = '" & _Proximo_Nro & "',GTI = '" & _Proximo_Nro & "',GDP = '" & _Proximo_Nro & "',GDD = '" & _Proximo_Nro & "'" & vbCrLf &
+                                       "WHERE EMPRESA = '" & _Empresa & "' AND MODALIDAD = '" & _Modalidad_Seleccionada & "'"
+                        _Sql.Fx_Ej_consulta_IDU(Consulta_sql)
+
+                        Consulta_sql = "Select GDV As Tido From CONFIEST Where EMPRESA = '" & _Empresa & "' AND MODALIDAD = '" & _Modalidad_Seleccionada & "'
+                                        Union
+                                        Select GTI As Tido From CONFIEST Where EMPRESA = '" & _Empresa & "' AND MODALIDAD = '" & _Modalidad_Seleccionada & "'
+                                        Union
+                                        Select GDP As Tido From CONFIEST Where EMPRESA = '" & _Empresa & "' AND MODALIDAD = '" & _Modalidad_Seleccionada & "'
+                                        Union
+                                        Select GDD As Tido From CONFIEST Where EMPRESA = '" & _Empresa & "' AND MODALIDAD = '" & _Modalidad_Seleccionada & "'
+                                        Order By Tido Desc"
+                        Dim _Tbl As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+                        _NrNumeroDoco = _Tbl.Rows(0).Item("Tido")
+
+                        _Existe_Doc = _Sql.Fx_Cuenta_Registros("MAEEDO", "EMPRESA = '" & _Empresa & "' And TIDO In ('GDV','GTI','GDP','GDD') And NUDO = '" & _NrNumeroDoco & "'")
+                        _Contador += 1
+                        _dteFinal = DateTime.Now
+                        _ngTiempoTranscurrido = DateDiff(DateInterval.Second, _dteInicio, _dteFinal)
+
+                        If _Existe_Doc Then
+                            If _ngTiempoTranscurrido >= 10 Then
+                                Exit Do
+                            End If
+                        End If
+
+                    Else
+
+                        Consulta_sql = "UPDATE CONFIEST SET " & _Tido & " = '" & _Proximo_Nro & "' WHERE EMPRESA = '" & _Empresa & "' AND  MODALIDAD = '" & _Modalidad_Seleccionada & "'"
+                        _Sql.Fx_Ej_consulta_IDU(Consulta_sql)
+
+                        _NrNumeroDoco = _Sql.Fx_Trae_Dato("CONFIEST", _Tido, "EMPRESA = '" & _Empresa & "' AND MODALIDAD = '" & _Modalidad_Seleccionada & "'")
+                        _Existe_Doc = _Sql.Fx_Cuenta_Registros("MAEEDO", "EMPRESA = '" & _Empresa & "' And TIDO = '" & _Tido & "' And NUDO = '" & _NrNumeroDoco & "'")
+                        _Contador += 1
+                        _dteFinal = DateTime.Now
+                        _ngTiempoTranscurrido = DateDiff(DateInterval.Second, _dteInicio, _dteFinal)
+
+                        If _Existe_Doc Then
+                            If _ngTiempoTranscurrido >= 10 Then
+                                Exit Do
+                            End If
+                        End If
+
+                    End If
+
+                Loop
+
+            End If
+
+        End If
+
+        If _Cambiar_Numeracion Then
+
+            If CBool(_Existe_Doc) Then
+
+                If _Mostrar_Mensaje Then
+                    Return "_Error"
+                End If
+
+                _NrNumeroDoco = String.Empty
+
+            End If
+
+        End If
+
+
+        Return _NrNumeroDoco
+
+    End Function
+
 
     Function FechaDelServidor() As Date
 

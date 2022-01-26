@@ -886,6 +886,10 @@ Public Module Funciones_Especiales_BakApp
 
         Sb_Buscar_Valor_En_Dimensiones(_Empresa, _Fx1, _Codigo, _Koen)
 
+        If String.IsNullOrEmpty(_Fx1.ToString.Trim) Then
+            _Fx1 = 0
+        End If
+
         Dim _Precio As Double
 
         Consulta_sql = "Select " & _Fx1 & " As Valor"
@@ -1548,6 +1552,109 @@ Public Module Colores_Bakapp
         End Select
 
         Return _Color
+
+    End Function
+
+    Function Fx_Revisar_Expiracion_Folio_SII(_Empresa As String, _Tido As String, _Folio As String) As Boolean
+
+        Dim _Sql As New Class_SQL()
+
+        If _Tido = "GDP" Or _Tido = "GDD" Or _Tido = "GTI" Then
+            _Tido = "GDV"
+        End If
+
+        Dim _Td = Fx_Tipo_DTE_VS_TIDO(_Tido)
+
+        Consulta_sql = "Select Top 1 * From FFOLIOS With ( NOLOCK )" & vbCrLf &
+                       "Where Cast(RNG_D AS INT)<=" & Val(_Folio) & "  And Cast(RNG_H AS INT)>=" & Val(_Folio) &
+                       " And TD='" & _Td & "' And EMPRESA='" & _Empresa & "' "
+
+        Dim _Row_Folios As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+        If IsNothing(_Row_Folios) Then
+
+            'If Not IsNothing(_Formulario) Then
+
+            '    'MessageBoxEx.Show(_Formulario, "el folio del documento electrónico no está  autorizado por el SII: " & _Folio & vbCrLf & vbCrLf &
+            '    '                  "INFORME ESTA SITUACION AL ADMINISTRADOR DEL SISTEMA POR FAVOR", "Validación Modalidad: " & Modalidad,
+            '    '                  MessageBoxButtons.OK, MessageBoxIcon.Stop)
+
+            'End If
+
+        Else
+
+            'Dim _Hasta = _Row_Folios.Item("RNG_H")
+            'Dim _Folios_Restantes = _Hasta - CInt(_Folio)
+
+            Dim _Fa As DateTime = FormatDateTime(CDate(_Row_Folios.Item("FA")), DateFormat.ShortDate)
+            Dim _Fecha_Servisor As DateTime = FormatDateTime(FechaDelServidor(), DateFormat.ShortDate)
+
+            Dim _Meses As Integer = 6
+
+            If _Sql.Fx_Existe_Tabla("FDTECONF") Then
+
+                Try
+                    _Meses = _Sql.Fx_Trae_Dato("FDTECONF", "VALOR", "CAMPO = 'sii.meses.expiran.folios' And ACTIVO=1 And EMPRESA = '" & _Empresa & "'")
+                Catch ex As Exception
+                    If _Tido = "BLV" Then
+                        _Meses = 24
+                    ElseIf _Tido = "GDV" Then
+                        _Meses = 12
+                    End If
+                End Try
+
+            End If
+
+            Dim _Meses_Dif As Double = DateDiff(DateInterval.Month, _Fa, _Fecha_Servisor)
+            Dim _Dias_Dif As Integer = DateDiff(DateInterval.Day, _Fa, _Fecha_Servisor)
+
+            _Meses_Dif = Math.Round(_Dias_Dif / 31, 2)
+
+            If _Meses_Dif > _Meses Then
+
+                'If Not IsNothing(_Formulario) Then
+
+                '    MessageBoxEx.Show(_Formulario, "Este folio " & _Folio & " tiene mas de (" & _Meses & ") meses desde su fecha de creación" & vbCrLf &
+                '              "en el SII y su configuración indica que podría estar vencido." & vbCrLf &
+                '              "Si usted insite en el envío, este documento podria ser rechazado." & vbCrLf & vbCrLf &
+                '              "INFORME ESTA SITUACION AL ADMINISTRADOR DEL SISTEMA POR FAVOR", "Validación Modalidad: " & Modalidad, MessageBoxButtons.OK, MessageBoxIcon.Stop)
+
+                'End If
+
+            Else
+
+                Return True
+
+            End If
+
+        End If
+
+    End Function
+
+    Function Fx_Tipo_DTE_VS_TIDO(_Tido As String) As Integer
+
+        Select Case _Tido
+            Case "FCV"
+                Return 33
+            Case "BLV", "BSV"
+                Return 39
+            Case "GDV", "GDP", "GTI", "GDD"
+                Return 52
+            Case "NCV"
+                Return 61
+            Case "OCC"
+                Return 801
+            Case Else
+                Return 0
+        End Select
+
+        'Return "FACTURA" 33
+        'Return "FACTURA EXENTA" 34
+        'Return "GUIA DE DESPACHO" 52
+        'Return "FACTURA DE COMPRA" 46
+        'Return "NOTA DE DEBITO" 56
+        'Return "NOTA DE CREDITO" 61
+        'Return "ORDEN DE COMPRA" 801
 
     End Function
 

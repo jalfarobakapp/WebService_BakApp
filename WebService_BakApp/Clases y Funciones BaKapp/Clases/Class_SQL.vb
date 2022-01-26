@@ -444,4 +444,28 @@ Public Class Class_SQL
 
     End Function
 
+    Function Fx_Exite_Campo(ByVal _Tabla As String, ByVal _Campo As String) As Boolean
+
+        Dim _ConsultaSql As String
+
+        If _Tabla.Contains(_Global_BaseBk) Then
+
+            _Tabla = Replace(_Tabla, _Global_BaseBk, "")
+            _ConsultaSql = "USE " & Replace(_Global_BaseBk, ".dbo.", "") & "
+                            SELECT * FROM INFORMATION_SCHEMA.COLUMNS" & vbCrLf &
+                            "WHERE COLUMN_NAME = '" & _Campo & "' AND TABLE_NAME = '" & _Tabla & "'"
+
+        Else
+
+            _ConsultaSql = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS" & vbCrLf &
+                                   "WHERE COLUMN_NAME = '" & _Campo & "' AND TABLE_NAME = '" & _Tabla & "'"
+
+        End If
+
+        Dim _Tbl As DataTable = Fx_Get_Tablas(_ConsultaSql)
+
+        Return CBool(_Tbl.Rows.Count)
+
+    End Function
+
 End Class

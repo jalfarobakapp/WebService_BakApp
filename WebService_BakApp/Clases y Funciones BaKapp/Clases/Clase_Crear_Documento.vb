@@ -5,12 +5,10 @@ Public Class Clase_Crear_Documento
     Dim _Sql As New Class_SQL
     Dim _Error As String
 
-#Region "VARIABLES ENCABEZADO"
-
-    Dim _Global_BaseBk As String
     Dim _Funcionario As String
 
-    Dim _Modalidad As String
+#Region "VARIABLES ENCABEZADO"
+
     Public _Nudo As String 'NUDO
     Dim _Idmaeedo As Integer
 
@@ -24,13 +22,13 @@ Public Class Clase_Crear_Documento
     Dim _Tigedo As String       ' Tipo de generacion del documento E o I, desde TABTIDO
 
     Dim _Feemdo As String       ' Fecha emisión - FEEMDO
-    Dim _FechaEmision As Date
-
     Dim _Kofudo As String       ' Responzable del documento
-    Dim _Luvtven As String      ' Centro de Costo
+    Dim _Luvtdo As String      ' Centro de Costo
+
     Dim _Caprco As String       ' Cantidad total productos del documento
     Dim _Caprad As String       ' Cantidad despachada Encabezado 
-    'Dim _Caprad_Enc As String  ' Cantidad despachada Encabezado
+    Dim _Caprex As String       ' Cantidad total de productos externamente documentada
+
     Dim _Meardo As String       ' Tipo Moneda del documento NETO o BRUTO
     Dim _Modo As String         ' Código moneda del documento
     Dim _Timodo As String       ' Tipo Moneda del documento: Nacional/Extranjera
@@ -48,6 +46,9 @@ Public Class Clase_Crear_Documento
     Dim _Subtido As String      ' AJU si es ajuste
     Dim _Marca As String        ' 1 si es ajuste
     Dim _Lisactiva As String    ' Lista de precios del documento
+
+    Dim _Libro As String        ' Numero de libro de compra
+    Dim _Fecha_Tributaria As String ' Fecha Tributaria
 
     'TipoDoc
     'NroDocumento
@@ -72,11 +73,6 @@ Public Class Clase_Crear_Documento
     'DocEn_Neto_Bruto
     'TipoMoneda
 #End Region
-
-    Public Sub New(Global_BaseBk As String, Funcionario As String)
-        _Global_BaseBk = Global_BaseBk
-        _Funcionario = Funcionario
-    End Sub
 
 #Region "VARIABLES DETALLE DEL DOCUMENTO"
 
@@ -112,6 +108,8 @@ Public Class Clase_Crear_Documento
     Dim _Timopppr As String
     Dim _Tamopppr As String
 
+    Dim _Mgltpr As String
+
     Dim _Koltpr As String
     Dim _Tipr As String
     Dim _Prct As Boolean
@@ -119,6 +117,7 @@ Public Class Clase_Crear_Documento
     Dim _Nudtli As Integer
     Dim _Nuimli As Integer
 
+    Dim _HoraGrab As String
 
     Dim _Ppprnelt As String
     Dim _Ppprne As String
@@ -135,6 +134,8 @@ Public Class Clase_Crear_Documento
     Dim _Vaivli As String
     Dim _Vaneli As String
     Dim _Vabrli As String
+
+    Dim _Tigeli As String
 
     Dim _Ppprpm As String
     Dim _Ppprmsuc As String
@@ -153,15 +154,18 @@ Public Class Clase_Crear_Documento
 
     Dim _Emprepa As String
     Dim _Tidopa As String
+    Dim _Subtidopa As String
     Dim _Nudopa As String
     Dim _Endopa As String
     Dim _Nulidopa As String
 
+    Dim _Luvtlido As String
+    Dim _Proyecto As String
+    Dim _Bodesti As String
 
 #End Region
 
 #Region "VARIABLES PIE DEL DOCUMENTO,OBSERVACIONES"
-
 
     Dim _Obdo As String         ' Observacion al documento --
     Dim _Cpdo As String         ' Condiciones de pago del documento
@@ -169,16 +173,29 @@ Public Class Clase_Crear_Documento
     Dim _Ocdo As String         ' Orden de compra del documento
     Dim Obs(34) As String       ' Textos del 1 al 35
 
+    Public Property [Error] As String
+        Get
+            Return _Error
+        End Get
+        Set(value As String)
+            _Error = value
+        End Set
+    End Property
 
 #End Region
 
+    Public Sub New(Global_BaseBk As String, Funcionario As String)
+        _Global_BaseBk = Global_BaseBk
+        _Funcionario = Funcionario
+    End Sub
+
 #Region "FUNCION CREAR DOCUMENTO RANDOM DEFINITIVO"
 
-    Function Fx_Crear_Documento(ByVal Tipo_de_documento As String,
-                               ByVal Numero_de_documento As String,
-                               ByVal _Es_ValeTransitorio As Boolean,
-                               ByVal _Es_Documento_Electronico As Boolean,
-                               ByVal Bd_Documento As DataSet,
+    Function Fx_Crear_Documento(Tipo_de_documento As String,
+                               Numero_de_documento As String,
+                               _Es_ValeTransitorio As Boolean,
+                               _Es_Documento_Electronico As Boolean,
+                               Bd_Documento As DataSet,
                                Optional ByVal EsAjuste As Boolean = False,
                                Optional ByVal _Cambiar_Numeracion_Confiest As Boolean = True) As String
 
@@ -191,14 +208,14 @@ Public Class Clase_Crear_Documento
         Dim Tbl_Detalle As DataTable = Bd_Documento.Tables("Detalle_Doc")
 
         Dim _Empresa = _Row_Encabezado.Item("EMPRESA")
-
+        Dim _Modalidad As String
         Try
 
             _Sql.Sb_Abrir_Conexion(cn2)
 
             With _Row_Encabezado
 
-                Dim _Modalidad As String = .Item("Modalidad")
+                _Modalidad = .Item("Modalidad")
                 _Tido = .Item("TipoDoc")
                 _Subtido = .Item("Subtido")
 
@@ -222,7 +239,7 @@ Public Class Clase_Crear_Documento
                 _Caprco = De_Num_a_Tx_01(.Item("CantTotal"), 5)
                 _Caprad = De_Num_a_Tx_01(.Item("CantDesp"), 5)
 
-                _Luvtven = .Item("Centro_Costo")
+                _Luvtdo = .Item("Centro_Costo")
                 _Modo = .Item("Moneda_Doc")
                 _Meardo = .Item("DocEn_Neto_Bruto")
                 _Tamodo = De_Num_a_Tx_01(.Item("Valor_Dolar"), False, 5)
@@ -597,7 +614,7 @@ Public Class Clase_Crear_Documento
                               "FVENLOTE,FCRELOTE,NOKOPR,ALTERNAT,TASADORIG,CUOGASDIF,LINCONDESP,OPERACION,POTENCIA,ESLIDO,OBSERVA,KOFUAULIDO)" & vbCrLf &
                        "VALUES (" & _Idmaeedo & ",'" & _Archirst & "'," & _Idrst & ",'" & _Empresa & "','" & _Tido & "','" & _Nudo & "','" & _Endo &
                               "','" & _Suendo & "','SI','" & _Nulido & "','" & _Sulido & "','" & _Bosulido &
-                              "','" & _Luvtven & "','" & _Kofulido & "','" & _Tipr & "','" & _Tict & "'," & CInt(_Prct) & ",'" & _Koprct &
+                              "','" & _Luvtdo & "','" & _Kofulido & "','" & _Tipr & "','" & _Tict & "'," & CInt(_Prct) & ",'" & _Koprct &
                               "'," & _Udtrpr & "," & _Rludpr & "," & _Caprco1 & ",'" & _Ud01pr & "'," & _Caprco2 &
                               ",'" & _Ud02pr & "'," & _Caprad1 & "," & _Caprad2 & ",'TABPP" & _Koltpr & "'" &
                               ",'" & _Mopppr & "','" & _Timopppr & "'," & _Tamopppr &
@@ -776,7 +793,7 @@ Public Class Clase_Crear_Documento
                           "',KOTU = '1',LCLV = NULL,LAHORA = GETDATE(), DESPACHO = 1,HORAGRAB = " & _HoraGrab &
                           ",FECHATRIB = NULL,SUBTIDO = '" & _Subtido &
                           "',MARCA = '" & _Marca & "',ESDO = '',NUDONODEFI = " & CInt(_Es_ValeTransitorio) &
-                          ",TIDOELEC = " & CInt(_Es_Documento_Electronico) & ",LUVTDO = '" & _Luvtven & "'" & vbCrLf &
+                          ",TIDOELEC = " & CInt(_Es_Documento_Electronico) & ",LUVTDO = '" & _Luvtdo & "'" & vbCrLf &
                           "WHERE IDMAEEDO=" & _Idmaeedo
 
             Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
@@ -930,6 +947,8 @@ Public Class Clase_Crear_Documento
 
             ' ====================================================================================================================================
 
+
+
             If _Cambiar_Numeracion_Confiest Then
                 Consulta_sql = Fx_Cambiar_Numeracion_Modalidad(_Tido, _Nudo, _Modalidad, _Empresa)
 
@@ -967,30 +986,140 @@ Public Class Clase_Crear_Documento
 
     End Function
 
-    Function Fx_Crear_Documento_Old(ByVal Tipo_de_documento As String,
-                               ByVal Numero_de_documento As String,
-                               ByVal _Es_ValeTransitorio As Boolean,
-                               ByVal _Es_Documento_Electronico As Boolean,
-                               ByVal Bd_Documento As DataSet,
-                               Optional ByVal EsAjuste As Boolean = False,
-                               Optional ByVal _Cambiar_Numeracion_Confiest As Boolean = True) As String
+    Function Fx_Crear_Documento2(Tipo_de_documento As String,
+                                ByRef Numero_de_documento As String,
+                                _Es_ValeTransitorio As Boolean,
+                                _Es_Documento_Electronico As Boolean,
+                                Bd_Documento As DataSet,
+                                Optional EsAjuste As Boolean = False,
+                                Optional _Cambiar_NroDocumento As Boolean = True,
+                                Optional ByRef _Origen_Modificado_Intertanto As Boolean = False,
+                                Optional _Es_TLV As Boolean = False,
+                                Optional _HoraAlFinalDelDia As Boolean = False) As Integer
 
-        Dim cn2 As New SqlConnection
+        'Optional _Tbl_Mevento_Edo As DataTable = Nothing,
+        'Optional _Tbl_Mevento_Edd As DataTable = Nothing,
+        'Optional _Tbl_Referencias_DTE As DataTable = Nothing) As Integer
+
+        Dim Consulta_sql As String
+
+        If False Then
+            Throw New System.Exception("An exception has occurred.")
+        End If
+
+        _Idmaeedo = 0
 
         Dim myTrans As SqlClient.SqlTransaction
         Dim Comando As SqlClient.SqlCommand
 
         Dim _Row_Encabezado As DataRow = Bd_Documento.Tables("Encabezado_Doc").Rows(0)
+        Dim _Tbl_Detalle As DataTable = Bd_Documento.Tables("Detalle_Doc")
+
+        Dim _Tbl_Mevento_Edo As DataTable = Bd_Documento.Tables("Mevento_Edo")
+        Dim _Tbl_Mevento_Edd As DataTable = Bd_Documento.Tables("Mevento_Edd")
+        Dim _Tbl_Referencias_DTE As DataTable = Bd_Documento.Tables("Referencias_DTE")
+
+        Dim _Tbl_Maedcr As DataTable = Bd_Documento.Tables("Maedcr")
+
+        Dim _Reserva_NroOCC As Boolean = _Row_Encabezado.Item("Reserva_NroOCC")
+        Dim _Reserva_Idmaeedo As Integer = _Row_Encabezado.Item("Reserva_Idmaeedo")
+
+        Dim cn2 As New SqlConnection
+        Dim SQL_ServerClass As New Class_SQL()
+
+        Dim _Empresa = _Row_Encabezado.Item("EMPRESA")
+
+        For Each _Row As DataRow In _Tbl_Detalle.Rows
+
+            _Sulido = _Row.Item("Sucursal")
+            _Koprct = _Row.Item("Codigo")
+
+            _Row.Item("PmLinea") = _Sql.Fx_Trae_Dato("MAEPREM", "PM", "KOPR = '" & _Koprct & "' And EMPRESA = '" & _Empresa & "'", True)
+            _Row.Item("PmSucLinea") = _Sql.Fx_Trae_Dato("MAEPMSUC", "PMSUC", "KOPR = '" & _Koprct & "' AND EMPRESA = '" & _Empresa & "' AND KOSU = '" & _Sulido & "'", True)
+            _Row.Item("PmIFRS") = _Sql.Fx_Trae_Dato("MAEPREM", "PMIFRS", "EMPRESA = '" & _Empresa & "' And KOPR = '" & _Koprct & "'", True)
+
+        Next
+
+        Dim _Filtro_Idmaeddo_Dori As String = Generar_Filtro_IN(_Tbl_Detalle, "", "Idmaeddo_Dori", 1, False, "")
+        Dim _Tbl_Maeddo_Dori As DataTable
+
+        If _Filtro_Idmaeddo_Dori <> "()" Then
+
+            Consulta_sql = "Select IDMAEDDO,KOPRCT,ESLIDO,
+                            CAPRCO1-CAPREX1 AS 'CantUd1_Dori',CAPRCO2-CAPREX2 AS 'CantUd2_Dori',
+                            CASE WHEN TIDO = 'GRD' THEN CAPRCO1-CAPREX1 ELSE (CAPRAD1+CAPREX1)-CAPRNC1 END AS 'CantUd1_Dori_Ncv',
+	                        CASE WHEN TIDO = 'GRD' THEN CAPRCO2-CAPREX2 ELSE (CAPRAD2+CAPREX2)-CAPRNC2 END AS 'CantUd2_Dori_Ncv'
+                            From MAEDDO Where IDMAEDDO In " & _Filtro_Idmaeddo_Dori
+            _Tbl_Maeddo_Dori = _Sql.Fx_Get_Tablas(Consulta_sql)
+
+        End If
+
+
+        Dim Fl As String = Generar_Filtro_IN(_Tbl_Detalle, "", "Idmaeedo_Dori", False, False, "")
+
+        If Fl = "()" Then Fl = "(0)"
+
+        Consulta_sql = "SELECT DISTINCT IDMAEEDO,TIDO FROM MAEDDO WHERE IDMAEEDO IN " & Fl
+        Dim _TblOrigen As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+
+
+        SQL_ServerClass.Sb_Abrir_Conexion(cn2)
 
 
         Try
-
-            _Sql.Sb_Abrir_Conexion(cn2)
 
             With _Row_Encabezado
 
                 Dim _Modalidad As String = .Item("Modalidad")
                 _Tido = .Item("TipoDoc")
+                _Subtido = .Item("Subtido")
+
+                If _Es_TLV And _Tido = "BLV" Then
+
+                    _Cambiar_NroDocumento = False
+                    Numero_de_documento = _Sql.Fx_Cuenta_Registros("MAEEDO", "TIDO = 'BLV' And NUDO Like 'TLV%'")
+
+                    If Numero_de_documento = 0 Then
+                        Numero_de_documento = "TLV0000001"
+                    Else
+                        Numero_de_documento = _Sql.Fx_Trae_Dato("MAEEDO", "COALESCE(MAX(NUDO),'0000000000')",
+                                                                "EMPRESA = '" & _Empresa & "' And TIDO = '" & _Tido & "' And NUDO Like 'TLV%'")
+                        Numero_de_documento = Fx_Proximo_NroDocumento(Numero_de_documento, 10)
+                    End If
+
+                    .Item("Subtido") = "TJV"
+                    _Subtido = "TJV"
+
+                Else
+
+                    If _Cambiar_NroDocumento And Not _Reserva_NroOCC Then
+                        Numero_de_documento = Traer_Numero_Documento2(_Tido, _Empresa, _Modalidad, .Item("NroDocumento"))
+                    Else
+                        Numero_de_documento = .Item("NroDocumento")
+                    End If
+
+                End If
+
+                If _Es_Documento_Electronico Then
+
+                    If _Tido = "BLV" Or _Tido = "FCV" Or _Tido = "NCV" Or _Tido = "GDV" Or _Tido = "GDP" Or _Tido = "GTI" Or _Tido = "GDD" Then
+
+                        If Not _Es_ValeTransitorio Then
+
+                            If Not Fx_Revisar_Expiracion_Folio_SII(Nothing, _Tido, Numero_de_documento) Then
+                                Throw New System.Exception("El folio del documento electrónico (" & Numero_de_documento & ") ya expiró en el SII." & vbCrLf &
+                                                       "Informe al administrador del sistema")
+                            End If
+
+                        End If
+
+                    End If
+
+                End If
+
+                If String.IsNullOrEmpty(Numero_de_documento) Then
+                    Return 0
+                End If
 
                 .Item("NroDocumento") = Numero_de_documento
                 _Nudo = .Item("NroDocumento")
@@ -999,35 +1128,39 @@ Public Class Clase_Crear_Documento
                     Return 0
                 End If
 
-                _Empresa = .Item("Empresa").ToString
+                If Not IsNothing(_Tbl_Referencias_DTE) Then
+                    For Each _Fila As DataRow In _Tbl_Referencias_DTE.Rows
+                        _Fila.Item("Tido") = _Tido
+                        _Fila.Item("Nudo") = _Nudo
+                    Next
+                End If
+
+                _Empresa = .Item("Empresa")
                 _Sudo = .Item("Sucursal")
                 _Kofudo = .Item("CodFuncionario")
-
-
                 _Endo = .Item("CodEntidad")
                 _Suendo = .Item("CodSucEntidad")
-
                 _Feemdo = Format(.Item("FechaEmision"), "yyyyMMdd")
                 _Lisactiva = .Item("ListaPrecios")
-                _Caprco = De_Num_a_Tx_01(.Item("CantTotal"), 5)
-                _Caprad = De_Num_a_Tx_01(.Item("CantDesp"), 5)
-
-                _Luvtven = .Item("Centro_Costo")
+                _Caprco = De_Num_a_Tx_01(.Item("CantTotal"), False, 5)
+                _Caprad = 0 ' De_Num_a_Tx_01(.Item("CantDesp"), False, 5)
+                _Luvtdo = .Item("Centro_Costo")
                 _Modo = .Item("Moneda_Doc")
                 _Meardo = .Item("DocEn_Neto_Bruto")
                 _Tamodo = De_Num_a_Tx_01(.Item("Valor_Dolar"), False, 5)
                 _Timodo = .Item("TipoMoneda")
+
+                _Bodesti = .Item("Bodega_Destino")
 
                 Dim _Vanedo_2 = .Item("TotalNetoDoc")
                 Dim _Vaivdo_2 = .Item("TotalIvaDoc")
                 Dim _Vaimdo_2 = .Item("TotalIlaDoc")
                 Dim _Vabrdo_2 = .Item("TotalBrutoDoc")
 
-
                 _Vanedo = De_Num_a_Tx_01(.Item("TotalNetoDoc"), False, 5)
                 _Vaivdo = De_Num_a_Tx_01(.Item("TotalIvaDoc"), False, 5)
                 _Vaimdo = De_Num_a_Tx_01(.Item("TotalIlaDoc"), False, 5)
-                _Vabrdo = De_Num_a_Tx_01(.Item("TotalBrutoDoc"), False, 0)
+                _Vabrdo = De_Num_a_Tx_01(.Item("TotalBrutoDoc"), False, 5)
 
                 _Fe01vedo = Format(.Item("Fecha_1er_Vencimiento"), "yyyyMMdd")
                 _Feulvedo = Format(.Item("FechaUltVencimiento"), "yyyyMMdd")
@@ -1035,13 +1168,51 @@ Public Class Clase_Crear_Documento
                 _Feer = Format(.Item("FechaRecepcion"), "yyyyMMdd")
                 _Feerli = Format(.Item("FechaRecepcion"), "yyyyMMdd")
 
-                '------------------------------------------------------------------------------------------------------------
+                _Libro = .Item("Libro")
+                _Fecha_Tributaria = .Item("Fecha_Tributaria")
 
+                If String.IsNullOrEmpty(_Fecha_Tributaria) Then
+                    _Fecha_Tributaria = "FECHATRIB = NULL"
+                Else
+                    _Fecha_Tributaria = "FECHATRIB = '" & _Fecha_Tributaria & "'"
+                End If
+                '------------------------------------------------------------------------------------------------------------
 
             End With
 
+            Consulta_sql = "Select Top 1 * From TABTIDO Where TIDO = '" & _Tido & "'"
+            Dim _Row_Tabtido As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            Dim _Signo = String.Empty
+            Dim _Fiad As Integer = _Row_Tabtido.Item("FIAD")
+            Dim _Fico As Integer = _Row_Tabtido.Item("FICO")
+            _Tigedo = _Row_Tabtido.Item("TIGEDO")
+
+            If CBool(_Fico) Then
+
+                If _Fico = 1 Then
+                    _Signo = "+"
+                ElseIf _Fico = -1 Then
+                    _Signo = "-"
+                End If
+
+                _Lincondesp = True
+
+            Else
+
+                If _Fiad = 1 Then
+                    _Signo = "+"
+                ElseIf _Fiad = -1 Then
+                    _Signo = "-"
+                Else
+                    _Lincondesp = False
+                End If
+
+            End If
+
 
             myTrans = cn2.BeginTransaction()
+
 
             Consulta_sql = "INSERT INTO MAEEDO ( EMPRESA,TIDO,NUDO,ENDO,SUENDO )" & vbCrLf &
                            "VALUES ( '" & _Empresa & "','" & _Tido & "','" & _Nudo &
@@ -1050,6 +1221,24 @@ Public Class Clase_Crear_Documento
             Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
             Comando.Transaction = myTrans
             Comando.ExecuteNonQuery()
+
+
+            If _Cambiar_NroDocumento Then
+
+                Dim _Modalidad = _Row_Encabezado.Item("Modalidad")
+
+                Consulta_sql = Fx_Cambiar_Numeracion_Modalidad(_Tido, _Nudo, _Empresa, _Modalidad)
+
+
+                If Not String.IsNullOrEmpty(Consulta_sql) Then
+
+                    Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                    Comando.Transaction = myTrans
+                    Comando.ExecuteNonQuery()
+
+                End If
+
+            End If
 
             Comando = New SqlCommand("SELECT @@IDENTITY AS 'Identity'", cn2)
             Comando.Transaction = myTrans
@@ -1060,30 +1249,28 @@ Public Class Clase_Crear_Documento
             dfd1.Close()
 
             Bd_Documento.Tables("Detalle_Doc").Dispose()
-            Dim Tbl_Detalle As DataTable = Bd_Documento.Tables("Detalle_Doc")
 
             Dim Contador As Integer = 1
 
-            For Each FDetalle As DataRow In Tbl_Detalle.Rows
+            For Each FDetalle As DataRow In _Tbl_Detalle.Rows
 
                 Dim Estado As DataRowState = FDetalle.RowState
+
+                Consulta_sql = String.Empty
 
                 If Not Estado = DataRowState.Deleted Then
 
                     With FDetalle
 
-
-
                         Id_Linea = .Item("Id")
-
 
                         _Nulido = numero_(Contador, 5)
 
+                        _Sulido = .Item("Sucursal")
                         _Bosulido = .Item("Bodega")
                         _Koprct = .Item("Codigo")
                         _Nokopr = .Item("Descripcion")
                         _Rludpr = De_Num_a_Tx_01(.Item("Rtu"), False, 5)
-                        _Sulido = .Item("Sucursal")
                         _Kofulido = .Item("CodFuncionario") 'FUNCIONARIO ' Codigo de funcionario
                         _Tict = .Item("Tict")
                         _Prct = .Item("Prct")
@@ -1092,19 +1279,82 @@ Public Class Clase_Crear_Documento
                         _Tipr = .Item("Tipr")
                         _Lincondesp = .Item("Lincondest")
 
-                        If _Lincondesp Then
-                            _Caprad1 = _Caprco1 ' Cantidad que mueve Stock Fisico, según el producto.
-                            _Caprad2 = _Caprco2 ' Cantidad que mueve Stock Fisico, según el producto.
-                        Else
-                            _Caprad1 = De_Num_a_Tx_01(NuloPorNro(.Item("CDespUd1"), 0), False, 5) ' Cantidad que mueve Stock Fisico, según el producto.
-                            _Caprad2 = De_Num_a_Tx_01(NuloPorNro(.Item("CDespUd2"), 0), False, 5) ' Cantidad que mueve Stock Fisico, según el producto.
+
+                        If _Prct Then
+                            _Lincondesp = True
                         End If
 
-                        _Eslido = NuloPorNro(.Item("Estado"), "")
+                        _Tidopa = .Item("Tidopa")
+
+                        If _Lincondesp And Not _Tidopa.Contains("G") Then
+
+                            If _Tido = "GRI" Or _Tido = "GDI" Then
+
+                                _Caprad1 = _Caprco1 ' Cantidad que mueve Stock Fisico, según el producto.
+                                _Caprad2 = _Caprco2 ' Cantidad que mueve Stock Fisico, según el producto.
+
+                            Else
+
+                                If Not CBool(_Fico) Then
+                                    _Caprad1 = _Caprco1 ' Cantidad que mueve Stock Fisico, según el producto.
+                                    _Caprad2 = _Caprco2 ' Cantidad que mueve Stock Fisico, según el producto.
+                                Else
+                                    _Caprad1 = 0
+                                    _Caprad2 = 0
+                                End If
+
+                                If _Fico = 0 And _Fiad = 0 Then
+                                    _Caprad1 = 0
+                                    _Caprad2 = 0
+                                End If
+
+                            End If
+
+                        Else
+
+                            If CBool(_Fiad) Then
+
+                                If Not _Tido.Contains("N") Then ' Si no es Nota de credito
+
+                                    If _Tipr = "SSN" Then
+
+                                        .Item("CDespUd1") = .Item("CantUd1")
+                                        .Item("CDespUd2") = .Item("CantUd2")
+                                        .Item("Estado") = "C"
+
+                                    End If
+
+                                End If
+
+                            End If
+
+                            _Caprad1 = De_Num_a_Tx_01(NuloPorNro(.Item("CDespUd1"), 0), False, 5) ' Cantidad que mueve Stock Fisico, según el producto.
+                            _Caprad2 = De_Num_a_Tx_01(NuloPorNro(.Item("CDespUd2"), 0), False, 5) ' Cantidad que mueve Stock Fisico, según el producto.
+
+                        End If
+
+                        If EsAjuste Then
+                            _Eslido = "C"
+                        Else
+
+                            _Eslido = NuloPorNro(.Item("Estado"), "")
+
+                            If String.IsNullOrEmpty(_Eslido) Then
+
+                                Select Case _Tido
+                                    Case "BLV", "FCV", "FCC"
+                                        If _Caprad1 = _Caprco1 Then
+                                            _Eslido = "C"
+                                        End If
+                                End Select
+
+                            End If
+
+                        End If
 
                         _Caprex1 = 0 ' Cantidad  
                         _Caprex2 = 0
-                        _Caprnc1 = 0 ' Cantidad de Nota de credito
+                        _Caprnc1 = 0 ' Cantidad de Nota de Credito
                         _Caprnc2 = 0
 
                         _Udtrpr = .Item("UnTrans")  ' Unidad de la transaccion
@@ -1118,7 +1368,7 @@ Public Class Clase_Crear_Documento
                         _Podtglli = De_Num_a_Tx_01(.Item("DescuentoPorc"), False, 5)
                         _Poimglli = De_Num_a_Tx_01(.Item("PorIla"), False, 5)
 
-                        _Operacion = .Item("Operacion")
+                        _Operacion = NuloPorNro(.Item("Operacion"), "")
                         _Potencia = De_Num_a_Tx_01(.Item("Potencia"), False, 5)
 
                         Dim Campo As String = "Precio"
@@ -1134,95 +1384,198 @@ Public Class Clase_Crear_Documento
                         _Nuimli = De_Num_a_Tx_01(.Item("NroImpuestos"), True)
 
                         _Vadtneli = De_Num_a_Tx_01(.Item("DsctoNeto"), False, 5)
-                        _Vadtbrli = De_Num_a_Tx_01(.Item("DsctoBruto"), False, 5) 'ValDscto
+                        _Vadtbrli = De_Num_a_Tx_01(.Item("DsctoBruto"), False, 5)
+
                         _Vaneli = De_Num_a_Tx_01(.Item("ValNetoLinea"), False, 5)
                         _Vaimli = De_Num_a_Tx_01(.Item("ValIlaLinea"), False, 5)
                         _Vaivli = De_Num_a_Tx_01(.Item("ValIvaLinea"), False, 5)
-                        _Vabrli = De_Num_a_Tx_01(Math.Round(.Item("ValBrutoLinea"), 0), False, 5)
-                        _Feemli = _Feemdo 'Format(Now.Date, "yyyyMMdd") '""20121127"
-                        _Feerli = _Feemdo 'Format(Now.Date, "yyyyMMdd")
+                        _Vabrli = De_Num_a_Tx_01(Math.Round(.Item("ValBrutoLinea"), 5), False, 5)
 
+                        _Feemli = Format(.Item("FechaEmision"), "yyyyMMdd")
+                        _Feerli = Format(.Item("FechaRecepcion"), "yyyyMMdd")
+
+                        _Kofuaulido = Replace(NuloPorNro(.Item("CodFunAutoriza"), ""), "xyz", "")
                         _Observa = NuloPorNro(.Item("Observa"), "")
 
-                        _Ppprnere1 = De_Num_a_Tx_01(.Item("PrecioNetoRealUd1"), False, 5)
-                        _Ppprnere2 = De_Num_a_Tx_01(.Item("PrecioNetoRealUd2"), False, 5)
+                        _Luvtlido = .Item("Centro_Costo")
+                        _Proyecto = .Item("Proyecto")
+
+                        _Ppprnere1 = De_Num_a_Tx_01(NuloPorNro(.Item("PrecioNetoRealUd1"), 0), False, 5)
+                        _Ppprnere2 = De_Num_a_Tx_01(NuloPorNro(.Item("PrecioNetoRealUd2"), 0), False, 5)
+
+                        ' Costos del producto, solo deberia ser efectivo en las ventas
                         _Ppprpm = De_Num_a_Tx_01(NuloPorNro(.Item("PmLinea"), 0), False, 5)
                         _Ppprmsuc = De_Num_a_Tx_01(NuloPorNro(.Item("PmSucLinea"), 0), False, 5)
                         _Ppprpmifrs = De_Num_a_Tx_01(NuloPorNro(.Item("PmIFRS"), 0), False, 5)
 
+                        _Idrst = Val(NuloPorNro(.Item("Idmaeddo_Dori"), ""))
+                        _Tigeli = "I"
+
+                        Dim _MgltprD As Double
+
+                        _Mgltpr = _Sql.Fx_Trae_Dato("TABPRE", "MG0" & _Udtrpr & "UD", "KOLT = '" & _Koltpr & "' And KOPR = '" & _Koprct & "'", True, False, 0)
+                        _Mgltpr = De_Num_a_Tx_01(_MgltprD, False, 5)
+
+                        Dim _Tasadorig = De_Num_a_Tx_01(NuloPorNro(.Item("Tasadorig"), 0), False, 5)
+
+                        _Cafaco = 0
 
                         _Alternat = NuloPorNro(.Item("CodigoProv"), "")
 
                         Dim _TipoValor As String = NuloPorNro(.Item("TipoValor"), "")
 
+                        If _Prct Then ' ES CONCEPTO
 
+                            If Not String.IsNullOrEmpty(Trim(_Tict)) Then
 
-                        If Not String.IsNullOrEmpty(Trim(_Tict)) Then
-                            Dim TipoValor = _TipoValor 'trae_dato(tb, cn1, "TipoValor", "ZW_Bkp_Configuracion")
+                                Dim TipoValor = _TipoValor
 
-                            If TipoValor = "N" Then
-                                _Caprco1 = _Vadtneli
-                                _Vadtbrli = De_Txt_a_Num_01((_Vabrli), 0) * -1
-                            Else
-                                _Vadtneli = De_Num_a_Tx_01(De_Txt_a_Num_01((_Vaneli), 5) * -1, False, 5)
-                                _Caprco1 = _Vadtbrli
+                                _Caprco2 = 0
+                                _Caprad2 = 0
+                                _Cafaco = 0
+                                _Ppprnelt = 0
+                                _Ppprne = 0
+                                _Ppprbrlt = 0
+                                _Ppprbr = 0
+                                _Prct = 1
+                                _Ppprpm = 0
+                                _Ppprmsuc = 0
+                                _Ppprpmifrs = 0
+                                _Lincondesp = False
+                                _Nudtli = 0
+                                _Eslido = String.Empty
+
                             End If
 
-                            _Caprco2 = 0
-                            _Caprad2 = 0
-                            _Cafaco = 0
-                            _Ppprnelt = 0
-                            _Ppprne = 0
-                            _Ppprbrlt = 0
-                            _Ppprbr = 0
-                            _Prct = 1
-                            _Ppprpm = 0
-                            _Ppprmsuc = 0
-                            _Ppprpmifrs = 0
-                            _Lincondesp = 1
-                            _Nudtli = 0
-                            _Eslido = "C"
                         Else
-                            _Cafaco = _Caprco1
-                        End If
 
-                        If _Tido <> "COV" Then
+                            If _Tido = "FCC" Then
 
-                            If _Tido = "OCC" Then
+                                Consulta_sql = "Update MAEPR Set PPUL01 = " & _Ppprnere1 & ",PPUL02 = " & _Ppprnere2 & " Where KOPR = '" & _Koprct & "'" & vbCrLf &
+                                               "Update MAEPREM Set PPUL01 = " & _Ppprnere1 & ",PPUL02 = " & _Ppprnere2 & " Where EMPRESA = '" & _Empresa & "' And KOPR = '" & _Koprct & "'"
+                                Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                                Comando.Transaction = myTrans
+                                Comando.ExecuteNonQuery()
 
-                                Consulta_sql = "UPDATE MAEST SET STOCNV1C = STOCNV1C +" & _Caprco1 & "," &
-                                                                "STOCNV2C = STOCNV2C + " & _Caprco2 & vbCrLf &
-                                                                "WHERE EMPRESA='" & _Empresa &
-                                                                "' AND KOSU='" & _Sulido &
-                                                                "' AND KOBO='" & _Bosulido &
-                                                                "' AND KOPR='" & _Koprct & "'" & vbCrLf &
-                                               "UPDATE MAEPREM SET STOCNV1C = STOCNV1C +" & _Caprco1 & "," &
-                                                                "STOCNV2C = STOCNV2C + " & _Caprco2 & vbCrLf &
-                                                                "WHERE EMPRESA='" & _Empresa &
-                                                                "' AND KOPR='" & _Koprct & "'" & vbCrLf &
-                                               "UPDATE MAEPR SET STOCNV1C = STOCNV1C +" & _Caprco1 & "," &
-                                                                "STOCNV2C = STOCNV2C + " & _Caprco2 & vbCrLf &
-                                                                "WHERE KOPR='" & _Koprct & "'"
+                            End If
+
+                            ' *** RECALCULO DEL PPP
+
+                            If _Tido = "GRC" Or
+                               (_Tido = "GRI" And _Tidopa <> "GTI") Or
+                               (_Tido = "FCC" And _Lincondesp) Or
+                               (_Tido = "BLC" And _Lincondesp) Or
+                               (_Tido = "GDD" And _Subtido = String.Empty) Then
+
+                                Consulta_sql = "Insert Into MAEPMSUC (EMPRESA,KOSU,KOPR,STFI1,STFI2,PMSUC,FEPMSUC) 
+                                                Select '" & _Empresa & "','" & _Sulido & "','" & _Koprct & "',0,0,0,Getdate() 
+                                                From MAEPR Where KOPR Not In (Select KOPR From MAEPMSUC" & Space(1) &
+                                                "Where EMPRESA = '" & _Empresa & "' And KOSU = '" & _Sulido & "' And KOPR = '" & _Koprct & "')" & vbCrLf &
+                                                "And KOPR = '" & _Koprct & "'"
+                                Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                                Comando.Transaction = myTrans
+                                Comando.ExecuteNonQuery()
+
+                                Consulta_sql = "Select Mp.EMPRESA,Mp.KOPR,Isnull(PM,0) As PM,Isnull(PMIFRS,0) As PMIFRS,Isnull(Ms.PMSUC,0) As PMSUC,
+                                                Mp.STFI1,Mp.STTR1,Isnull(Ms.STFI1,0) As STFI1_Suc
+                                                From MAEPREM Mp
+                                                Left Join MAEPMSUC Ms On Mp.EMPRESA = Ms.EMPRESA And Ms.KOSU = '" & _Sulido & "' And Mp.KOPR = Ms.KOPR
+                                                Where Mp.EMPRESA = '" & _Empresa & "' And Mp.KOPR = '" & _Koprct & "'"
+
+                                Comando = New SqlCommand(Consulta_sql, cn2)
+                                Comando.Transaction = myTrans
+                                dfd1 = Comando.ExecuteReader()
+
+                                Dim _Stfi1 As Double
+                                Dim _Sttr1 As Double
+                                Dim _Stfi1_Suc As Double
+                                Dim _Pm As Double
+                                Dim _Pmifrs As Double
+                                Dim _Pmsuc As Double
+                                Dim _Total_Stfi_x_Pm As Double
+                                Dim _Total_Stfi_x_Pmifrs As Double
+                                Dim _Total_Stfi_x_Pmsuc As Double
+                                Dim _Vaneli_Val As Double = De_Txt_a_Num_01(_Vaneli, 5)
+                                Dim _Caprco1_Val As Double = De_Txt_a_Num_01(_Caprco1, 5)
+                                Dim _Caprco2_Val As Double = De_Txt_a_Num_01(_Caprco2, 5)
+
+                                While dfd1.Read()
+                                    _Pm = dfd1("PM")
+                                    _Pmifrs = dfd1("PMIFRS")
+                                    _Pmsuc = dfd1("PMSUC")
+                                    _Stfi1 = dfd1("STFI1")
+                                    _Sttr1 = dfd1("STTR1")
+                                    _Stfi1_Suc = dfd1("STFI1_Suc")
+                                End While
+                                dfd1.Close()
+
+                                _Total_Stfi_x_Pm = _Pm * (_Stfi1 + _Sttr1)
+                                _Total_Stfi_x_Pmifrs = _Pmifrs * (_Stfi1 + _Sttr1)
+                                _Total_Stfi_x_Pmsuc = _Pmsuc * _Stfi1_Suc
+
+                                Dim _Sum_Stock As Double = _Stfi1 + _Sttr1 + _Caprco1_Val
+
+                                If CBool(_Sum_Stock) Then
+                                    _Pm = (_Vaneli_Val + _Total_Stfi_x_Pm) / _Sum_Stock
+                                    _Pmifrs = (_Vaneli_Val + _Total_Stfi_x_Pmifrs) / _Sum_Stock
+                                    _Pmsuc = (_Vaneli_Val + _Total_Stfi_x_Pmsuc) / (_Stfi1_Suc + _Caprco1_Val)
+                                Else
+                                    _Pm = 0
+                                    _Pmifrs = 0
+                                    _Pmsuc = 0
+                                End If
+
+                                _Ppprpm = De_Num_a_Tx_01(_Pm, False, 5)
+                                _Ppprpmifrs = De_Num_a_Tx_01(_Pmifrs, False, 5)
+                                _Ppprmsuc = De_Num_a_Tx_01(_Pmsuc, False, 5)
+
+                                Consulta_sql = "UPDATE MAEPREM SET PM = " & _Ppprpm & ",PMIFRS = " & _Ppprpmifrs & vbCrLf & Space(1) &
+                                               "WHERE EMPRESA='" & _Empresa & "' AND KOPR='" & _Koprct & "'" & vbCrLf &
+                                               "UPDATE MAEPR SET PM = " & _Ppprpm & ",PMIFRS = " & _Ppprpmifrs & vbCrLf & Space(1) &
+                                               "WHERE KOPR='" & _Koprct & "'" & vbCrLf &
+                                               "UPDATE MAEPMSUC SET STFI1 = STFI1+" & _Caprco1 &
+                                                                  ",STFI2 = STFI2+" & _Caprco2 &
+                                                                  ",PMSUC = " & _Ppprmsuc & Space(1) &
+                                               "WHERE EMPRESA = '" & _Empresa & "' AND KOSU = '" & _Sulido & "' AND KOPR='" & _Koprct & "'"
 
                                 Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
                                 Comando.Transaction = myTrans
                                 Comando.ExecuteNonQuery()
 
-                            ElseIf _Tido = "NVV" Then
+                                'Throw New System.Exception("An exception has occurred.")
 
-                                Consulta_sql = "UPDATE MAEST SET STOCNV1 = STOCNV1 +" & _Caprco1 & "," &
-                                                               "STOCNV2 = STOCNV2 + " & _Caprco2 & vbCrLf &
-                                                               "WHERE EMPRESA='" & _Empresa &
-                                                               "' AND KOSU='" & _Sulido &
-                                                               "' AND KOBO='" & _Bosulido &
-                                                               "' AND KOPR='" & _Koprct & "'" & vbCrLf &
-                                              "UPDATE MAEPREM SET STOCNV1 = STOCNV1 +" & _Caprco1 & "," &
-                                                               "STOCNV2 = STOCNV2 + " & _Caprco2 & vbCrLf &
-                                                               "WHERE EMPRESA='" & _Empresa &
-                                                               "' AND KOPR='" & _Koprct & "'" & vbCrLf &
-                                              "UPDATE MAEPR SET STOCNV1 = STOCNV1 +" & _Caprco1 & "," &
-                                                               "STOCNV2 = STOCNV2 + " & _Caprco2 & vbCrLf &
-                                                               "WHERE KOPR='" & _Koprct & "'"
+                            End If
+
+                            '**************************************************************************************************
+
+                            If _Lincondesp And Not _Tidopa.Contains("G") Or _Tido = "GRI" Then
+
+                                Consulta_sql = "Insert Into MAEST (EMPRESA,KOSU,KOBO,KOPR)" & vbCrLf &
+                                               "Select '" & _Empresa & "','" & _Sulido & "','" & _Bosulido & "','" & _Koprct & "'" & vbCrLf &
+                                               "From MAEPR" & vbCrLf &
+                                               "Where KOPR Not In (Select KOPR From MAEST" & Space(1) &
+                                               "Where EMPRESA = '" & _Empresa & "' And KOSU = '" & _Sulido & "' And KOBO = '" & _Bosulido & "' And" & Space(1) &
+                                               "KOPR = '" & _Koprct & "') And KOPR = '" & _Koprct & "'"
+                                Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                                Comando.Transaction = myTrans
+                                Comando.ExecuteNonQuery()
+
+                                Consulta_sql = "UPDATE MAEPREM SET" & vbCrLf &
+                                               "STFI1 = STFI1 " & _Signo & " " & _Caprco1 & ",STFI2 = STFI2 " & _Signo & " " & _Caprco2 & vbCrLf &
+                                               "WHERE EMPRESA = '" & _Empresa & "' AND KOPR = '" & _Koprct & "'" &
+                                               vbCrLf &
+                                               vbCrLf &
+                                               "UPDATE MAEPR SET  STFI1 = STFI1 " & _Signo & " " & _Caprco1 & ",STFI2 = STFI2 " & _Signo & " " & _Caprco2 & vbCrLf &
+                                               "WHERE KOPR = '" & _Koprct & "'" &
+                                               vbCrLf &
+                                               vbCrLf &
+                                               "UPDATE MAEST SET STFI1 = STFI1 " & _Signo & " " & _Caprco1 & ",STFI2 = STFI2 " & _Signo & " " & _Caprco2 & vbCrLf &
+                                               "WHERE EMPRESA='" & _Empresa & "' AND KOSU='" & _Sulido &
+                                               "' AND KOBO='" & _Bosulido & "' AND KOPR='" & _Koprct & "'" &
+                                               vbCrLf &
+                                               vbCrLf &
+                                               "UPDATE MAEPMSUC SET STFI1 = STFI1 " & _Signo & " 1,STFI2 = STFI2 " & _Signo & " 1" & vbCrLf &
+                                               "WHERE EMPRESA = '" & _Empresa & "' AND KOSU = '" & _Sulido & "' AND KOPR = '" & _Koprct & "'"
 
                                 Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
                                 Comando.Transaction = myTrans
@@ -1230,150 +1583,299 @@ Public Class Clase_Crear_Documento
 
                             Else
 
-                                If _Lincondesp Then
-
-                                    Consulta_sql = "UPDATE MAEPREM SET" & vbCrLf &
-                                                  "STFI1 = STFI1 - " & _Caprco1 & ",STFI2 =  - " & _Caprco2 & vbCrLf &
-                                                  "WHERE EMPRESA = '" & _Empresa & "' AND KOPR = '" & _Koprct & "'" & vbCrLf &
-                                                  "UPDATE MAEPR SET  STFI1 = STFI1 - " & _Caprco1 & ",STFI2 = - " & _Caprco2 & vbCrLf &
-                                                  "WHERE KOPR = '" & _Koprct & "'" & vbCrLf &
-                                                  "UPDATE MAEST SET STFI1 = STFI1 - " & _Caprco1 & ",STFI2 =  - " & _Caprco2 & vbCrLf &
-                                                  "WHERE EMPRESA='" & _Empresa & "' AND KOSU='" & _Sudo &
-                                                  "' AND KOBO='" & _Bosulido & "' AND KOPR='" & _Koprct & "'"
-
-                                    _Caprad1 = _Caprco1
-                                    _Caprad2 = _Caprco2
-
-
-                                Else
-
-                                    Consulta_sql = "UPDATE MAEPREM SET" & vbCrLf &
-                                                   "STDV1 = STDV1 + " & _Caprco1 & ",STDV2 =  + " & _Caprco2 & vbCrLf &
-                                                   "WHERE EMPRESA = '" & _Empresa & "' AND KOPR = '" & _Koprct & "'" & vbCrLf &
-                                                   "UPDATE MAEPR SET  STDV1 = STDV1 + " & _Caprco1 & ",STDV2 = + " & _Caprco2 & vbCrLf &
-                                                   "WHERE KOPR = '" & _Koprct & "'" & vbCrLf &
-                                                   "UPDATE MAEST SET STDV1 = STDV1 + " & _Caprco1 & ",STDV2 =  + " & _Caprco2 & vbCrLf &
-                                                   "WHERE EMPRESA='" & _Empresa & "' AND KOSU='" & _Sudo &
-                                                   "' AND KOBO='" & _Bosulido & "' AND KOPR='" & _Koprct & "'"
+                                If _Tipr <> "SSN" Then
 
                                     _Caprad1 = 0
                                     _Caprad2 = 0
 
-
                                 End If
-
-                                Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
-                                Comando.Transaction = myTrans
-                                Comando.ExecuteNonQuery()
 
                             End If
+
                         End If
 
-                        '_Mopppr = .Item("Moneda") 'trae_dato(tb, cn1, "KOMO", "TABMO", "NOKOMO LIKE '%PESO%'")
-                        '_Timopppr = .Item("Tipo_Moneda") 'trae_dato(tb, cn1, "TIMO", "TABMO", "NOKOMO LIKE '%PESO%'")
-                        '_Tamopppr = .Item("Tipo_Cambio") 'De_Num_a_Tx_01(trae_dato(tb, cn1, "VAMO", "TABMO", "NOKOMO LIKE '%PESO%'"), False, 5)
+                        'EMPREPA,TIDOPA,NUDOPA,ENDOPA,NULIDOPA
 
-                        If _Tido <> "COV" Then
+                        Dim _CantStockAdUd1 = _Caprco1
+                        Dim _CantStockAdUd2 = _Caprco2
 
-                            _Idrst = Val(NuloPorNro(.Item("Idmaeddo_Dori"), ""))
+                        _Emprepa = String.Empty
+                        _Tidopa = String.Empty
+                        _Subtidopa = String.Empty
+                        _Nudopa = String.Empty
+                        _Endopa = String.Empty
+                        _Nulidopa = String.Empty
 
-                            'EMPREPA,TIDOPA,NUDOPA,ENDOPA,NULIDOPA
 
-                            If CBool(_Idrst) Then
+                        If CBool(_Idrst) Then
 
-                                Consulta_sql = "Select Top 1 * From MAEDDO Where IDMAEDDO = " & _Idrst
+                            _CantStockAdUd1 = "0"
+                            _CantStockAdUd2 = "0"
 
-                                Dim _Tbl_Doc_Origen As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+                            Consulta_sql = "Select Top 1 Ddo.*,Edo.SUBTIDO From MAEDDO Ddo" & vbCrLf &
+                                           "Inner Join MAEEDO Edo On Edo.IDMAEEDO = Ddo.IDMAEEDO" & vbCrLf &
+                                           "Where IDMAEDDO = " & _Idrst
 
-                                _Emprepa = _Tbl_Doc_Origen.Rows(0).Item("EMPRESA")
-                                _Tidopa = _Tbl_Doc_Origen.Rows(0).Item("TIDO")
-                                _Nudopa = _Tbl_Doc_Origen.Rows(0).Item("NUDO")
-                                _Endopa = _Tbl_Doc_Origen.Rows(0).Item("ENDO")
-                                _Nulidopa = _Tbl_Doc_Origen.Rows(0).Item("NULIDO")
+                            Dim _Row_Doc_Origen As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
 
-                                Dim _Caprnc1_Ori As Double = _Tbl_Doc_Origen.Rows(0).Item("CAPRNC1")
-                                Dim _Caprnc2_Ori As Double = _Tbl_Doc_Origen.Rows(0).Item("CAPRNC2")
-                                Dim _Caprex1_Ori As Double = _Tbl_Doc_Origen.Rows(0).Item("CAPREX1")
-                                Dim _Caprex2_Ori As Double = _Tbl_Doc_Origen.Rows(0).Item("CAPREX2")
+                            _Emprepa = _Row_Doc_Origen.Item("EMPRESA")
+                            _Tidopa = _Row_Doc_Origen.Item("TIDO")
+                            _Subtidopa = _Row_Doc_Origen.Item("SUBTIDO")
+                            _Nudopa = _Row_Doc_Origen.Item("NUDO")
+                            _Endopa = _Row_Doc_Origen.Item("ENDO")
+                            _Nulidopa = _Row_Doc_Origen.Item("NULIDO")
 
-                                Dim _CantUd1_Dori As Double = .Item("CantUd1_Dori")
-                                Dim _CantUd2_Dori As Double = .Item("CantUd2_Dori")
+                            Dim _Caprnc1_Ori As Double = _Row_Doc_Origen.Item("CAPRNC1")
+                            Dim _Caprnc2_Ori As Double = _Row_Doc_Origen.Item("CAPRNC2")
+                            Dim _Caprex1_Ori As Double = _Row_Doc_Origen.Item("CAPREX1")
+                            Dim _Caprex2_Ori As Double = _Row_Doc_Origen.Item("CAPREX2")
 
-                                Dim _Cant_MovUd1_Ext As String
-                                Dim _Cant_MovUd2_Ext As String
+                            Dim _CantUd1_Dori As Double = .Item("CantUd1_Dori")
+                            Dim _CantUd2_Dori As Double = .Item("CantUd2_Dori")
 
-                                Dim _CantUd1 As Double = .Item("CantUd1")
-                                Dim _CantUd2 As Double = .Item("CantUd2")
+                            Dim _CantUd1 As Double = .Item("CantUd1")
+                            Dim _CantUd2 As Double = .Item("CantUd2")
 
-                                If _CantUd1_Dori < _CantUd1 Then
-                                    _Cant_MovUd1_Ext = De_Num_a_Tx_01(_CantUd1_Dori, False, 5)
-                                    _Cant_MovUd2_Ext = De_Num_a_Tx_01(_CantUd2_Dori, False, 5)
+                            If _CantUd1_Dori < _CantUd1 Then
+
+                                If _Tido = "NCV" And Not _Tidopa.Contains("G") Then
+                                    _Caprnc1 = De_Num_a_Tx_01(_CantUd1_Dori, False, 5)
+                                    _Caprnc2 = De_Num_a_Tx_01(_CantUd2_Dori, False, 5)
                                 Else
-                                    _Cant_MovUd1_Ext = De_Num_a_Tx_01(_CantUd1, False, 5)
-                                    _Cant_MovUd2_Ext = De_Num_a_Tx_01(_CantUd2, False, 5)
+                                    _Caprex1 = De_Num_a_Tx_01(_CantUd1_Dori, False, 5)
+                                    _Caprex2 = De_Num_a_Tx_01(_CantUd2_Dori, False, 5)
                                 End If
 
-                                _Archirst = "MAEDDO"
+                            Else
 
-                                If _Tido = "NCC" Or _Tido = "NCV" Then
+                                If (_Tido = "NCV" And Not _Tidopa.Contains("G")) Or (_Tido = "GDD" And _Subtido = String.Empty) Then
 
-                                    Consulta_sql = "UPDATE MAEDDO SET CAPRNC1=CAPRNC1+" & _Cant_MovUd1_Ext &
-                                                                    ",CAPRNC2=CAPRNC2+" & _Cant_MovUd2_Ext & "," &
-                                                   "'ESLIDO = " & vbCrLf &
+                                    _Caprnc1 = De_Num_a_Tx_01(_CantUd1, False, 5)
+                                    _Caprnc2 = De_Num_a_Tx_01(_CantUd2, False, 5)
+                                    If _Lincondesp Then _Eslido = "C"
+                                    If (_Tido = "GDD" And _Subtido = String.Empty) Then _Eslido = String.Empty
+
+                                Else
+
+                                    If Not (_Tido = "GDD" And _Subtido = String.Empty) Then
+                                        _Caprex1 = De_Num_a_Tx_01(_CantUd1, False, 5)
+                                        _Caprex2 = De_Num_a_Tx_01(_CantUd2, False, 5)
+                                        _Eslido = "C"
+                                    End If
+
+                                End If
+
+                            End If
+
+                            _Archirst = "MAEDDO"
+                            _Tigeli = "E"
+
+                            If (CBool(_Fiad) And _Tido.Contains("N") And Not _Tidopa.Contains("G")) Or (_Tido = "GDD" And _Subtido = String.Empty) Then
+                                '_Tido = "NCC" Or _Tido = "NCV" Then
+
+                                Consulta_sql = "UPDATE MAEDDO SET CAPRNC1=CAPRNC1+" & _Caprnc1 &
+                                                                    ",CAPRNC2=CAPRNC2+" & _Caprnc2 & "," &
+                                                   "ESLIDO = " & vbCrLf &
                                                    "CASE" & vbCrLf &
-                                                   "'WHEN UDTRPR='1' AND CAPRCO1-CAPRAD1-CAPREX1=0 THEN 'C'" & vbCrLf &
-                                                   "'WHEN UDTRPR='2' AND CAPRCO2-CAPRAD2-CAPREX2=0 THEN 'C'" & vbCrLf &
-                                                   "'ELSE ''" & vbCrLf &
+                                                   "WHEN UDTRPR='1' AND CAPRCO1-CAPRAD1-CAPREX1=0 THEN 'C'" & vbCrLf &
+                                                   "WHEN UDTRPR='2' AND CAPRCO2-CAPRAD2-CAPREX2=0 THEN 'C'" & vbCrLf &
+                                                   "ELSE ''" & vbCrLf &
                                                    "END" & vbCrLf &
                                                    "WHERE IDMAEDDO = " & _Idrst
 
-                                Else
+                                Comando = New SqlCommand("SELECT Sum(CAPRNC1) AS 'CAPRNC1',Sum(CAPRNC2) AS 'CAPRNC2'  From MAEDDO Where IDMAEDDO = " & _Idrst, cn2)
+                                Comando.Transaction = myTrans
+                                dfd1 = Comando.ExecuteReader()
 
-                                    Consulta_sql = "UPDATE MAEDDO SET CAPREX1=CAPREX1+" & _Cant_MovUd1_Ext &
-                                                                    ",CAPREX2=CAPREX2+" & _Cant_MovUd2_Ext & "," &
-                                                   "ESLIDO = " &
-                                                   "CASE" & vbCrLf &
-                                                   "WHEN UDTRPR='1' AND " &
-                                                   "ROUND(CAPRCO1-CAPRAD1-(CAPREX1+" & _Cant_MovUd1_Ext & "),5)=0 THEN 'C'" & vbCrLf &
-                                                   "WHEN UDTRPR='2' AND " &
-                                                   "ROUND(CAPRCO2-CAPRAD2-(CAPREX2+" & _Cant_MovUd2_Ext & "),5)=0 THEN 'C'" & vbCrLf &
-                                                   "Else ''" & vbCrLf &
-                                                   "End" & vbCrLf &
-                                                   "WHERE IDMAEDDO = " & _Idrst  '1398920
+                                While dfd1.Read()
+                                    _Caprnc1 = dfd1("CAPRNC1")
+                                    _Caprnc2 = dfd1("CAPRNC2")
+                                End While
+                                dfd1.Close()
 
-                                End If
+                            Else
+
+                                Consulta_sql = "UPDATE MAEDDO SET CAPREX1=CAPREX1+" & _Caprex1 &
+                                                                        ",CAPREX2=CAPREX2+" & _Caprex2 & "," &
+                                                       "ESLIDO = " &
+                                                       "CASE" & vbCrLf &
+                                                       "WHEN UDTRPR='1' AND " &
+                                                       "ROUND(CAPRCO1-CAPRAD1-(CAPREX1+" & _Caprex1 & "),5)=0 THEN 'C'" & vbCrLf &
+                                                       "WHEN UDTRPR='2' AND " &
+                                                       "ROUND(CAPRCO2-CAPRAD2-(CAPREX2+" & _Caprex2 & "),5)=0 THEN 'C'" & vbCrLf &
+                                                       "Else ''" & vbCrLf &
+                                                       "End" & vbCrLf &
+                                                       "WHERE IDMAEDDO = " & _Idrst
+
+
+                            End If
+
+                            Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                            Comando.Transaction = myTrans
+                            Comando.ExecuteNonQuery()
+
+                        End If
+
+                        If (_Tido = "GDD" And _Subtido = String.Empty) Then
+                            _Caprnc1 = 0
+                            _Caprnc2 = 0
+                        End If
+
+
+                        Dim _Campo_StockUd1 As String
+                        Dim _Campo_StockUd2 As String
+
+                        Dim _Campos_StockAd_Tido As New List(Of String)
+                        Dim _Campos_StockAd_Tidopa As New List(Of String)
+
+                        If Not _Prct And _Tipr <> "SSN" Then
+
+                            _Campos_StockAd_Tido = Fx_Campo_Mov_Stock_Adicional_Suma(_Tido, _Subtido, _Lincondesp, _Tidopa)
+                            _Campos_StockAd_Tidopa = Fx_Campo_Mov_Stock_Adicional_Resta(_Tido, _Tidopa)
+
+                            ' ACA SE AUMENTAN LOS STOCK CORRESPONDINTE AL DOCUMENTO DE SALIDA O DE INGRESO
+
+                            If CBool(_Campos_StockAd_Tido.Count) Then
+
+                                _Campo_StockUd1 = _Campos_StockAd_Tido(0)
+                                _Campo_StockUd2 = _Campos_StockAd_Tido(1)
+
+                                Consulta_sql = "UPDATE MAEST SET " & _Campo_StockUd1 & " = " & _Campo_StockUd1 & " +" & _Caprco1 & "," &
+                                                             _Campo_StockUd2 & " = " & _Campo_StockUd2 & " + " & _Caprco2 & vbCrLf &
+                                                           "WHERE EMPRESA='" & _Empresa &
+                                                           "' AND KOSU='" & _Sulido &
+                                                           "' AND KOBO='" & _Bosulido &
+                                                           "' AND KOPR='" & _Koprct & "'" & vbCrLf &
+                                           "UPDATE MAEPREM SET " & _Campo_StockUd1 & " = " & _Campo_StockUd1 & " +" & _Caprco1 & "," &
+                                                           _Campo_StockUd2 & " = " & _Campo_StockUd2 & " + " & _Caprco2 & vbCrLf &
+                                                           "WHERE EMPRESA='" & _Empresa &
+                                                           "' AND KOPR='" & _Koprct & "'" & vbCrLf &
+                                           "UPDATE MAEPR SET " & _Campo_StockUd1 & " = " & _Campo_StockUd1 & " +" & _Caprco1 & "," &
+                                                           _Campo_StockUd2 & " = " & _Campo_StockUd2 & " + " & _Caprco2 & vbCrLf &
+                                                           "WHERE KOPR='" & _Koprct & "'"
 
                                 Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
                                 Comando.Transaction = myTrans
                                 Comando.ExecuteNonQuery()
 
                             End If
-                        Else
-                            _Idrst = 0
+
+                            ' ACA SE DESCUENTAN LOS STOCK CORRESPONDINTE AL DOCUMENTO DE SALIDA O DE INGRESO CUANDO EL DOCUMENTO
+                            ' TIENE UNA RELACION
+
+                            If CBool(_Campos_StockAd_Tidopa.Count) Then
+
+                                _Campo_StockUd1 = _Campos_StockAd_Tidopa(0)
+                                _Campo_StockUd2 = _Campos_StockAd_Tidopa(1)
+
+                                Dim _Succ = _Sulido
+                                Dim _Bodd = _Bosulido
+
+                                If _Tido = "GRI" And CBool(_Idrst) Then
+                                    If _Campo_StockUd1 = "STTR1" Then
+                                        Comando = New SqlCommand("SELECT SULIDO,BOSULIDO From MAEDDO Where IDMAEDDO = " & _Idrst, cn2)
+                                        Comando.Transaction = myTrans
+                                        dfd1 = Comando.ExecuteReader()
+                                        While dfd1.Read()
+                                            _Succ = dfd1("SULIDO")
+                                            _Bodd = dfd1("BOSULIDO")
+                                        End While
+                                        dfd1.Close()
+                                    End If
+                                End If
+
+                                Consulta_sql = "UPDATE MAEST SET " & _Campo_StockUd1 & " = " & _Campo_StockUd1 & " -" & _Caprco1 & "," &
+                                                             _Campo_StockUd2 & " = " & _Campo_StockUd2 & " - " & _Caprco2 & vbCrLf &
+                                                           "WHERE EMPRESA='" & _Empresa &
+                                                           "' AND KOSU='" & _Succ &
+                                                           "' AND KOBO='" & _Bodd &
+                                                           "' AND KOPR='" & _Koprct & "'" & vbCrLf &
+                                           "UPDATE MAEPREM SET " & _Campo_StockUd1 & " = " & _Campo_StockUd1 & " -" & _Caprco1 & "," &
+                                                           _Campo_StockUd2 & " = " & _Campo_StockUd2 & " - " & _Caprco2 & vbCrLf &
+                                                           "WHERE EMPRESA='" & _Empresa &
+                                                           "' AND KOPR='" & _Koprct & "'" & vbCrLf &
+                                           "UPDATE MAEPR SET " & _Campo_StockUd1 & " = " & _Campo_StockUd1 & " -" & _Caprco1 & "," &
+                                                           _Campo_StockUd2 & " = " & _Campo_StockUd2 & " - " & _Caprco2 & vbCrLf &
+                                                           "WHERE KOPR='" & _Koprct & "'"
+
+                                Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                                Comando.Transaction = myTrans
+                                Comando.ExecuteNonQuery()
+
+                            End If
+
+                        End If
+
+                        If _Tido = "BLV" Or _Tido = "FCV" Or _Tido = "FCC" Or _Tido = "OCC" Or _Tido = "NVV" Or _Tido = "GDV" Or _Tido = "GRC" Or _Tido = "GTI" Then
+
+                            If _Tidopa = "COV" Or _Tidopa = "NVV" Or _Tidopa = "OCC" Or _Tidopa = "OCI" Or _Tidopa = "NVI" Or _Tido = "GTI" Then
+
+                                'Or (_Tido = "OCC" And _Tidopa = "OCC") Then
+
+                                _Caprex1 = 0
+                                _Caprex2 = 0
+
+                                _Eslido = String.Empty
+
+                                Select Case _Tido
+                                    Case "BLV", "FCV", "FCC"
+                                        If _Caprad1 = _Caprco1 Then
+                                            _Eslido = "C"
+                                        End If
+                                End Select
+
+                            End If
+
+                        End If
+
+                        If _Tidopa = "COV" And _Tido <> "NVV" Then
+
+                            _Emprepa = String.Empty
+                            _Tidopa = String.Empty
+                            _Subtidopa = String.Empty
+                            _Nudopa = String.Empty
+                            _Endopa = String.Empty
+                            _Nulidopa = String.Empty
+                            _Tigeli = "I"
+
+                        End If
+
+                        _Caprex = De_Num_a_Tx_01(Val(_Caprex1) + Val(_Caprex), False, 5)
+                        _Caprad = De_Num_a_Tx_01(Val(_Caprad1) + Val(_Caprad), False, 5)
+
+                        _Kofuaulido = String.Empty
+
+                        _Nokopr = Replace(_Nokopr, "'", "''")
+
+                        Dim _Ppoppr As String = "0"
+
+                        If _Tido = "NVI" Then
+                            _Ppoppr = _Ppprpm
                         End If
 
                         Consulta_sql =
                               "INSERT INTO MAEDDO (IDMAEEDO,ARCHIRST,IDRST,EMPRESA,TIDO,NUDO,ENDO,SUENDO,LILG,NULIDO," & vbCrLf &
-                              "SULIDO,BOSULIDO,LUVTLIDO,KOFULIDO,TIPR,TICT,PRCT,KOPRCT,UDTRPR,RLUDPR,CAPRCO1," & vbCrLf &
-                              "UD01PR,CAPRCO2,UD02PR,CAPRAD1,CAPRAD2,KOLTPR,MOPPPR,TIMOPPPR,TAMOPPPR,NUIMLI,NUDTLI," & vbCrLf &
+                              "SULIDO,BOSULIDO,LUVTLIDO,PROYECTO,KOFULIDO,TIPR,TICT,PRCT,KOPRCT,UDTRPR,RLUDPR,CAPRCO1," & vbCrLf &
+                              "UD01PR,CAPRCO2,UD02PR,CAPRAD1,CAPRAD2,CAPREX1,CAPREX2,CAPRNC1,CAPRNC2,KOLTPR,MOPPPR,TIMOPPPR,TAMOPPPR,NUIMLI,NUDTLI," & vbCrLf &
                               "PODTGLLI,POIMGLLI,VAIMLI,VADTNELI,VADTBRLI,POIVLI,VAIVLI,VANELI,VABRLI,TIGELI," & vbCrLf &
                               "EMPREPA,TIDOPA,NUDOPA,ENDOPA,NULIDOPA," & vbCrLf &
                               "FEEMLI,FEERLI,PPPRNELT,PPPRNE,PPPRBRLT,PPPRBR,PPPRPM,PPPRNERE1,PPPRNERE2,CAFACO," & vbCrLf &
-                              "FVENLOTE,FCRELOTE,NOKOPR,ALTERNAT,TASADORIG,CUOGASDIF,OPERACION,POTENCIA,ESLIDO,OBSERVA)" & vbCrLf &
+                              "FVENLOTE,FCRELOTE,NOKOPR,ALTERNAT,TASADORIG,CUOGASDIF,LINCONDESP,OPERACION,POTENCIA,ESLIDO,OBSERVA,KOFUAULIDO,HUMEDAD,PPOPPR,MGLTPR)" & vbCrLf &
                        "VALUES (" & _Idmaeedo & ",'" & _Archirst & "'," & _Idrst & ",'" & _Empresa & "','" & _Tido & "','" & _Nudo & "','" & _Endo &
-                              "','" & _Suendo & "','SI','" & _Nulido & "','" & _Sudo & "','" & _Bosulido &
-                              "','" & _Luvtven & "','" & _Kofudo & "','" & _Tipr & "','" & _Tict & "'," & CInt(_Prct) & ",'" & _Koprct &
+                              "','" & _Suendo & "','SI','" & _Nulido & "','" & _Sulido & "','" & _Bosulido &
+                              "','" & _Luvtlido & "','" & _Proyecto & "','" & _Kofulido & "','" & _Tipr & "','" & _Tict & "'," & CInt(_Prct) & ",'" & _Koprct &
                               "'," & _Udtrpr & "," & _Rludpr & "," & _Caprco1 & ",'" & _Ud01pr & "'," & _Caprco2 &
-                              ",'" & _Ud02pr & "'," & _Caprad1 & "," & _Caprad2 & ",'TABPP" & _Koltpr & "'" &
+                              ",'" & _Ud02pr & "'," & _Caprad1 & "," & _Caprad2 & "," & _Caprex1 & "," & _Caprex2 & "," & _Caprnc1 & "," & _Caprnc1 &
+                              ",'TABPP" & _Koltpr & "'" &
                               ",'" & _Mopppr & "','" & _Timopppr & "'," & _Tamopppr &
                               "," & _Nuimli & "," & _Nudtli & "," & _Podtglli & "," & _Poimglli & "," & _Vaimli &
                               "," & _Vadtneli & "," & _Vadtbrli & "," & _Poivli & "," & _Vaivli & "," & _Vaneli &
-                              "," & _Vabrli & ",'I'," &
+                              "," & _Vabrli & ",'" & _Tigeli & "'," &
                               "'" & _Emprepa & "','" & _Tidopa & "','" & _Nudopa & "','" & _Endopa & "','" & _Nulidopa & "'," &
                               "'" & _Feemli & "','" & _Feerli & "'," & _Ppprnelt & "," & _Ppprne &
                               "," & _Ppprbrlt & "," & _Ppprbr & "," & _Ppprpm & "," & _Ppprnere1 & "," & _Ppprnere2 &
-                              "," & _Cafaco & ",NULL,NULL,'" & _Nokopr & "','" & _Alternat & "',1.00000,0" &
-                              ",'" & _Operacion & "'," & _Potencia & ",'" & _Eslido & "',' " & _Observa & "')"
+                              "," & _Cafaco & ",NULL,NULL,'" & _Nokopr & "','" & _Alternat & "'," & _Tasadorig & ",0," & CInt(_Lincondesp) * -1 &
+                              ",'" & _Operacion & "'," & _Potencia & ",'" & _Eslido & "','" & _Observa & "','" & _Kofuaulido & "',0," & _Ppoppr & "," & _Mgltpr & ")"
 
                         Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
                         Comando.Transaction = myTrans
@@ -1389,11 +1891,68 @@ Public Class Clase_Crear_Documento
                         End While
                         dfd1.Close()
 
-                        ' *** PM POR SUCURSAL SI ES QUE EXISTE EL CAMPO
-                        Dim _Reg As Integer = _Sql.Fx_Cuenta_Registros("INFORMATION_SCHEMA.COLUMNS",
-                                                              "COLUMN_NAME LIKE 'PPPRPMSUC' AND TABLE_NAME = 'MAEDDO'")
 
-                        If CBool(_Reg) Then
+                        ' **** Insertamos datos en tabla de disribucion de recargos
+
+                        If Not IsNothing(_Tbl_Maedcr) Then
+
+                            Dim _Tbl As DataTable = Fx_Crea_Tabla_Con_Filtro(_Tbl_Maedcr, "Id = " & Id_Linea, "Id")
+
+                            For Each _Fldcr As DataRow In _Tbl.Rows
+
+                                Dim _Recarcalcu = _Fldcr.Item("Recarcalcu")
+                                Dim _Idddodcr = _Fldcr.Item("Idddodcr")
+                                Dim _Valdcr = De_Num_a_Tx_01(_Fldcr.Item("Valdcr"), False, True)
+
+                                Consulta_sql = "Insert Into MAEDCR (IDMAEEDO,NULIDO,RECARCALCU,IDDDODCR,VALDCR) VALUES " &
+                                               "(" & _Idmaeedo & ",'" & _Nulido & "','" & _Koprct & "'," & _Idddodcr & "," & _Valdcr & ")"
+
+                                Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                                Comando.Transaction = myTrans
+                                Comando.ExecuteNonQuery()
+
+                            Next
+
+                        End If
+
+                        ' *** LINEAS CON OFERTAS EN NVV
+
+                        Dim _Id_Oferta = .Item("Id")
+                        Dim _Es_Padre_Oferta = Convert.ToInt32(.Item("Es_Padre_Oferta"))
+                        Dim _Oferta = .Item("Oferta")
+                        Dim _Padre_Oferta = .Item("Padre_Oferta")
+                        Dim _Hijo_Oferta = .Item("Hijo_Oferta")
+                        Dim _Aplica_Oferta = .Item("Aplica_Oferta")
+                        Dim _Cantidad_Oferta = De_Num_a_Tx_01(.Item("Cantidad_Oferta"), False, 5)
+                        Dim _Porcdesc_Oferta = De_Num_a_Tx_01(.Item("Porcdesc_Oferta"), False, 5)
+
+                        If _Aplica_Oferta Then
+
+                            If _Tido = "COV" Or _Tido = "NVV" Then
+
+                                Consulta_sql = "Insert Into " & _Global_BaseBk & "Zw_Linea_Oferta " &
+                                               "(Idmaeedo,Tido,Nudo,Idmaeddo,Nulido,Id_Oferta,Es_Padre_Oferta,Oferta,Padre_Oferta,Hijo_Oferta,Cantidad_Oferta,Porcdesc_Oferta) Values " &
+                                               "(" & _Idmaeedo & ",'" & _Tido & "','" & _Nudo & "'," & _Idmaeddo &
+                                               ",'" & _Nulido & "'," & _Id_Oferta & "," & _Es_Padre_Oferta & ",'" & _Oferta & "'," & _Padre_Oferta &
+                                               "," & _Hijo_Oferta & "," & _Cantidad_Oferta & "," & _Porcdesc_Oferta & ")"
+
+                                Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                                Comando.Transaction = myTrans
+                                Comando.ExecuteNonQuery()
+
+                            End If
+
+                        End If
+
+                        '******
+
+                        ' *** PM POR SUCURSAL SI ES QUE EXISTE EL CAMPO
+                        'Dim _Reg As Integer = _Sql.Fx_Cuenta_Registros("INFORMATION_SCHEMA.COLUMNS",
+                        '                                               "COLUMN_NAME LIKE 'PPPRPMSUC' AND TABLE_NAME = 'MAEDDO'")
+
+                        'If CBool(_Reg) Then
+
+                        If _Sql.Fx_Exite_Campo("MAEDDO", "PPPRPMSUC") Then
 
                             Consulta_sql = "UPDATE MAEDDO SET PPPRPMSUC = " & _Ppprmsuc & vbCrLf &
                                            "WHERE IDMAEDDO = " & _Idmaeddo
@@ -1401,14 +1960,17 @@ Public Class Clase_Crear_Documento
                             Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
                             Comando.Transaction = myTrans
                             Comando.ExecuteNonQuery()
+
                         End If
                         '*************************************************************************************************
 
                         ' *** PMIFRS SI ES QUE EXISTE EL CAMPO
-                        _Reg = _Sql.Fx_Cuenta_Registros("INFORMATION_SCHEMA.COLUMNS",
-                                                         "COLUMN_NAME LIKE 'PMIFRS' AND TABLE_NAME = 'MAEPREM'")
+                        '_Reg = _Sql.Fx_Cuenta_Registros("INFORMATION_SCHEMA.COLUMNS",
+                        '                                "COLUMN_NAME LIKE 'PMIFRS' AND TABLE_NAME = 'MAEPREM'")
 
-                        If CBool(_Reg) Then
+                        'If CBool(_Reg) Then
+
+                        If _Sql.Fx_Exite_Campo("MAEPREM", "PMIFRS") Then
 
                             Consulta_sql = "UPDATE MAEDDO SET PPPRPMIFRS = " & _Ppprpmifrs & vbCrLf &
                                            "WHERE IDMAEDDO=" & _Idmaeddo
@@ -1416,8 +1978,20 @@ Public Class Clase_Crear_Documento
                             Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
                             Comando.Transaction = myTrans
                             Comando.ExecuteNonQuery()
+
                         End If
                         '*************************************************************************************************
+
+                        If _Sql.Fx_Exite_Campo("MAEDDO", "FEERLIMODI") Then
+
+                            Consulta_sql = "UPDATE MAEDDO SET FEERLIMODI = '" & _Feerli & "'" & vbCrLf &
+                                           "WHERE IDMAEDDO=" & _Idmaeddo
+
+                            Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                            Comando.Transaction = myTrans
+                            Comando.ExecuteNonQuery()
+
+                        End If
 
                     End With
 
@@ -1428,21 +2002,34 @@ Public Class Clase_Crear_Documento
 
                     If Val(_Nuimli) > 0 And String.IsNullOrEmpty(Trim(_Tict)) Then
 
-                        For Each FImpto As DataRow In Tbl_Impuestos.Select("Id = " & Id_Linea)
+                        For Each FImpto As DataRow In Tbl_Impuestos.Rows 'Select("Id = " & Id_Linea)
 
-                            Dim _Poimli As String = De_Num_a_Tx_01(FImpto.Item("Poimli").ToString, False, 5)
-                            Dim _Koimli As String = FImpto.Item("Koimli").ToString
-                            Dim _Vaimli = De_Num_a_Tx_01(FImpto.Item("Vaimli").ToString, False, 5)
+                            Dim _Estado As DataRowState = FImpto.RowState
 
-                            Consulta_sql = "INSERT INTO MAEIMLI(IDMAEEDO,NULIDO,KOIMLI,POIMLI,VAIMLI,LILG) VALUES " & vbCrLf &
-                                           "(" & _Idmaeedo & ",'" & _Nulido & "','" & _Koimli & "'," & _Poimli & "," & _Vaimli & ",'')"
+                            If Not _Estado = DataRowState.Deleted Then
 
-                            Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
-                            Comando.Transaction = myTrans
-                            Comando.ExecuteNonQuery()
+                                Dim _Id = FImpto.Item("Id")
+
+                                If _Id = Id_Linea Then
+
+                                    Dim _Poimli As String = De_Num_a_Tx_01(FImpto.Item("Poimli").ToString, False, 5)
+                                    Dim _Koimli As String = FImpto.Item("Koimli").ToString
+                                    Dim _Vaimli = De_Num_a_Tx_01(FImpto.Item("Vaimli").ToString, False, 5)
+
+                                    Consulta_sql = "INSERT INTO MAEIMLI(IDMAEEDO,NULIDO,KOIMLI,POIMLI,VAIMLI,LILG) VALUES " & vbCrLf &
+                                                   "(" & _Idmaeedo & ",'" & _Nulido & "','" & _Koimli & "'," & _Poimli & "," & _Vaimli & ",'')"
+
+                                    Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                                    Comando.Transaction = myTrans
+                                    Comando.ExecuteNonQuery()
+
+                                End If
+
+                            End If
 
                             '-- 3RA TRANSACCION--------------------------------------------------------------------
                         Next
+
                     End If
 
 
@@ -1450,31 +2037,50 @@ Public Class Clase_Crear_Documento
                     ' TABLA DE DESCUENTOS
                     Dim Tbl_Descuentos As DataTable = Bd_Documento.Tables("Descuentos_Doc")
                     _Nudtli = Tbl_Descuentos.Rows.Count
+
                     If Val(_Nudtli) > 0 And String.IsNullOrEmpty(Trim(_Tict)) Then
 
-                        For Each FDscto As DataRow In Tbl_Descuentos.Select("Id = " & Id_Linea)
+                        For Each FDscto As DataRow In Tbl_Descuentos.Rows 'Tbl_Descuentos.Select("Id = " & Id_Linea)
 
-                            Dim _Podt = De_Num_a_Tx_01(FDscto.Item("Podt").ToString, False, 5)
-                            Dim _Vadt = De_Num_a_Tx_01(FDscto.Item("Vadt").ToString, False, 5)
+                            Dim _Estado As DataRowState = FDscto.RowState
 
-                            Consulta_sql = "INSERT INTO MAEDTLI (IDMAEEDO,NULIDO,KODT,PODT,VADT)" & vbCrLf &
-                                   "values (" & _Idmaeedo & ",'" & _Nulido & "','D_SIN_TIPO'," & _Podt & "," & _Vadt & ")"
+                            If Not _Estado = DataRowState.Deleted Then
+
+                                Dim _Id = FDscto.Item("Id")
+
+                                If _Id = Id_Linea Then
+
+                                    Dim _Podt = De_Num_a_Tx_01(FDscto.Item("Podt").ToString, False, 5)
+                                    Dim _Vadt = De_Num_a_Tx_01(FDscto.Item("Vadt").ToString, False, 5)
+
+                                    Consulta_sql = "INSERT INTO MAEDTLI (IDMAEEDO,NULIDO,KODT,PODT,VADT)
+                                                Values (" & _Idmaeedo & ",'" & _Nulido & "','D_SIN_TIPO'," & _Podt & "," & _Vadt & ")"
 
 
-                            Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
-                            Comando.Transaction = myTrans
-                            Comando.ExecuteNonQuery()
+                                    Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                                    Comando.Transaction = myTrans
+                                    Comando.ExecuteNonQuery()
+
+                                End If
+
+                            End If
 
                             '-- 4TA TRANSACCION--------------------------------------------------------------------
                         Next
+
                     End If
 
                     Contador += 1
+
                 End If
+
             Next
 
 
+
             'TABLA DE VENCIMIENTOS
+
+            Consulta_sql = String.Empty
 
             Consulta_sql = Fx_Vencimientos(_Row_Encabezado)
 
@@ -1486,9 +2092,11 @@ Public Class Clase_Crear_Documento
 
             End If
 
+
             If _Nuvedo = 0 Then _Nuvedo = 1
 
-            Dim _HoraGrab As String
+            'Dim _HoraGrab As String
+
             'Dim _HH_sistem As Date
 
             '_HH_sistem = FechaDelServidor()
@@ -1501,45 +2109,116 @@ Public Class Clase_Crear_Documento
             '_SS = _HH_sistem.Second
 
             If EsAjuste Then
-                _Marca = 1 ' Generalmente se marcan las GRI o GDI que son por ajuste
+                _Marca = "I" '1 ' Generalmente se marcan las GRI o GDI que son por ajuste
                 _Subtido = "AJU" ' Generalmente se Marcan las Guias de despacho o recibo
-                '_HH = 23 : _MM = 59 : _SS = 59
+                _Suendo = String.Empty
             Else
                 _Marca = String.Empty
-                _Subtido = String.Empty
             End If
 
+            If _Tido = "GDV" And Not _Es_Documento_Electronico Then
 
+                For Each _Fila As DataRow In _Tbl_Detalle.Rows
 
-            _HoraGrab = Hora_Grab_fx(EsAjuste, FechaDelServidor) 'Math.Round((_HH * 3600) + (_MM * 60) + _SS, 0)
+                    Dim _Feemdo2 As Date = FormatDateTime(_Row_Encabezado.Item("FechaEmision"), DateFormat.ShortDate)
+                    Dim _Feemli2 As Date = FormatDateTime(_Fila.Item("FechaEmision"), DateFormat.ShortDate)
 
+                    If _Feemdo2 > _Feemli2 Then
+                        _HoraAlFinalDelDia = True
+                    Else
+                        _HoraAlFinalDelDia = False
+                    End If
+
+                Next
+
+            End If
+
+            _HoraGrab = Hora_Grab_fx(_HoraAlFinalDelDia) 'Math.Round((_HH * 3600) + (_MM * 60) + _SS, 0)
 
             'Consulta_sql = "Declare @HoraGrab Int" & vbCrLf & _
             '               "set @HoraGrab = convert(money,substring(convert(varchar(20),getdate(),114),1,2)) * 3600 +" & vbCrLf & _
             '               "convert(money,substring(convert(varchar(20),getdate(),114),4,2)) * 60 + " & vbCrLf & _
             '               "Convert(money, substring(Convert(varchar(20), getdate(), 114), 7, 2))" & vbCrLf & vbCrLf & _
 
+            Dim _Espgdo As String
 
+            Select Case _Tido
+                Case "COV", "GAR", "GDD", "GDI", "GDP", "GDV", "GRC", "GRD", "GRI", "GRP", "GTI", "NVV", "OCC", "NVI", "OCI"
+                    _Espgdo = "S"
+                Case Else
+                    _Espgdo = "P"
+            End Select
 
-            Dim _Espgdo As String = "P"
-            If _Tido = "OCC" Then _Espgdo = "S"
+            Dim _Despacho = 2
+
+            Select Case _Tido
+                Case "GDV", "GTI", "GDD", "GRI", "GDI", "GDP", "NVI"
+                    _Despacho = 1
+            End Select
+
             ' HAY QUE PONER EL CAMPO TIPO DE MONEDA  "TIMODO"
-            Consulta_sql = "UPDATE MAEEDO SET SUENDO='" & _Suendo & "',TIGEDO='I',SUDO='" & _Sudo &
-                          "',FEEMDO='" & _Feemdo & "',KOFUDO='" & _Kofudo & "',ESPGDO='" & _Espgdo & "',CAPRCO=" & _Caprco &
-                          ",CAPRAD=" & _Caprad & ",MEARDO = '" & _Meardo & "',MODO = '" & _Modo &
-                          "',TIMODO = '" & _Timodo & "',TAMODO = " & _Tamodo & ",VAIVDO = " & _Vaivdo & ",VAIMDO = " & _Vaimdo & vbCrLf &
-                          ",VANEDO = " & _Vanedo & ",VABRDO = " & _Vabrdo & ",FE01VEDO = '" & _Fe01vedo &
-                          "',FEULVEDO = '" & _Feulvedo & "',NUVEDO = " & _Nuvedo & ",FEER = '" & _Feer &
-                          "',KOTU = '1',LCLV = NULL,LAHORA = GETDATE(), DESPACHO = 1,HORAGRAB = " & _HoraGrab &
-                          ",FECHATRIB = NULL,SUBTIDO = '" & _Subtido &
-                          "',MARCA = '" & _Marca & "',ESDO = '',NUDONODEFI = " & CInt(_Es_ValeTransitorio) &
-                          ",TIDOELEC = " & CInt(_Es_Documento_Electronico) & ",LUVTDO = '" & _Luvtven & "'" & vbCrLf &
-                          "WHERE IDMAEEDO=" & _Idmaeedo
+            Consulta_sql = "UPDATE MAEEDO SET SUENDO='" & _Suendo & "',TIGEDO='" & _Tigedo & "',SUDO='" & _Sudo &
+                           "',FEEMDO='" & _Feemdo & "',KOFUDO='" & _Kofudo & "',ESPGDO='" & _Espgdo & "',CAPRCO=" & _Caprco &
+                           ",CAPRAD=" & _Caprad & ",CAPREX=" & _Caprex & ",MEARDO = '" & _Meardo & "',MODO = '" & _Modo &
+                           "',TIMODO = '" & _Timodo & "',TAMODO = " & _Tamodo & ",VAIVDO = " & _Vaivdo & ",VAIMDO = " & _Vaimdo & vbCrLf &
+                           ",VANEDO = " & _Vanedo & ",VABRDO = " & _Vabrdo & ",FE01VEDO = '" & _Fe01vedo &
+                           "',FEULVEDO = '" & _Feulvedo & "',NUVEDO = " & _Nuvedo & ",FEER = '" & _Feer &
+                           "',KOTU = '1',LCLV = NULL,LAHORA = GETDATE(), DESPACHO = " & _Despacho & ",HORAGRAB = " & _HoraGrab &
+                           "," & _Fecha_Tributaria & ",NUMOPERVEN = 0,FLIQUIFCV = '" & _Feemdo & "',SUBTIDO = '" & _Subtido &
+                           "',MARCA = '" & _Marca & "',ESDO = '',NUDONODEFI = " & CInt(_Es_ValeTransitorio) &
+                           ",TIDOELEC = " & CInt(_Es_Documento_Electronico) & ",LUVTDO = '" & _Luvtdo &
+                           "',LIBRO = '" & _Libro & "',BODESTI = '" & _Bodesti & "'" & vbCrLf &
+                           "WHERE IDMAEEDO=" & _Idmaeedo
 
             Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
             Comando.Transaction = myTrans
             Comando.ExecuteNonQuery()
 
+
+
+            Consulta_sql = "UPDATE MAEEDO SET ESDO = CASE WHEN ROUND(CAPRCO-CAPRAD-CAPREX,5)=0 THEN 'C' ELSE '' END WHERE IDMAEEDO = " & _Idmaeedo
+
+            Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+            Comando.Transaction = myTrans
+            Comando.ExecuteNonQuery()
+
+
+            'Comando = New SqlCommand("SELECT ESDO From MAEEDO Where IDMAEEDO = " & _Idmaeedo, cn2)
+            'Comando.Transaction = myTrans
+            'dfd1 = Comando.ExecuteReader()
+
+            'Dim _Esdo As String
+
+            'While dfd1.Read()
+            '    _Esdo = dfd1("ESDO").ToString.Trim
+            'End While
+            'dfd1.Close()
+
+            'If String.IsNullOrEmpty(_Esdo) Then
+
+            '    Comando = New SqlCommand("SELECT ESLIDO,CAPRCO1,CAPREX1,CAPRAD1 FROM MAEDDO Where IDMAEEDO = " & _Idmaeedo, cn2)
+            '    Comando.Transaction = myTrans
+            '    dfd1 = Comando.ExecuteReader()
+
+            '    Dim _Cuenta_Eslido = 0
+
+            '    While dfd1.Read()
+            '        _Eslido = dfd1("ESLIDO")
+            '        If _Eslido = "C" Then _Cuenta_Eslido += 1
+            '    End While
+            '    dfd1.Close()
+
+            '    If _Cuenta_Eslido = _Tbl_Detalle.Rows.Count Then
+
+            '        Consulta_sql = "UPDATE MAEEDO SET ESDO = 'C' WHERE IDMAEEDO = " & _Idmaeedo
+
+            '        Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+            '        Comando.Transaction = myTrans
+            '        Comando.ExecuteNonQuery()
+
+            '    End If
+
+            'End If
 
             Dim Reg As Integer = _Sql.Fx_Cuenta_Registros("INFORMATION_SCHEMA.COLUMNS",
                                                          "COLUMN_NAME LIKE 'LISACTIVA' AND TABLE_NAME = 'MAEEDO'")
@@ -1557,16 +2236,69 @@ Public Class Clase_Crear_Documento
 
 
             '========================================== CERRAR DOCUMENTOS ASOCIADOS ============================================
+
+
+            If _Filtro_Idmaeddo_Dori <> "()" Then
+
+                If Not IsNothing(_Tbl_Maeddo_Dori) Then
+
+                    For Each _Fila As DataRow In _Tbl_Detalle.Rows
+
+                        Dim _Estado As DataRowState = _Fila.RowState
+
+                        If Not _Estado = DataRowState.Deleted Then
+
+                            Dim _Idmaeddo_Dori = _Fila.Item("Idmaeddo_Dori")
+                            Dim _Row_Dori
+
+                            _Row_Dori = _Tbl_Maeddo_Dori.Select("IDMAEDDO = " & _Idmaeddo_Dori)
+
+                            If CBool(_Idmaeddo_Dori) Then
+
+                                Dim _CantUd1 As Double = _Fila.Item("CantUd1_Dori")
+                                Dim _CantUd2 As Double = _Fila.Item("CantUd2_Dori")
+                                Dim _CantUd1_Dori As Double = _Row_Dori(0).Item("CantUd1_Dori")
+                                Dim _CantUd2_Dori As Double = _Row_Dori(0).Item("CantUd2_Dori")
+                                Dim _CantUd1_Dori_Ncv As Double = _Row_Dori(0).Item("CantUd1_Dori_Ncv")
+                                Dim _CantUd2_Dori_Ncv As Double = _Row_Dori(0).Item("CantUd2_Dori_Ncv")
+                                Dim _Eslido_Dori As String = _Row_Dori(0).Item("ESLIDO")
+
+                                If Not IsNothing(_Row_Dori) Then
+
+                                    If _Tido = "NCV" Or (_Tido = "GDD" And _Subtido = String.Empty) Then
+
+                                        If _CantUd1 <> _CantUd1_Dori_Ncv Or _CantUd2 <> _CantUd2_Dori_Ncv Then
+
+                                            _Origen_Modificado_Intertanto = True
+                                            Throw New System.Exception("Alguno de los documentos de origen fueron modificados en el intertanto")
+
+                                        End If
+
+                                    Else
+
+                                        If _CantUd1 <> _CantUd1_Dori Or _CantUd2 <> _CantUd2_Dori Or _Eslido_Dori = "C" Then
+
+                                            _Origen_Modificado_Intertanto = True
+                                            Throw New System.Exception("Alguno de los documentos de origen fueron modificados en el intertanto")
+
+                                        End If
+
+                                    End If
+
+                                End If
+
+                            End If
+
+                        End If
+
+                    Next
+
+                End If
+
+            End If
+
+
             If _Tido <> "COV" Then
-
-                Dim Fl As String = Generar_Filtro_IN(Tbl_Detalle, "", "Idmaeedo_Dori", False, False, "")
-
-                If Fl = "()" Then Fl = "(0)"
-
-                Consulta_sql = "SELECT DISTINCT IDMAEEDO FROM MAEDDO WHERE IDMAEEDO IN " & Fl
-                Dim _TblOrigen As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
-
-                'Idmaeedo_Dori
 
                 If CBool(_TblOrigen.Rows.Count) Then
 
@@ -1577,14 +2309,15 @@ Public Class Clase_Crear_Documento
                         _Sum_Caprco = 0
 
                         Dim _Idmaeedo_Origen = _Fila_Idmaeedo.Item("IDMAEEDO")
+                        _Tidopa = _Fila_Idmaeedo.Item("TIDO")
 
-                        For Each _Fila As DataRow In Tbl_Detalle.Rows
+                        For Each _Fila As DataRow In _Tbl_Detalle.Rows
 
                             Dim Idmaeedo_Dori = _Fila.Item("Idmaeedo_Dori")
 
                             If _Idmaeedo_Origen = Idmaeedo_Dori Then
 
-                                Dim _Idrst = Val(_Fila.Item("Idmaeddo_Dori"))
+                                _Idrst = Val(_Fila.Item("Idmaeddo_Dori"))
 
                                 If CBool(_Idrst) Then
 
@@ -1605,7 +2338,7 @@ Public Class Clase_Crear_Documento
                                         _Cant_MovUd2_Ext = _CantUd2
                                     End If
 
-                                    _Sum_Caprco += _Cant_MovUd1_Ext '_Fila.Item("CantUd1") 'De_Num_a_Tx_01(_Fila.Item("CantUd1"), False, 5) ' Cantidad de la primera unidad
+                                    _Sum_Caprco += _Cant_MovUd1_Ext
 
                                 End If
 
@@ -1613,11 +2346,12 @@ Public Class Clase_Crear_Documento
 
                         Next
 
+
                         If CBool(_Sum_Caprco) Then
 
                             Dim _Sum_Caprco_str As String = De_Num_a_Tx_01(_Sum_Caprco, False, 5)
 
-                            If _Tido = "NCV" Or _Tido = "NCC" Then
+                            If ((_Tido = "NCV" Or _Tido = "NCC") And Not _Tidopa.Contains("G")) Or (_Tido = "GDD" And _Subtido = String.Empty) Then
 
                                 Consulta_sql = "UPDATE MAEEDO SET CAPREX=CAPREX+0,CAPRNC=CAPRNC+" & _Sum_Caprco_str & ",CAPRAD=CAPRAD+0," & vbCrLf &
                                                "ESDO=CASE" & vbCrLf &
@@ -1626,18 +2360,56 @@ Public Class Clase_Crear_Documento
                                                "WHEN CAPRCO-CAPRAD-CAPREX-(0)-(0)=0 THEN 'F'" & vbCrLf & "ELSE ESFADO" & vbCrLf & "END" & vbCrLf &
                                                "WHERE IDMAEEDO= " & _Idmaeedo_Origen
                             Else
+
                                 Consulta_sql = "UPDATE MAEEDO SET CAPREX=CAPREX+" & _Sum_Caprco_str & ",CAPRNC=CAPRNC+0,CAPRAD=CAPRAD+0," & vbCrLf &
                                                "ESDO=CASE " & vbCrLf &
                                                "WHEN ROUND(CAPRCO-CAPRAD-CAPREX-(0)-(" & _Sum_Caprco_str & "),5)=0 THEN 'C'" & vbCrLf & "ELSE ''" & vbCrLf & "END," & vbCrLf &
                                                "ESFADO=" & vbCrLf &
                                                "CASE" & vbCrLf &
-                                               "WHEN CAPRCO-CAPRAD-CAPREX-(0)-(" & _Sum_Caprco_str & ")=0 THEN 'F'  " & vbCrLf & "ELSE ESFADO" & vbCrLf & "End" & vbCrLf &
+                                               "WHEN CAPRCO-CAPRAD-CAPREX-(0)-(" & _Sum_Caprco_str & ")=0 THEN 'F' " & vbCrLf & "ELSE ESFADO" & vbCrLf & "End" & vbCrLf &
                                                "WHERE IDMAEEDO = " & _Idmaeedo_Origen
+
                             End If
 
                             Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
                             Comando.Transaction = myTrans
                             Comando.ExecuteNonQuery()
+
+
+                            'Comando = New SqlCommand("SELECT ESDO From MAEEDO Where IDMAEEDO = " & _Idmaeedo_Origen, cn2)
+                            'Comando.Transaction = myTrans
+                            'dfd1 = Comando.ExecuteReader()
+
+                            'While dfd1.Read()
+                            '    _Esdo = dfd1("ESDO").ToString.Trim
+                            'End While
+                            'dfd1.Close()
+
+                            'If String.IsNullOrEmpty(_Esdo) Then
+
+                            '    Comando = New SqlCommand("SELECT ESLIDO,CAPRCO1,CAPREX1,CAPRAD1 FROM MAEDDO Where IDMAEEDO = " & _Idmaeedo_Origen, cn2)
+                            '    Comando.Transaction = myTrans
+                            '    dfd1 = Comando.ExecuteReader()
+
+                            '    Dim _Cuenta_Eslido = 0
+
+                            '    While dfd1.Read()
+                            '        _Eslido = dfd1("ESLIDO")
+                            '        If _Eslido = "C" Then _Cuenta_Eslido += 1
+                            '    End While
+                            '    dfd1.Close()
+
+                            '    If _Cuenta_Eslido = _Tbl_Detalle.Rows.Count Then
+
+                            '        Consulta_sql = "UPDATE MAEEDO SET ESDO = 'C' WHERE IDMAEEDO = " & _Idmaeedo_Origen
+
+                            '        Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                            '        Comando.Transaction = myTrans
+                            '        Comando.ExecuteNonQuery()
+
+                            '    End If
+
+                            'End If
 
                         End If
 
@@ -1647,6 +2419,15 @@ Public Class Clase_Crear_Documento
 
             End If
 
+
+            Consulta_sql = "UPDATE MAEEDO SET ESFADO=" & vbCrLf &
+                           "CASE" & vbCrLf &
+                           "WHEN CAPRCO-CAPRAD-CAPREX-(0) = 0 THEN 'F' " & vbCrLf & "ELSE ESFADO" & vbCrLf & "End" & vbCrLf &
+                           "WHERE IDMAEEDO = " & _Idmaeedo
+
+            Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+            Comando.Transaction = myTrans
+            Comando.ExecuteNonQuery()
 
             '=========================================== OBSERVACIONES ==================================================================
 
@@ -1658,6 +2439,9 @@ Public Class Clase_Crear_Documento
                 _Cpdo = .Rows(0).Item("Forma_pago")
                 _Ocdo = .Rows(0).Item("Orden_compra")
 
+                Dim _Placapat As String = .Rows(0).Item("Placa").ToString.Trim
+                Dim _Diendesp As String = .Rows(0).Item("CodRetirador").ToString
+
                 For i = 0 To 34
 
                     Dim Campo As String = "Obs" & i + 1
@@ -1665,65 +2449,121 @@ Public Class Clase_Crear_Documento
 
                 Next
 
-            End With
-
-            Consulta_sql = "INSERT INTO MAEEDOOB (IDMAEEDO,OBDO,CPDO,OCDO,DIENDESP,TEXTO1,TEXTO2,TEXTO3,TEXTO4,TEXTO5,TEXTO6," & vbCrLf &
+                Consulta_sql = "INSERT INTO MAEEDOOB (IDMAEEDO,OBDO,CPDO,OCDO,DIENDESP,TEXTO1,TEXTO2,TEXTO3,TEXTO4,TEXTO5,TEXTO6," & vbCrLf &
                            "TEXTO7,TEXTO8,TEXTO9,TEXTO10,TEXTO11,TEXTO12,TEXTO13,TEXTO14,TEXTO15,CARRIER,BOOKING,LADING,AGENTE," & vbCrLf &
                            "MEDIOPAGO,TIPOTRANS,KOPAE,KOCIE,KOCME,FECHAE,HORAE,KOPAD,KOCID,KOCMD,FECHAD,HORAD,OBDOEXPO,MOTIVO," & vbCrLf &
                            "TEXTO16,TEXTO17,TEXTO18,TEXTO19,TEXTO20,TEXTO21,TEXTO22,TEXTO23,TEXTO24,TEXTO25,TEXTO26,TEXTO27," & vbCrLf &
-                           "TEXTO28,TEXTO29,TEXTO30,TEXTO31,TEXTO32,TEXTO33,TEXTO34,TEXTO35) VALUES " & vbCrLf &
-                           "(" & _Idmaeedo & ",'" & _Obdo & "','" & _Cpdo & "','" & _Ocdo & "','','" & Obs(0) & "','" & Obs(1) &
+                           "TEXTO28,TEXTO29,TEXTO30,TEXTO31,TEXTO32,TEXTO33,TEXTO34,TEXTO35,PLACAPAT) VALUES " & vbCrLf &
+                           "(" & _Idmaeedo & ",'" & _Obdo & "','" & _Cpdo & "','" & _Ocdo & "','" & _Diendesp & "','" & Obs(0) & "','" & Obs(1) &
                            "','" & Obs(2) & "','" & Obs(3) & "','" & Obs(4) & "','" & Obs(5) & "','" & Obs(6) & "','" & Obs(7) &
                            "','" & Obs(8) & "','" & Obs(9) & "','" & Obs(10) & "','" & Obs(11) & "','" & Obs(12) & "','" & Obs(13) &
                            "','" & Obs(14) & "','','','','','','','','','',GETDATE(),'','','','',GETDATE(),'','','','" & Obs(15) &
                            "','" & Obs(16) & "','" & Obs(17) & "','" & Obs(18) & "','" & Obs(19) &
                            "','" & Obs(20) & "','" & Obs(21) & "','" & Obs(22) & "','" & Obs(23) & "','" & Obs(24) &
                            "','" & Obs(25) & "','" & Obs(26) & "','" & Obs(27) & "','" & Obs(28) & "','" & Obs(29) &
-                           "','" & Obs(30) & "','" & Obs(31) & "','" & Obs(32) & "','" & Obs(33) & "','" & Obs(34) & "')"
+                           "','" & Obs(30) & "','" & Obs(31) & "','" & Obs(32) & "','" & Obs(33) & "','" & Obs(34) &
+                           "','" & _Placapat & "')"
 
-            Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
-            Comando.Transaction = myTrans
-            Comando.ExecuteNonQuery()
+                Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                Comando.Transaction = myTrans
+                Comando.ExecuteNonQuery()
 
-            ' ====================================================================================================================================
+            End With
 
-            If _Cambiar_Numeracion_Confiest Then
-                Consulta_sql = Fx_Cambiar_Numeracion_Modalidad(_Tido, _Nudo, _Modalidad, _Empresa)
+            ' ========================================== INCORPORAR EVENTOS =====================================================================
 
-                If Not String.IsNullOrEmpty(Consulta_sql) Then
+            'Consulta_sql = Fx_Mevento(_Idmaeedo, _Tbl_Mevento_Edo)
+
+            'If Not String.IsNullOrEmpty(Consulta_sql) Then
+
+            '    Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+            '    Comando.Transaction = myTrans
+            '    Comando.ExecuteNonQuery()
+
+            'End If
+
+            'Consulta_sql = Fx_Mevento(_Tbl_Mevento_Edd)
+
+            'If Not String.IsNullOrEmpty(Consulta_sql) Then
+
+            '    Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+            '    Comando.Transaction = myTrans
+            '    Comando.ExecuteNonQuery()
+
+            'End If
+
+            Consulta_sql = Fx_Referencias_DTE(_Idmaeedo, _Tbl_Referencias_DTE, False)
+
+            If Not String.IsNullOrEmpty(Consulta_sql) Then
+
+                Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                Comando.Transaction = myTrans
+                Comando.ExecuteNonQuery()
+
+            End If
+
+            Consulta_sql = String.Empty
+
+            If _Reserva_NroOCC Then
+
+                Dim _Id_DocEnc As String = _Row_Encabezado.Item("Id_DocEnc")
+                Dim _Nudo_Reserva As String = _Sql.Fx_Trae_Dato("MAEEDO", "NUDO", "IDMAEEDO = " & _Reserva_Idmaeedo)
+
+                Consulta_sql = "Delete MAEEDO Where IDMAEEDO = " & _Reserva_Idmaeedo & "
+                                Delete MAEDDO Where IDMAEEDO = " & _Reserva_Idmaeedo & "
+                                Delete MAEEDOOB Where IDMAEEDO = " & _Reserva_Idmaeedo & "
+                                Delete " & _Global_BaseBk & "Zw_Casi_DocEnc Where Reserva_Idmaeedo = " & _Reserva_Idmaeedo & "
+                                Delete " & _Global_BaseBk & "Zw_Casi_DocObs Where Id_DocEnc = " & _Id_DocEnc & "
+                                Delete " & _Global_BaseBk & "Zw_Casi_DocTom Where Id_DocEnc = " & _Id_DocEnc
+
+                Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                Comando.Transaction = myTrans
+                Comando.ExecuteNonQuery()
+
+                If Not String.IsNullOrEmpty(_Nudo_Reserva.Trim) Then
+
+                    Consulta_sql = "Update MAEEDO Set NUDO = '" & _Nudo_Reserva & "' Where IDMAEEDO = " & _Idmaeedo & "
+                                    Update MAEDDO Set NUDO = '" & _Nudo_Reserva & "' Where IDMAEEDO = " & _Idmaeedo
 
                     Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
                     Comando.Transaction = myTrans
                     Comando.ExecuteNonQuery()
 
                 End If
+
+            End If
+
+            If False Then
+                Throw New System.Exception("An exception has occurred.")
             End If
 
             myTrans.Commit()
+            SQL_ServerClass.Sb_Cerrar_Conexion(cn2)
 
-            'Tbl_Detalle()
             Return _Idmaeedo
+
 
         Catch ex As Exception
 
-            Dim _Erro_VB As String = ex.Message & vbCrLf & ex.StackTrace & vbCrLf &
-                                     "Código: " & _Koprct
+            _Error = ex.Message & vbCrLf & ex.StackTrace
+
             'Clipboard.SetText(_Erro_VB)
 
-            My.Computer.FileSystem.WriteAllText("ArchivoSalida", ex.Message & vbCrLf & ex.StackTrace, False)
-            'MessageBoxEx.Show(ex.Message, "Error", _
+            'My.Computer.FileSystem.WriteAllText("ArchivoSalida", ex.Message & vbCrLf & ex.StackTrace, False)
+            'MessageBoxEx.Show(ex.Message & vbCrLf & vbCrLf & "Transaccion desecha", "Problema",
             '                  Windows.Forms.MessageBoxButtons.OK, Windows.Forms.MessageBoxIcon.Stop)
-            myTrans.Rollback()
-            MsgBox("Transacción desecha", MsgBoxStyle.Critical, "BakApp")
-            'MessageBoxEx.Show("Transaccion desecha", "Problema", _
-            '                  Windows.Forms.MessageBoxButtons.OK, Windows.Forms.MessageBoxIcon.Stop)
-            'SQL_ServerClass.CerrarConexion(cn2)
-            Return _Erro_VB '0
-        Finally
-            _Sql.Sb_Cerrar_Conexion(cn2)
+
+            'If Not IsNothing(myTrans) Then
+            '    myTrans.Rollback()
+            'End If
+
+            SQL_ServerClass.Sb_Cerrar_Conexion(cn2)
+            Return 0
+
         End Try
 
     End Function
+
     Private Function Fx_Vencimientos(ByVal _RowEncabezado As DataRow) As String
 
         Dim _SqlQuery As String
@@ -1795,8 +2635,8 @@ Public Class Clase_Crear_Documento
                 Dim _porestpag As String = 0
                 Dim __Observa As String = String.Empty
 
-                _SqlQuery += "INSERT INTO MAEVEN (IDMAEEDO,FEVE,ESPGVE,VAVE,VAABVE,ARCHIRST,PORESTPAG,OBSERVA)" & vbCrLf & _
-                               "values (" & _Idmaeedo & ",'" & _Feve & "','" & _Espgve & "'," & De_Num_a_Tx_01(_Vave, False, 5) & "," & _Vaabve & _
+                _SqlQuery += "INSERT INTO MAEVEN (IDMAEEDO,FEVE,ESPGVE,VAVE,VAABVE,ARCHIRST,PORESTPAG,OBSERVA)" & vbCrLf &
+                               "values (" & _Idmaeedo & ",'" & _Feve & "','" & _Espgve & "'," & De_Num_a_Tx_01(_Vave, False, 5) & "," & _Vaabve &
                                ",'" & _Archirst & "'," & _porestpag & ",'" & __Observa & "')" & vbCrLf
 
 
@@ -1812,14 +2652,17 @@ Public Class Clase_Crear_Documento
 
 #End Region
 
-    Function Fx_Cambiar_Numeracion_Modalidad(ByVal _Tido As String, _
-                                             ByVal _Nudo As String, _
-                                             ByVal _Empresa As String, _
-                                             ByVal _Modalidad As String) As String
+
+    Private Function Fx_Cambiar_Numeracion_Modalidad(_Tido As String,
+                                                     _Nudo As String,
+                                                     _Empresa As String,
+                                                     _Modalidad As String) As String
 
 
-        Dim _Consulta_sql = "Select " & _Tido & " From CONFIEST Where MODALIDAD = '" & _Modalidad & "'"
-        Dim _Tbl As DataTable = _Sql.Fx_Get_Tablas(_Consulta_sql) 'get_Tablas(_Consulta_sql, cn1)
+        ' _Modalidad = "  "
+
+        Dim _Consulta_sql = "Select Top 1 " & _Tido & " From CONFIEST Where MODALIDAD = '" & _Modalidad & "' And EMPRESA = '" & _Empresa & "'"
+        Dim _Tbl As DataTable = _Sql.Fx_Get_Tablas(_Consulta_sql)
 
         Dim _Nudo_Modalidad As String
 
@@ -1827,25 +2670,40 @@ Public Class Clase_Crear_Documento
 
         If CBool(_Tbl.Rows.Count) Then
 
-            _Nudo_Modalidad = _Tbl.Rows(0).Item(_Tido)
+            _Nudo_Modalidad = _Tbl.Rows(0).Item(_Tido).ToString.Trim
 
-            Dim Continua As Boolean = True
+            If String.IsNullOrEmpty(_Nudo_Modalidad) Then
+                _Consulta_sql = Fx_Cambiar_Numeracion_Modalidad(_Tido, _Nudo, _Empresa, "  ")
+            ElseIf _Nudo_Modalidad = "0000000000" Then
+                _Consulta_sql = String.Empty
+            Else
 
-            If Not String.IsNullOrEmpty(Trim(_Nudo_Modalidad)) Then
+                Dim Continua As Boolean = True
 
-                Dim _ProxNumero As String = Fx_Proximo_NroDocumento(_Nudo, 10)
+                If Not String.IsNullOrEmpty(Trim(_Nudo_Modalidad)) Then
 
-                _Consulta_sql = "UPDATE CONFIEST SET " & _Tido & " = '" & _ProxNumero & "'" & vbCrLf & _
-                                "WHERE EMPRESA = '" & _Empresa & "' AND  MODALIDAD = '" & _Modalidad & "'"
+                    Dim _ProxNumero = Fx_Proximo_NroDocumento(_Nudo, 10)
+
+                    If _Tido = "GDV" Or _Tido = "GTI" Or _Tido = "GDP" Or _Tido = "GDD" Then
+
+                        _Consulta_sql = "UPDATE CONFIEST SET " &
+                                        "GDV = '" & _ProxNumero & "'," & vbCrLf &
+                                        "GTI = '" & _ProxNumero & "'," & vbCrLf &
+                                        "GDP = '" & _ProxNumero & "'," & vbCrLf &
+                                        "GDD = '" & _ProxNumero & "'" & vbCrLf &
+                                        "WHERE EMPRESA = '" & _Empresa & "' AND  MODALIDAD = '" & _Modalidad & "'"
+                    Else
+                        _Consulta_sql = "UPDATE CONFIEST SET " & _Tido & " = '" & _ProxNumero & "'" & vbCrLf &
+                                    "WHERE EMPRESA = '" & _Empresa & "' AND  MODALIDAD = '" & _Modalidad & "'"
+                    End If
+
+                End If
 
             End If
 
         End If
 
-
         Return _Consulta_sql
-        'Dim _NrNumeroDoco As String = trae_dato(tb, cn1, _TipoDoc, "CONFIEST", "EMPRESA = '" & ModEmpresa & _
-        '                              "' AND MODALIDAD = '" & Modalidad & "'") 'FUNCIONARIO & numero_(Trim(Str(CantOCCFuncionario)), 7)
 
     End Function
 
@@ -1900,7 +2758,7 @@ Public Class Clase_Crear_Documento
                 _Caprco = De_Num_a_Tx_01(.Rows(0).Item("CantTotal"), 5)
                 _Caprad = De_Num_a_Tx_01(.Rows(0).Item("CantDesp"), 5)
 
-                _Luvtven = .Rows(0).Item("Centro_Costo")
+                _Luvtdo = .Rows(0).Item("Centro_Costo")
                 _Modo = .Rows(0).Item("Moneda_Doc")
                 _Meardo = .Rows(0).Item("DocEn_Neto_Bruto")
                 _Tamodo = De_Num_a_Tx_01(.Rows(0).Item("Valor_Dolar"), False, 5)
@@ -2076,24 +2934,24 @@ Public Class Clase_Crear_Documento
                         '_Timopppr = .Item("Tipo_Moneda") 'trae_dato(tb, cn1, "TIMO", "TABMO", "NOKOMO LIKE '%PESO%'")
                         '_Tamopppr = .Item("Tipo_Cambio") 'De_Num_a_Tx_01(trae_dato(tb, cn1, "VAMO", "TABMO", "NOKOMO LIKE '%PESO%'"), False, 5)
 
-                        Consulta_sql = _
-                              "INSERT INTO KASIDDO (IDMAEDDO,IDMAEEDO,ARCHIRST,IDRST,EMPRESA,TIDO,NUDO,ENDO,SUENDO,LILG,NULIDO," & vbCrLf & _
-                              "SULIDO,BOSULIDO,LUVTLIDO,KOFULIDO,TIPR,TICT,PRCT,KOPRCT,UDTRPR,RLUDPR,CAPRCO1," & vbCrLf & _
-                              "UD01PR,CAPRCO2,UD02PR,CAPRAD1,CAPRAD2,KOLTPR,MOPPPR,TIMOPPPR,TAMOPPPR,NUIMLI,NUDTLI," & vbCrLf & _
-                              "PODTGLLI,POIMGLLI,VAIMLI,VADTNELI,VADTBRLI,POIVLI,VAIVLI,VANELI,VABRLI,TIGELI," & vbCrLf & _
-                              "FEEMLI,FEERLI,PPPRNELT,PPPRNE,PPPRBRLT,PPPRBR,PPPRPM,PPPRNERE1,PPPRNERE2,CAFACO," & vbCrLf & _
-                              "FVENLOTE,FCRELOTE,NOKOPR,ALTERNAT,TASADORIG,CUOGASDIF,LINCONDESP,OPERACION,POTENCIA,ESLIDO,OBSERVA)" & vbCrLf & _
-                       "VALUES (0," & _Idmaeedo & ",'',0,'" & _Empresa & "','','','" & _Endo & _
-                              "','" & _Suendo & "','SI','" & _Nulido & "','" & _Sudo & "','" & _Bosulido & _
-                              "','" & _Luvtven & "','" & _Kofudo & "','" & _Tipr & "','" & _Tict & "'," & CInt(_Prct) & ",'" & _Koprct & _
-                              "'," & _Udtrpr & "," & _Rludpr & "," & _Caprco1 & ",'" & _Ud01pr & "'," & _Caprco2 & _
-                              ",'" & _Ud02pr & "'," & _Caprad1 & "," & _Caprad2 & ",'TABPP" & _Koltpr & "'" & _
-                              ",'" & _Mopppr & "','" & _Timopppr & "'," & _Tamopppr & _
-                              "," & _Nuimli & "," & _Nudtli & "," & _Podtglli & "," & _Poimglli & "," & _Vaimli & _
-                              "," & _Vadtneli & "," & _Vadtbrli & "," & _Poivli & "," & _Vaivli & "," & _Vaneli & _
-                              "," & _Vabrli & ",'I','" & _Feemli & "','" & _Feerli & "'," & _Ppprnelt & "," & _Ppprne & _
-                              "," & _Ppprbrlt & "," & _Ppprbr & "," & _Ppprpm & "," & _Ppprnere1 & "," & _Ppprnere2 & _
-                              "," & _Cafaco & ",NULL,NULL,'" & _Nokopr & "','" & _Alternat & "',0,0," & CInt(_Lincondesp) & _
+                        Consulta_sql =
+                              "INSERT INTO KASIDDO (IDMAEDDO,IDMAEEDO,ARCHIRST,IDRST,EMPRESA,TIDO,NUDO,ENDO,SUENDO,LILG,NULIDO," & vbCrLf &
+                              "SULIDO,BOSULIDO,LUVTLIDO,KOFULIDO,TIPR,TICT,PRCT,KOPRCT,UDTRPR,RLUDPR,CAPRCO1," & vbCrLf &
+                              "UD01PR,CAPRCO2,UD02PR,CAPRAD1,CAPRAD2,KOLTPR,MOPPPR,TIMOPPPR,TAMOPPPR,NUIMLI,NUDTLI," & vbCrLf &
+                              "PODTGLLI,POIMGLLI,VAIMLI,VADTNELI,VADTBRLI,POIVLI,VAIVLI,VANELI,VABRLI,TIGELI," & vbCrLf &
+                              "FEEMLI,FEERLI,PPPRNELT,PPPRNE,PPPRBRLT,PPPRBR,PPPRPM,PPPRNERE1,PPPRNERE2,CAFACO," & vbCrLf &
+                              "FVENLOTE,FCRELOTE,NOKOPR,ALTERNAT,TASADORIG,CUOGASDIF,LINCONDESP,OPERACION,POTENCIA,ESLIDO,OBSERVA)" & vbCrLf &
+                       "VALUES (0," & _Idmaeedo & ",'',0,'" & _Empresa & "','','','" & _Endo &
+                              "','" & _Suendo & "','SI','" & _Nulido & "','" & _Sudo & "','" & _Bosulido &
+                              "','" & _Luvtlido & "','" & _Kofudo & "','" & _Tipr & "','" & _Tict & "'," & CInt(_Prct) & ",'" & _Koprct &
+                              "'," & _Udtrpr & "," & _Rludpr & "," & _Caprco1 & ",'" & _Ud01pr & "'," & _Caprco2 &
+                              ",'" & _Ud02pr & "'," & _Caprad1 & "," & _Caprad2 & ",'TABPP" & _Koltpr & "'" &
+                              ",'" & _Mopppr & "','" & _Timopppr & "'," & _Tamopppr &
+                              "," & _Nuimli & "," & _Nudtli & "," & _Podtglli & "," & _Poimglli & "," & _Vaimli &
+                              "," & _Vadtneli & "," & _Vadtbrli & "," & _Poivli & "," & _Vaivli & "," & _Vaneli &
+                              "," & _Vabrli & ",'I','" & _Feemli & "','" & _Feerli & "'," & _Ppprnelt & "," & _Ppprne &
+                              "," & _Ppprbrlt & "," & _Ppprbr & "," & _Ppprpm & "," & _Ppprnere1 & "," & _Ppprnere2 &
+                              "," & _Cafaco & ",NULL,NULL,'" & _Nokopr & "','" & _Alternat & "',0,0," & CInt(_Lincondesp) &
                               ",'" & _Operacion & "'," & _Potencia & ",'" & _Eslido & "',' " & _Observa & "')"
 
                         Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
@@ -2219,23 +3077,23 @@ Public Class Clase_Crear_Documento
                 _Subtido = String.Empty
             End If
 
-            _HoraGrab = Hora_Grab_fx(_EsAjuste, _FechaEmision) 'Math.Round((_HH * 3600) + (_MM * 60) + _SS, 0)
+            _HoraGrab = Hora_Grab_fx(_EsAjuste) ', _FechaEmision) 'Math.Round((_HH * 3600) + (_MM * 60) + _SS, 0)
 
 
 
             Dim _Espgdo As String = "P"
             If _Tido = "OCC" Then _Espgdo = "S"
             ' HAY QUE PONER EL CAMPO TIPO DE MONEDA  "TIMODO"
-            Consulta_sql = "UPDATE KASIEDO SET SUENDO='" & _Suendo & "',TIGEDO='I',SUDO='" & _Sudo & _
-                           "',FEEMDO='" & _Feemdo & "',KOFUDO='" & _Kofudo & "',ESPGDO='" & _Espgdo & "',CAPRCO=" & _Caprco & _
-                           ",CAPRAD=" & _Caprad & ",MEARDO = '" & _Meardo & "',MODO = '" & _Modo & _
-                           "',TIMODO = '" & _Timodo & "',TAMODO = " & _Tamodo & ",VAIVDO = " & _Vaivdo & ",VAIMDO = " & _Vaimdo & vbCrLf & _
-                           ",VANEDO = " & _Vanedo & ",VABRDO = " & _Vabrdo & ",FE01VEDO = '" & _Fe01vedo & _
-                           "',FEULVEDO = '" & _Feulvedo & "',NUVEDO = " & _Nuvedo & ",FEER = '" & _Feer & _
-                           "',KOTU = '1',LCLV = NULL,LAHORA = GETDATE(), DESPACHO = 1,HORAGRAB = " & _HoraGrab & _
-                           ",FECHATRIB = NULL,NUMOPERVEN = 0,FLIQUIFCV = '" & _Feemdo & "',SUBTIDO = '" & _Subtido & _
-                           "',MARCA = '" & _Marca & "',ESDO = ''" & _
-                           ",TIDOELEC = " & CInt(_Es_Documento_Electronico) & ",LUVTDO = '" & _Luvtven & "'" & vbCrLf & _
+            Consulta_sql = "UPDATE KASIEDO SET SUENDO='" & _Suendo & "',TIGEDO='I',SUDO='" & _Sudo &
+                           "',FEEMDO='" & _Feemdo & "',KOFUDO='" & _Kofudo & "',ESPGDO='" & _Espgdo & "',CAPRCO=" & _Caprco &
+                           ",CAPRAD=" & _Caprad & ",MEARDO = '" & _Meardo & "',MODO = '" & _Modo &
+                           "',TIMODO = '" & _Timodo & "',TAMODO = " & _Tamodo & ",VAIVDO = " & _Vaivdo & ",VAIMDO = " & _Vaimdo & vbCrLf &
+                           ",VANEDO = " & _Vanedo & ",VABRDO = " & _Vabrdo & ",FE01VEDO = '" & _Fe01vedo &
+                           "',FEULVEDO = '" & _Feulvedo & "',NUVEDO = " & _Nuvedo & ",FEER = '" & _Feer &
+                           "',KOTU = '1',LCLV = NULL,LAHORA = GETDATE(), DESPACHO = 1,HORAGRAB = " & _HoraGrab &
+                           ",FECHATRIB = NULL,NUMOPERVEN = 0,FLIQUIFCV = '" & _Feemdo & "',SUBTIDO = '" & _Subtido &
+                           "',MARCA = '" & _Marca & "',ESDO = ''" &
+                           ",TIDOELEC = " & CInt(_Es_Documento_Electronico) & ",LUVTDO = '" & _Luvtdo & "'" & vbCrLf &
                            "WHERE IDMAEEDO=" & _Idmaeedo
 
 
@@ -2838,24 +3696,24 @@ Public Class Clase_Crear_Documento
                         '_Timopppr = .Item("Tipo_Moneda") 'trae_dato(tb, cn1, "TIMO", "TABMO", "NOKOMO LIKE '%PESO%'")
                         '_Tamopppr = .Item("Tipo_Cambio") 'De_Num_a_Tx_01(trae_dato(tb, cn1, "VAMO", "TABMO", "NOKOMO LIKE '%PESO%'"), False, 5)
 
-                        Consulta_sql = _
-                              "INSERT INTO MAEDDO (Id_DocEnc,Empresa,TIDO,NUDO,ENDO,SUENDO,LILG,NULIDO," & vbCrLf & _
-                              "SULIDO,BOSULIDO,LUVTLIDO,KOFULIDO,TIPR,TICT,PRCT,KOPRCT,UDTRPR,RLUDPR,CAPRCO1," & vbCrLf & _
-                              "UD01PR,CAPRCO2,UD02PR,CAPRAD1,CAPRAD2,KOLTPR,MOPPPR,TIMOPPPR,TAMOPPPR,NUIMLI,NUDTLI," & vbCrLf & _
-                              "PODTGLLI,POIMGLLI,VAIMLI,VADTNELI,VADTBRLI,POIVLI,VAIVLI,VANELI,VABRLI,TIGELI," & vbCrLf & _
-                              "FEEMLI,FEERLI,PPPRNELT,PPPRNE,PPPRBRLT,PPPRBR,PPPRPM,PPPRNERE1,PPPRNERE2,CAFACO," & vbCrLf & _
-                              "FVENLOTE,FCRELOTE,NOKOPR,ALTERNAT,TASADORIG,CUOGASDIF,LINCONDESP,OPERACION,POTENCIA,ESLIDO,OBSERVA)" & vbCrLf & _
-                       "VALUES (" & _Idmaeedo & ",'',0,'" & _Empresa & "','" & _Tido & "','" & _Nudo & "','" & _Endo & _
-                              "','" & _Suendo & "','SI','" & _Nulido & "','" & _Sudo & "','" & _Bosulido & _
-                              "','" & _Luvtven & "','" & _Kofudo & "','" & _Tipr & "','" & _Tict & "'," & CInt(_Prct) & ",'" & _Koprct & _
-                              "'," & _Udtrpr & "," & _Rludpr & "," & _Caprco1 & ",'" & _Ud01PR & "'," & _Caprco2 & _
-                              ",'" & _Ud02PR & "'," & _Caprad1 & "," & _Caprad2 & ",'TABPP" & _Koltpr & "'" & _
-                              ",'" & _Mopppr & "','" & _Timopppr & "'," & _Tamopppr & _
-                              "," & _Nuimli & "," & _Nudtli & "," & _Podtglli & "," & _Poimglli & "," & _Vaimli & _
-                              "," & _Vadtneli & "," & _Vadtbrli & "," & _Poivli & "," & _Vaivli & "," & _Vaneli & _
-                              "," & _Vabrli & ",'I','" & _Feemli & "','" & _Feerli & "'," & _Ppprnelt & "," & _Ppprne & _
-                              "," & _Ppprbrlt & "," & _Ppprbr & "," & _Ppprpm & "," & _Ppprnere1 & "," & _Ppprnere2 & _
-                              "," & _Cafaco & ",NULL,NULL,'" & _Nokopr & "','" & _Alternat & "',1.00000,0," & CInt(_Lincondesp) & _
+                        Consulta_sql =
+                              "INSERT INTO MAEDDO (Id_DocEnc,Empresa,TIDO,NUDO,ENDO,SUENDO,LILG,NULIDO," & vbCrLf &
+                              "SULIDO,BOSULIDO,LUVTLIDO,KOFULIDO,TIPR,TICT,PRCT,KOPRCT,UDTRPR,RLUDPR,CAPRCO1," & vbCrLf &
+                              "UD01PR,CAPRCO2,UD02PR,CAPRAD1,CAPRAD2,KOLTPR,MOPPPR,TIMOPPPR,TAMOPPPR,NUIMLI,NUDTLI," & vbCrLf &
+                              "PODTGLLI,POIMGLLI,VAIMLI,VADTNELI,VADTBRLI,POIVLI,VAIVLI,VANELI,VABRLI,TIGELI," & vbCrLf &
+                              "FEEMLI,FEERLI,PPPRNELT,PPPRNE,PPPRBRLT,PPPRBR,PPPRPM,PPPRNERE1,PPPRNERE2,CAFACO," & vbCrLf &
+                              "FVENLOTE,FCRELOTE,NOKOPR,ALTERNAT,TASADORIG,CUOGASDIF,LINCONDESP,OPERACION,POTENCIA,ESLIDO,OBSERVA)" & vbCrLf &
+                       "VALUES (" & _Idmaeedo & ",'',0,'" & _Empresa & "','" & _Tido & "','" & _Nudo & "','" & _Endo &
+                              "','" & _Suendo & "','SI','" & _Nulido & "','" & _Sudo & "','" & _Bosulido &
+                              "','" & _Luvtdo & "','" & _Kofudo & "','" & _Tipr & "','" & _Tict & "'," & CInt(_Prct) & ",'" & _Koprct &
+                              "'," & _Udtrpr & "," & _Rludpr & "," & _Caprco1 & ",'" & _Ud01PR & "'," & _Caprco2 &
+                              ",'" & _Ud02PR & "'," & _Caprad1 & "," & _Caprad2 & ",'TABPP" & _Koltpr & "'" &
+                              ",'" & _Mopppr & "','" & _Timopppr & "'," & _Tamopppr &
+                              "," & _Nuimli & "," & _Nudtli & "," & _Podtglli & "," & _Poimglli & "," & _Vaimli &
+                              "," & _Vadtneli & "," & _Vadtbrli & "," & _Poivli & "," & _Vaivli & "," & _Vaneli &
+                              "," & _Vabrli & ",'I','" & _Feemli & "','" & _Feerli & "'," & _Ppprnelt & "," & _Ppprne &
+                              "," & _Ppprbrlt & "," & _Ppprbr & "," & _Ppprpm & "," & _Ppprnere1 & "," & _Ppprnere2 &
+                              "," & _Cafaco & ",NULL,NULL,'" & _Nokopr & "','" & _Alternat & "',1.00000,0," & CInt(_Lincondesp) &
                               ",'" & _Operacion & "'," & _Potencia & ",'" & _Eslido & "',' " & _Observa & "')"
 
 
@@ -3040,16 +3898,16 @@ Public Class Clase_Crear_Documento
             Dim _Espgdo As String = "P"
             If _Tido = "OCC" Then _Espgdo = "S"
             ' HAY QUE PONER EL CAMPO TIPO DE MONEDA  "TIMODO"
-            Consulta_sql = "UPDATE " & _Global_BaseBk & "Zw_DocEnc SET Sucursal = '" & _Sucursal & "',TIGEDO='I',SUDO='" & _Sudo & _
-                           "',FechaEmision='" & _FechaEmision & "',CodFuncionario='" & _CodFuncionario & "',ESPGDO='" & _Espgdo & "',CAPRCO=" & _Caprco & _
-                           ",CAPRAD=" & _Caprad & ",MEARDO = '" & _Meardo & "',MODO = '" & _Modo & _
-                           "',TIMODO = '" & _Timodo & "',TAMODO = " & _Tamodo & ",VAIVDO = " & _Vaivdo & ",VAIMDO = " & _Vaimdo & vbCrLf & _
-                           ",VANEDO = " & _Vanedo & ",VABRDO = " & _Vabrdo & ",FE01VEDO = '" & _Fe01vedo & _
-                           "',FEULVEDO = '" & _Feulvedo & "',NUVEDO = " & _Nuvedo & ",FEER = '" & _Feer & _
-                           "',KOTU = '1',LCLV = NULL,LAHORA = GETDATE(), DESPACHO = 1,HORAGRAB = " & _HoraGrab & _
-                           ",FECHATRIB = NULL,NUMOPERVEN = 0,FLIQUIFCV = '" & _Feemdo & "',SUBTIDO = '" & _Subtido & _
-                           "',MARCA = '" & _Marca & "',ESDO = '',NUDONODEFI = " & CInt(_Es_ValeTransitorio) & _
-                           ",TIDOELEC = " & CInt(_Es_Documento_Electronico) & ",LUVTDO = '" & _Luvtven & "'" & vbCrLf & _
+            Consulta_sql = "UPDATE " & _Global_BaseBk & "Zw_DocEnc SET Sucursal = '" & _Sucursal & "',TIGEDO='I',SUDO='" & _Sudo &
+                           "',FechaEmision='" & _FechaEmision & "',CodFuncionario='" & _CodFuncionario & "',ESPGDO='" & _Espgdo & "',CAPRCO=" & _Caprco &
+                           ",CAPRAD=" & _Caprad & ",MEARDO = '" & _Meardo & "',MODO = '" & _Modo &
+                           "',TIMODO = '" & _Timodo & "',TAMODO = " & _Tamodo & ",VAIVDO = " & _Vaivdo & ",VAIMDO = " & _Vaimdo & vbCrLf &
+                           ",VANEDO = " & _Vanedo & ",VABRDO = " & _Vabrdo & ",FE01VEDO = '" & _Fe01vedo &
+                           "',FEULVEDO = '" & _Feulvedo & "',NUVEDO = " & _Nuvedo & ",FEER = '" & _Feer &
+                           "',KOTU = '1',LCLV = NULL,LAHORA = GETDATE(), DESPACHO = 1,HORAGRAB = " & _HoraGrab &
+                           ",FECHATRIB = NULL,NUMOPERVEN = 0,FLIQUIFCV = '" & _Feemdo & "',SUBTIDO = '" & _Subtido &
+                           "',MARCA = '" & _Marca & "',ESDO = '',NUDONODEFI = " & CInt(_Es_ValeTransitorio) &
+                           ",TIDOELEC = " & CInt(_Es_Documento_Electronico) & ",LUVTDO = '" & _Luvtdo & "'" & vbCrLf &
                            "WHERE IDMAEEDO=" & _Idmaeedo
             'Empresa,TipoDoc,NroDocumento,CodEntidad,CodSucEntidad
 
@@ -4238,5 +5096,158 @@ Public Class Clase_Crear_Documento
 
 #End Region
 
+
+    Function Fx_Campo_Mov_Stock_Adicional_Suma(_Tido As String,
+                                           _Subtido As String,
+                                           _Lincondesp As Boolean,
+                                           _Tidopa As String) As List(Of String)
+
+        Dim _TidoSubtido As String = _Tido.Trim() & _Subtido.Trim
+        Dim _Campos As New List(Of String)
+
+        Select Case _Tido
+
+            Case "FCV", "FDB", "FDV", "FDX", "FEV", "FVL", "FVT", "FVX", "BLV"
+
+                If Not _Lincondesp And Not (_Tidopa = "GDV" Or _Tidopa = "GDP") Then
+                    _Campos.Add("STDV1")
+                    _Campos.Add("STDV2")
+                End If
+
+            Case "GDV"
+
+                If String.IsNullOrEmpty(_Tidopa) Or _Tidopa = "NVV" Or _Tidopa = "COV" Then
+                    _Campos.Add("DESPNOFAC1")
+                    _Campos.Add("DESPNOFAC2")
+                End If
+
+            Case "GDP"
+
+                If _Subtido = "PRE" Then
+                    _Campos.Add("PRESALCLI1")
+                    _Campos.Add("PRESALCLI2")
+                End If
+
+                If _Subtido = "CON" Then
+                    _Campos.Add("CONSALCLI1")
+                    _Campos.Add("CONSALCLI2")
+                End If
+
+            Case "OCI", "OCC"
+
+                _Campos.Add("STOCNV1C")
+                _Campos.Add("STOCNV2C")
+
+            Case "NVI", "NVV"
+
+                _Campos.Add("STOCNV1")
+                _Campos.Add("STOCNV2")
+
+            Case "GRC"
+
+                If _Tidopa <> "FCC" Then
+                    _Campos.Add("RECENOFAC1")
+                    _Campos.Add("RECENOFAC2")
+                End If
+
+            Case "FCC"
+
+                If Not _Lincondesp And _Tidopa <> "GRC" Then
+                    _Campos.Add("STDV1C")
+                    _Campos.Add("STDV1C")
+                End If
+
+            Case "GTI"
+
+                _Campos.Add("STTR1")
+                _Campos.Add("STTR2")
+
+            Case "GDD"
+
+                If _Subtido = String.Empty Then
+                    _Campos.Add("DEVSINNCC1")
+                    _Campos.Add("DEVSINNCC2")
+                End If
+
+                If _Subtido = "PRE" Then
+                    _Campos.Add("PRESDEPRO1")
+                    _Campos.Add("PRESDEPRO2")
+                End If
+
+                If _Subtido = "CON" Then
+                    _Campos.Add("CONSDEPRO1")
+                    _Campos.Add("CONSDEPRO2")
+                End If
+
+
+        End Select
+
+        Return _Campos
+
+    End Function
+
+    Function Fx_Campo_Mov_Stock_Adicional_Resta(_Tido As String, _Tidopa As String) As List(Of String)
+
+        Dim _Campos As New List(Of String)
+
+        Select Case _Tidopa
+
+            Case "FCV", "FDB", "FDV", "FDX", "FEV", "FVL", "FVT", "FVX", "BLV"
+
+                If _Tido = "GDV" Or _Tido = "GDP" Then
+                    _Campos.Add("STDV1")
+                    _Campos.Add("STDV2")
+                End If
+
+            Case "GDV"
+
+                Select Case _Tido
+
+                    Case "FCV", "FDB", "FDV", "FDX", "FEV", "FVL", "FVT", "FVX", "BLV"
+                        _Campos.Add("DESPNOFAC1")
+                        _Campos.Add("DESPNOFAC2")
+                    Case Else
+
+                End Select
+
+            Case "GDPPRE"
+
+                _Campos.Add("PRESALCLI1")
+                _Campos.Add("PRESALCLI2")
+
+            Case "OCI", "OCC"
+
+                _Campos.Add("STOCNV1C")
+                _Campos.Add("STOCNV2C")
+
+            Case "NVI", "NVV"
+
+                _Campos.Add("STOCNV1")
+                _Campos.Add("STOCNV2")
+
+            Case "GRC"
+
+                If _Tido = "FCC" Then
+                    _Campos.Add("RECENOFAC1")
+                    _Campos.Add("RECENOFAC2")
+                End If
+
+            Case "FCC"
+
+                If _Tido = "GRC" Then
+                    _Campos.Add("STDV1C")
+                    _Campos.Add("STDV1C")
+                End If
+
+            Case "GTI", "GDI"
+
+                _Campos.Add("STTR1")
+                _Campos.Add("STTR2")
+
+        End Select
+
+        Return _Campos
+
+    End Function
 
 End Class
