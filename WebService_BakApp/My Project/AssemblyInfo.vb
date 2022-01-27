@@ -12,13 +12,13 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
 <Assembly: AssemblyProduct("WebService_BakApp")>
-<Assembly: AssemblyCopyright("Copyright ©  2020")>
+<Assembly: AssemblyCopyright("Copyright ©  2022")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
 
 'El siguiente GUID sirve como identificador de la biblioteca de tipos si este proyecto se expone a COM
-<Assembly: Guid("7bad437d-dfae-4114-a1d9-1ad1347b99d2")> 
+<Assembly: Guid("7bad437d-dfae-4114-a1d9-1ad1347b99d2")>
 
 ' La información de versión de un ensamblado consta de los siguientes cuatro valores:
 '
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' usando el símbolo '*' como se muestra a continuación:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.0.0.1")> 
-<Assembly: AssemblyFileVersion("1.0.0.1")> 
+<Assembly: AssemblyVersion("1.0.0.11")>
+<Assembly: AssemblyFileVersion("1.0.0.11")>

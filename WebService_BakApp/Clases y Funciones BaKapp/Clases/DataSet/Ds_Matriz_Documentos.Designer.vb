@@ -3274,7 +3274,7 @@ Partial Public Class Ds_Matriz_Documentos
                     ByVal Reserva_Idmaeedo As Integer,  _
                     ByVal Bodega_Destino As String,  _
                     ByVal Libro As String,  _
-                    ByVal Fecha_Tributaria As String,  _
+                    ByVal Fecha_Tributaria As Date,  _
                     ByVal TotalKilos As Double,  _
                     ByVal MinKgDesp As Double,  _
                     ByVal MinNetoDesp As Double) As Encabezado_DocRow
@@ -3500,7 +3500,7 @@ Partial Public Class Ds_Matriz_Documentos
             MyBase.Columns.Add(Me.columnBodega_Destino)
             Me.columnLibro = New Global.System.Data.DataColumn("Libro", GetType(String), Nothing, Global.System.Data.MappingType.Element)
             MyBase.Columns.Add(Me.columnLibro)
-            Me.columnFecha_Tributaria = New Global.System.Data.DataColumn("Fecha_Tributaria", GetType(String), Nothing, Global.System.Data.MappingType.Element)
+            Me.columnFecha_Tributaria = New Global.System.Data.DataColumn("Fecha_Tributaria", GetType(Date), Nothing, Global.System.Data.MappingType.Element)
             MyBase.Columns.Add(Me.columnFecha_Tributaria)
             Me.columnTotalKilos = New Global.System.Data.DataColumn("TotalKilos", GetType(Double), Nothing, Global.System.Data.MappingType.Element)
             MyBase.Columns.Add(Me.columnTotalKilos)
@@ -9515,10 +9515,10 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Property Fecha_Tributaria() As String
+        Public Property Fecha_Tributaria() As Date
             Get
                 Try 
-                    Return CType(Me(Me.tableEncabezado_Doc.Fecha_TributariaColumn),String)
+                    Return CType(Me(Me.tableEncabezado_Doc.Fecha_TributariaColumn),Date)
                 Catch e As Global.System.InvalidCastException
                     Throw New Global.System.Data.StrongTypingException("El valor de la columna 'Fecha_Tributaria' de la tabla 'Encabezado_Doc' es DBNull."& _ 
                             "", e)

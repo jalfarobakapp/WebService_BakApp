@@ -15,6 +15,8 @@ Public Class Ws_BakApp
     Dim _Sql As Class_SQL
     Dim _Row_Tabcarac As DataRow
 
+    Dim _Version As String = My.Application.Info.Version.ToString
+
     Public Sub New()
 
         _Global_Cadena_Conexion_SQL_Server = "data source = 192.168.0.75; initial catalog = RANDOM; user id = RANDOM; password = RANDOM"
@@ -955,32 +957,21 @@ Public Class Ws_BakApp
     <WebMethod(True)>
     Public Sub Sb_Json_ImpBk(_Json As String, _NombreTabla As String)
 
-        '_Json = Replace(_Json, """", "'")
-        _Json = Replace(_Json, "\/", "/")
-        _Json = _Json.Trim
-        Dim _Json2 = Mid(_Json, 2, _Json.Length - 1)
-        _Json2 = Mid(_Json2, 1, _Json2.Length - 1)
-
-        Dim RutaArchivo As String = "D:\JsonB4Android\" & _NombreTabla & ".json"
-        Dim Cuerpo = _Json
-
-        Dim oSW As New System.IO.StreamWriter(RutaArchivo)
-
-        oSW.WriteLine(Cuerpo)
-        oSW.Close()
-
-        Dim dataSet As DataSet = JsonConvert.DeserializeObject(Of DataSet)(_Json2)
-
         _Sql = New Class_SQL
-        Dim _Ds As DataSet
+        Dim Consulta_sql As String
 
-        Dim _Existe = System.IO.File.Exists(RutaArchivo)
+        Dim _Ruta = "D:\JsonB4Android\"
+
+        Fx_Grabar_JsonArchivo(_Json, _Ruta, _NombreTabla)
+        Dim _Existe As Boolean = Fx_Grabar_JsonArchivo(_Json, _Ruta, _NombreTabla)
+
+        Dim _Ds As New DataSet
 
         If Not _Existe Then
             Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'' As Error"
             _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
         Else
-            Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'" & Replace(_Sql.Pro_Error, "'", "''") & "' As Error"
+            Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'Archivo creado:" & _Ruta & "' As Error"
             _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
         End If
 
@@ -999,6 +990,9 @@ Public Class Ws_BakApp
     <WebMethod(True)>
     Public Sub Sb_CreaDocumentoJsonBakapp(_EncabezadoJs As String, _DestalleJs As String, _DescuentosJs As String, _ObservacionesJs As String)
 
+        _Sql = New Class_SQL
+        Dim _Ds2 As DataSet
+
         Dim _Error As String
         Dim _Idmaeedo As Integer
         Dim _Tido As String
@@ -1006,9 +1000,16 @@ Public Class Ws_BakApp
 
         Try
 
-            _EncabezadoJs = _EncabezadoJs.Trim
-            _DestalleJs = _DestalleJs.Trim
-            _ObservacionesJs = _ObservacionesJs.Trim
+            'Dim _Ruta = "D:\JsonB4Android\"
+
+            'Fx_Grabar_JsonArchivo(_EncabezadoJs, _Ruta, "EncabezadoJs")
+            'Fx_Grabar_JsonArchivo(_DestalleJs, _Ruta, "DestalleJs")
+            'Fx_Grabar_JsonArchivo(_DescuentosJs, _Ruta, "DescuentosJs")
+            'Fx_Grabar_JsonArchivo(_ObservacionesJs, _Ruta, "ObservacionesJs")
+
+            'Throw New System.Exception("Archivo New creados...")
+
+            'Return
 
             Dim _Ds_Matriz_Documentos As New Ds_Matriz_Documentos
 
@@ -1045,9 +1046,6 @@ Public Class Ws_BakApp
             _Error = ex.Message
         End Try
 
-        _Sql = New Class_SQL
-        Dim _Ds2 As DataSet
-
         If CBool(_Idmaeedo) Then
 
             Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _Idmaeedo
@@ -1056,10 +1054,10 @@ Public Class Ws_BakApp
             _Tido = _Row_Documento.Item("TIDO")
             _Nudo = _Row_Documento.Item("NUDO")
 
-            Consulta_sql = "Select " & _Idmaeedo & " As Idmaeedo,'" & _Tido & "' As Tido,'" & _Nudo & "' As 'Nudo',Cast(1 as Bit) As Respuesta,'' As Error"
+            Consulta_sql = "Select " & _Idmaeedo & " As Idmaeedo,'" & _Tido & "' As Tido,'" & _Nudo & "' As 'Nudo',Cast(1 as Bit) As Respuesta,'" & _Version & "' As Version"
             _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
         Else
-            Consulta_sql = "Select 0 As Idmaeedo,Cast(1 as Bit) As Respuesta,'" & Replace(_Error, "'", "''") & "' As Error"
+            Consulta_sql = "Select 0 As Idmaeedo,Cast(1 as Bit) As Respuesta,'" & Replace(_Error, "'", "''") & "' As Error,'" & _Version & "' As Version"
             _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
         End If
 
@@ -1074,6 +1072,36 @@ Public Class Ws_BakApp
 
     End Sub
 
+    Private Sub Fx_Limpia_Json(ByRef _Json As String)
+        _Json = Replace(_Json, "\/", "/")
+        _Json = _Json.Trim
+    End Sub
+
+    Function Fx_Grabar_JsonArchivo(_Json As String, ByRef _Ruta As String, _NombreTabla As String) As Boolean
+
+        _Json = Replace(_Json, "\/", "/")
+        _Json = _Json.Trim
+        Dim _Json2 = Mid(_Json, 2, _Json.Length - 1)
+        _Json2 = Mid(_Json2, 1, _Json2.Length - 1)
+
+        Dim RutaArchivo As String = _Ruta & _NombreTabla & ".json"
+        Dim Cuerpo = _Json
+
+        Dim oSW As New System.IO.StreamWriter(RutaArchivo)
+
+        oSW.WriteLine(Cuerpo)
+        oSW.Close()
+
+        Dim _Existe As Boolean = System.IO.File.Exists(RutaArchivo)
+
+        If _Existe Then
+            _Ruta = RutaArchivo
+        End If
+
+        Return _Existe
+
+    End Function
+
     ''' <summary>
     ''' Convierte la fecha desde un string en datetime
     ''' </summary>
@@ -1082,8 +1110,18 @@ Public Class Ws_BakApp
     Function Fx_FechaStr2Datetime(_Fecha As String) As DateTime
 
         Dim _Fecha_Datetime As DateTime
+        Dim _VolverArevisar = False
 
-        _Fecha_Datetime = DateTime.ParseExact(_Fecha, "MM/dd/yyyy", Globalization.CultureInfo.CurrentCulture, Globalization.DateTimeStyles.None)
+        _Fecha = Replace(_Fecha, "/", "-")
+        Try
+            _Fecha_Datetime = DateTime.ParseExact(_Fecha, "dd-MM-yyyy", Globalization.CultureInfo.CurrentCulture, Globalization.DateTimeStyles.None)
+        Catch ex As Exception
+            _VolverArevisar = True
+        End Try
+
+        If _VolverArevisar Then
+            _Fecha_Datetime = DateTime.ParseExact(_Fecha, "MM-dd-yyyy", Globalization.CultureInfo.CurrentCulture, Globalization.DateTimeStyles.None)
+        End If
 
         Return _Fecha_Datetime
 
@@ -1097,7 +1135,6 @@ Public Class Ws_BakApp
         _Json = Mid(_Json, 1, _Json.Length - 1)
 
         Dim _Ds As DataSet = JsonConvert.DeserializeObject(Of DataSet)(_Json)
-        'Dim _Row As DataRow = _Ds.Tables(0).Rows(0)
 
         Dim NewFila As DataRow
 
@@ -1113,6 +1150,9 @@ Public Class Ws_BakApp
                 Dim i As Integer = 0
                 For Each column As DataColumn In _Tbl.Columns
                     name(i) = column.ColumnName
+                    If column.ColumnName = "Fecha_Tributaria" Then
+                        Dim t = 0
+                    End If
                     Dim _NomColumna As String = column.ColumnName
                     Try
                         If column.DataType.Name = "DateTime" Then

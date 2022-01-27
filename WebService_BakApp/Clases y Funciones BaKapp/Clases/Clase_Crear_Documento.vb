@@ -1169,7 +1169,7 @@ Public Class Clase_Crear_Documento
                 _Feerli = Format(.Item("FechaRecepcion"), "yyyyMMdd")
 
                 _Libro = .Item("Libro")
-                _Fecha_Tributaria = .Item("Fecha_Tributaria")
+                _Fecha_Tributaria = _Feemdo '.Item("Fecha_Tributaria")
 
                 If String.IsNullOrEmpty(_Fecha_Tributaria) Then
                     _Fecha_Tributaria = "FECHATRIB = NULL"
@@ -2545,7 +2545,7 @@ Public Class Clase_Crear_Documento
 
         Catch ex As Exception
 
-            _Error = ex.Message & vbCrLf & ex.StackTrace
+            _Error = ex.Message & vbCrLf & ex.StackTrace & vbCrLf & Consulta_sql
 
             'Clipboard.SetText(_Erro_VB)
 
