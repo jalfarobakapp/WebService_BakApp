@@ -1022,7 +1022,7 @@ Public Class Ws_BakApp
             _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Tipo_Documento") = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
 
             Fx_LlenarDatos(_Ds_Matriz_Documentos, _DestalleJs, "Detalle_Doc")
-            Fx_LlenarDatos(_Ds_Matriz_Documentos, _DescuentosJs, "Descuentos_Doc")
+            If Not String.IsNullOrEmpty(_DescuentosJs) Then Fx_LlenarDatos(_Ds_Matriz_Documentos, _DescuentosJs, "Descuentos_Doc")
             Fx_LlenarDatos(_Ds_Matriz_Documentos, _ObservacionesJs, "Observaciones_Doc")
 
             Dim _Funcionario As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("CodFuncionario")
@@ -1072,9 +1072,184 @@ Public Class Ws_BakApp
 
     End Sub
 
+    <WebMethod(True)>
+    Function Sb_CreaDocumentoJson2XmlBakapp(_EncabezadoJs As String, _DestalleJs As String, _DescuentosJs As String, _ObservacionesJs As String) As DataSet
+
+        _Sql = New Class_SQL
+        Dim _Ds2 As DataSet
+
+        Dim _Error As String
+        Dim _Idmaeedo As Integer
+        Dim _Tido As String
+        Dim _Nudo As String
+
+        Try
+
+            Dim _Ds_Matriz_Documentos As New Ds_Matriz_Documentos
+
+            _Ds_Matriz_Documentos.Clear()
+            _Ds_Matriz_Documentos = New Ds_Matriz_Documentos
+
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _EncabezadoJs, "Encabezado_Doc")
+
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Post_Venta") = False
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Tipo_Documento") = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
+
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _DestalleJs, "Detalle_Doc")
+            If Not String.IsNullOrEmpty(_DescuentosJs) Then Fx_LlenarDatos(_Ds_Matriz_Documentos, _DescuentosJs, "Descuentos_Doc")
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _ObservacionesJs, "Observaciones_Doc")
+
+            Dim _Funcionario As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("CodFuncionario")
+            _Global_BaseBk = "BAKAPP_VH.dbo."
+            Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
+
+            Dim _Modalidad As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Modalidad")
+            Dim _Empresa As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Empresa")
+
+            _Tido = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
+            _Nudo = Traer_Numero_Documento2(_Tido, _Empresa, _Modalidad)
+
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("NroDocumento") = _Nudo
+
+            _Idmaeedo = _New_Doc.Fx_Crear_Documento2(_Tido, _Nudo, False, False, _Ds_Matriz_Documentos)
+
+            _Error = _New_Doc.Error
+
+        Catch ex As Exception
+            _Error = ex.Message
+        End Try
+
+        If CBool(_Idmaeedo) Then
+
+            Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _Idmaeedo
+            Dim _Row_Documento As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            _Tido = _Row_Documento.Item("TIDO")
+            _Nudo = _Row_Documento.Item("NUDO")
+
+            Consulta_sql = "Select " & _Idmaeedo & " As Idmaeedo,'" & _Tido & "' As Tido,'" & _Nudo & "' As 'Nudo',Cast(1 as Bit) As Respuesta,'" & _Version & "' As Version"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        Else
+            Consulta_sql = "Select 0 As Idmaeedo,Cast(1 as Bit) As Respuesta,'" & Replace(_Error, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End If
+
+        Return _Ds2
+
+    End Function
+
+
+    <WebMethod(True)>
+    Function Sb_CreaDocumentoJson2StrBakapp(_EncabezadoJs As String, _DestalleJs As String, _DescuentosJs As String, _ObservacionesJs As String) As String
+
+        _Sql = New Class_SQL
+        Dim _Ds2 As DataSet
+
+        Dim _Error As String
+        Dim _Idmaeedo As Integer
+        Dim _Tido As String
+        Dim _Nudo As String
+
+        Try
+
+            Dim _Ds_Matriz_Documentos As New Ds_Matriz_Documentos
+
+            _Ds_Matriz_Documentos.Clear()
+            _Ds_Matriz_Documentos = New Ds_Matriz_Documentos
+
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _EncabezadoJs, "Encabezado_Doc")
+
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Post_Venta") = False
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Tipo_Documento") = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
+
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _DestalleJs, "Detalle_Doc")
+            If Not String.IsNullOrEmpty(_DescuentosJs) Then Fx_LlenarDatos(_Ds_Matriz_Documentos, _DescuentosJs, "Descuentos_Doc")
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _ObservacionesJs, "Observaciones_Doc")
+
+            Dim _Funcionario As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("CodFuncionario")
+            _Global_BaseBk = "BAKAPP_VH.dbo."
+            Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
+
+            Dim _Modalidad As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Modalidad")
+            Dim _Empresa As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Empresa")
+
+            _Tido = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
+            _Nudo = Traer_Numero_Documento2(_Tido, _Empresa, _Modalidad)
+
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("NroDocumento") = _Nudo
+
+            _Idmaeedo = _New_Doc.Fx_Crear_Documento2(_Tido, _Nudo, False, False, _Ds_Matriz_Documentos)
+
+            _Error = _New_Doc.Error
+
+        Catch ex As Exception
+            _Error = ex.Message
+        End Try
+
+        'If CBool(_Idmaeedo) Then
+
+        '    Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _Idmaeedo
+        '    Dim _Row_Documento As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+        '    _Tido = _Row_Documento.Item("TIDO")
+        '    _Nudo = _Row_Documento.Item("NUDO")
+
+        '    Consulta_sql = "Select " & _Idmaeedo & " As Idmaeedo,'" & _Tido & "' As Tido,'" & _Nudo & "' As 'Nudo',Cast(1 as Bit) As Respuesta,'" & _Version & "' As Version"
+        '    _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        'Else
+        '    Consulta_sql = "Select 0 As Idmaeedo,Cast(1 as Bit) As Respuesta,'" & Replace(_Error, "'", "''") & "' As Error,'" & _Version & "' As Version"
+        '    _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        'End If
+
+        Return _Idmaeedo
+
+    End Function
     Private Sub Fx_Limpia_Json(ByRef _Json As String)
         _Json = Replace(_Json, "\/", "/")
         _Json = _Json.Trim
+    End Sub
+
+    <WebMethod(True)>
+    Public Sub Sb_Usar_Dscto_Poswii(_Clave As String, _Kofu As String, _Eliminar As Boolean)
+
+        _Sql = New Class_SQL
+        Dim _Ds2 As DataSet
+
+        Consulta_sql = "Select Top 1 KOFU,CLAVE,ESTADO,DESCUENTO,USUARIO,FECHA " & vbCrLf &
+                       "From [@POSWI_USER_ADMIN]" & vbCrLf &
+                       "Where KOFU = '" & _Kofu & "' And CLAVE = '" & _Clave & "' And CAST(FECHA AS DATE) = CAST(Getdate() AS DATE)"
+        Dim _Row_Permiso As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+        If Not IsNothing(_Row_Permiso) Then
+
+            Dim _Estado As Integer = _Row_Permiso.Item("ESTADO")
+
+            Consulta_sql = "Select Cast(1 As Bit) As Existe,Cast(" & _Estado & " As Bit) As Otorgado," & _Row_Permiso.Item("DESCUENTO") & " As Descuento"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+            If _Eliminar Then
+                Consulta_sql = "Delete [@POSWI_USER_ADMIN]" & vbCrLf &
+                               "Where KOFU = '" & _Kofu & "' And CLAVE = '" & _Clave & "' And CAST(FECHA AS DATE) = CAST(Getdate() AS DATE)"
+            Else
+                Consulta_sql = "Update [@POSWI_USER_ADMIN] Set ESTADO = 1" & vbCrLf &
+                               "Where KOFU = '" & _Kofu & "' And ESTADO = 0 And CLAVE = '" & _Clave & "' And CAST(FECHA AS DATE) = CAST(Getdate() AS DATE)"
+            End If
+            _Sql.Fx_Ej_consulta_IDU(Consulta_sql)
+
+        Else
+            Consulta_sql = "Select Cast(0 As Bit) As Existe,Cast(0 As Bit) As Otorgado,0 As Descuento"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End If
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds2, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
     End Sub
 
     Function Fx_Grabar_JsonArchivo(_Json As String, ByRef _Ruta As String, _NombreTabla As String) As Boolean
