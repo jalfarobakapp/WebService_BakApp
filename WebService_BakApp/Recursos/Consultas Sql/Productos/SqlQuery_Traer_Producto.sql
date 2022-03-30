@@ -28,6 +28,8 @@ Select  Cast(0 As Int) As 'Id_DocEnc',
 		Cast(0 As Float) As 'Precio',
 		Cast(0 As Float) As 'PrecioListaUd1',
 		Cast(0 As Float) As 'PrecioListaUd2',
+		Cast(0 As Float) As 'PrecioNetoUdLista',
+		Cast(0 As Float) As 'PrecioBrutoUdLista',
 		Cast(0 As Float) As 'DescuentoPorc',
 		Cast(0 As Float) As 'DescMaximo',
 		Cast('' As Varchar(242)) As 'Ecuacion',
@@ -38,6 +40,7 @@ Select  Cast(0 As Int) As 'Id_DocEnc',
 		'' As 'Moneda',
 		'' As 'Tipo_Moneda',
 		Cast(0 As Float) As 'Tipo_Cambio'
+		--,Cast('' As Varchar(1)) As 'Error'
 
 From MAEPR Mp
 		Left Join MAEST Ms On Ms.EMPRESA = @Empresa And Ms.KOSU = @Sucursal And Ms.KOBO = @Bodega And Ms.KOPR = Mp.KOPR

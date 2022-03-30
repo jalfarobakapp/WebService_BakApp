@@ -347,61 +347,107 @@ Public Class Ws_BakApp
                                        UnTrans As Integer,
                                        Koen As String)
 
-        Consulta_sql = My.Resources.Recursos_Sql.SqlQuery_Traer_Producto
-        Consulta_sql = Replace(Consulta_sql, "#Codigo#", Codigo)
-        Consulta_sql = Replace(Consulta_sql, "#Empresa#", Empresa)
-        Consulta_sql = Replace(Consulta_sql, "#Sucursal#", Sucursal)
-        Consulta_sql = Replace(Consulta_sql, "#Bodega#", Bodega)
-        Consulta_sql = Replace(Consulta_sql, "#Lista#", Lista)
-        Consulta_sql = Replace(Consulta_sql, "#UnTrans#", UnTrans)
-
-
         _Sql = New Class_SQL
+        Dim Consulta_sql As String
+
         Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
 
-        Dim _PorIla As Double = _Sql.Fx_Trae_Dato("TABIM", "Isnull(Sum(POIM),0)", "KOIM In (SELECT KOIM FROM TABIMPR Where KOPR = '" & Codigo & "')")
+        Try
 
-        Consulta_sql = "SELECT Top 1 *,--PP01UD,PP02UD,DTMA01UD As DSCTOMAX,ECUACION,
-                        (SELECT top 1 MELT FROM TABPP Where KOLT = '" & Lista & "') as MELT FROM TABPRE
+            Consulta_sql = My.Resources.Recursos_Sql.SqlQuery_Traer_Producto
+            Consulta_sql = Replace(Consulta_sql, "#Codigo#", Codigo)
+            Consulta_sql = Replace(Consulta_sql, "#Empresa#", Empresa)
+            Consulta_sql = Replace(Consulta_sql, "#Sucursal#", Sucursal)
+            Consulta_sql = Replace(Consulta_sql, "#Bodega#", Bodega)
+            Consulta_sql = Replace(Consulta_sql, "#Lista#", Lista)
+            Consulta_sql = Replace(Consulta_sql, "#UnTrans#", UnTrans)
+
+
+            _Sql = New Class_SQL
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+            Dim _PorIva As Double = _Ds.Tables(0).Rows(0).Item("PorIva")
+            Dim _PorIla As Double = _Sql.Fx_Trae_Dato("TABIM", "Isnull(Sum(POIM),0)", "KOIM In (SELECT KOIM FROM TABIMPR Where KOPR = '" & Codigo & "')")
+
+            Consulta_sql = "SELECT Top 1 *,--PP01UD,PP02UD,DTMA01UD As DSCTOMAX,ECUACION,
+                        (SELECT top 1 MELT FROM TABPP Where KOLT = '" & Lista & "') As MELT FROM TABPRE
                         Where KOLT = '" & Lista & "' And KOPR = '" & Codigo & "'"
-        Dim _RowPrecios As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+            Dim _RowPrecios As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
 
-        Dim _Ecuacion As String
+            If IsNothing(_RowPrecios) Then
+                Throw New System.Exception("Producto no asignado a la lista de precios [" & Lista & "]")
+            End If
 
-        If UnTrans = 1 Then
-            _Ecuacion = _RowPrecios.Item("ECUACION")
-        Else
-            _Ecuacion = _RowPrecios.Item("ECUACION2")
-        End If
+            Dim _Reg As Boolean = CBool(_Sql.Fx_Cuenta_Registros("TABBOPR",
+                                                           "EMPRESA = '" & Empresa & "' And " &
+                                                           "KOSU = '" & Sucursal & "' And " &
+                                                           "KOBO = '" & Bodega & "' And " &
+                                                           "KOPR = '" & Codigo & "'"))
 
-        Dim _DescMaximo = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "DTMA0" & UnTrans & "UD", "EDTMA0" & UnTrans & "UD", Nothing, True, Koen)
+            If Not _Reg Then
+                Throw New System.Exception("Producto no asignado a la bodega [" & Bodega & "]")
+            End If
 
-        'Dim _Campo_Precio
-        'Dim _Campo_Ecuacion
+            Dim _Ecuacion As String
 
-        '_PrecioLinea = Fx_Precio_Formula_Random(_RowPrecios, _Campo_Precio, _Campo_Ecuacion, Nothing, True, _Koen)
+            If UnTrans = 1 Then
+                _Ecuacion = _RowPrecios.Item("ECUACION")
+            Else
+                _Ecuacion = _RowPrecios.Item("ECUACION2")
+            End If
 
-        Dim _Precio As Double
-        'Dim _StockBodega As Double
+            Dim _DescMaximo = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "DTMA0" & UnTrans & "UD", "EDTMA0" & UnTrans & "UD", Nothing, True, Koen)
 
-        Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, Koen)
-        Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, Koen)
+            'Dim _Campo_Precio
+            'Dim _Campo_Ecuacion
 
-        If UnTrans = 1 Then
-            _Precio = _PrecioListaUd1
-        Else
-            _Precio = _PrecioListaUd2
-        End If
+            '_PrecioLinea = Fx_Precio_Formula_Random(_RowPrecios, _Campo_Precio, _Campo_Ecuacion, Nothing, True, _Koen)
 
-        '_StockBodega = _Ds.Tables(0).Rows(0).Item("StockUd" & UnTrans)
+            Dim _Precio As Double
+            'Dim _StockBodega As Double
 
-        _Ds.Tables(0).Rows(0).Item("Ecuacion") = _Ecuacion.Trim
-        _Ds.Tables(0).Rows(0).Item("DescMaximo") = _DescMaximo
-        _Ds.Tables(0).Rows(0).Item("Precio") = _Precio
-        _Ds.Tables(0).Rows(0).Item("PrecioListaUd1") = _PrecioListaUd1
-        _Ds.Tables(0).Rows(0).Item("PrecioListaUd2") = _PrecioListaUd2
+            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, Koen)
+            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, Koen)
 
-        _Ds.Tables(0).Rows(0).Item("PorIla") = _PorIla
+            If UnTrans = 1 Then
+                _Precio = _PrecioListaUd1
+            Else
+                _Precio = _PrecioListaUd2
+            End If
+
+            Dim _Iva = _PorIva / 100
+            Dim _Ila = _PorIla / 100
+
+            Dim _Impuestos As Double = 1 + (_Iva + _Ila)
+
+            Dim _PrecioNetoUdLista As Double
+            Dim _PrecioBrutoUdLista As Double
+
+            If _RowPrecios.Item("MELT") = "N" Then
+                _PrecioNetoUdLista = _Precio
+                _PrecioBrutoUdLista = Math.Round(_Precio * _Impuestos, 0)
+            Else
+                _PrecioBrutoUdLista = _Precio
+                _PrecioNetoUdLista = Math.Round(_Precio / _Impuestos, 5)
+            End If
+
+            _Ds.Tables(0).Rows(0).Item("Ecuacion") = _Ecuacion.Trim
+            _Ds.Tables(0).Rows(0).Item("DescMaximo") = _DescMaximo
+            _Ds.Tables(0).Rows(0).Item("Precio") = _Precio
+            _Ds.Tables(0).Rows(0).Item("PrecioListaUd1") = _PrecioListaUd1
+            _Ds.Tables(0).Rows(0).Item("PrecioListaUd2") = _PrecioListaUd2
+
+            _Ds.Tables(0).Rows(0).Item("PrecioNetoUdLista") = _PrecioNetoUdLista
+            _Ds.Tables(0).Rows(0).Item("PrecioBrutoUdLista") = _PrecioBrutoUdLista
+
+            _Ds.Tables(0).Rows(0).Item("PorIla") = _PorIla
+
+        Catch ex As Exception
+
+            Consulta_sql = "Select '" & Replace(ex.Message, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        End Try
 
         Dim js As New JavaScriptSerializer
 
@@ -1138,7 +1184,6 @@ Public Class Ws_BakApp
 
     End Function
 
-
     <WebMethod(True)>
     Function Sb_CreaDocumentoJson2StrBakapp(_EncabezadoJs As String, _DestalleJs As String, _DescuentosJs As String, _ObservacionesJs As String) As String
 
@@ -1356,6 +1401,146 @@ Public Class Ws_BakApp
         Next
 
     End Function
+
+
+    <WebMethod(True)>
+    Public Sub Sb_EnviarCorreoBakapp(_Global_BaseBk As String,
+                                     _Empresa As String,
+                                     _Modalidad As String,
+                                     _CodFuncionario As String,
+                                     _Idmaeedo As Integer,
+                                     _Para As String,
+                                     _Cc As String)
+
+        _Sql = New Class_SQL
+        Dim _Ds2 As DataSet
+
+        Dim _Error = String.Empty
+
+        Dim _Tido As String
+        Dim _Nudo As String
+        Dim _Enviar_Correo As Boolean
+        Dim _Id_Correo As Integer
+        Dim _Nombre_Correo As String
+        Dim _Asunto As String
+        Dim _CuerpoMensaje As String
+        Dim _NombreFormato_Correo As String
+
+        Dim _Row_Documento As DataRow
+        Dim _Row_Funcionario As DataRow
+        Dim _Row_ConfModDocumento As DataRow
+        Dim _Row_Correo As DataRow
+
+        Try
+
+            Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _Idmaeedo
+            _Row_Documento = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            If IsNothing(_Row_Documento) Then
+                Throw New System.Exception("Documento no encontrado")
+            End If
+
+            _Tido = _Row_Documento.Item("TIDO")
+            _Nudo = _Row_Documento.Item("NUDO")
+
+            Consulta_sql = "Select Us.*,Cr.Contrasena,Cr.Host,Cr.Puerto,Cr.SSL From " & _Global_BaseBk & "Zw_Usuarios Us
+                            Inner Join " & _Global_BaseBk & "Zw_Correos_Cuentas Cr On Us.Email = Cr.Nombre_Usuario
+                            Where Us.CodFuncionario = '" & _CodFuncionario & "'"
+            _Row_Funcionario = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            If IsNothing(_Row_Funcionario) Then
+                Throw New System.Exception("Falta la configuración del correo del funcionario")
+            End If
+
+            Consulta_sql = "Select * From " & _Global_BaseBk & "Zw_Configuracion_Formatos_X_Modalidad" & vbCrLf &
+                           "Where Empresa = '" & _Empresa & "' And Modalidad = '" & _Modalidad & "' And TipoDoc = '" & _Tido & "'"
+            _Row_ConfModDocumento = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            If IsNothing(_Row_ConfModDocumento) Then
+                Throw New System.Exception("Falta la configuración de la modalidad")
+            End If
+
+            _Enviar_Correo = _Row_ConfModDocumento.Item("Enviar_Correo")
+            _Id_Correo = _Row_ConfModDocumento.Item("Id_Correo")
+            _NombreFormato_Correo = _Row_ConfModDocumento.Item("NombreFormato_Correo")
+
+            Consulta_sql = "Select * From " & _Global_BaseBk & "Zw_Correos Where Id = " & _Id_Correo
+            _Row_Correo = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            If IsNothing(_Row_Correo) Then
+                Throw New System.Exception("Falta el correo para la configuración de la modalidad")
+            End If
+
+            _Nombre_Correo = _Row_Correo.Item("Nombre_Correo")
+
+            _Asunto = _Row_Correo.Item("Asunto")
+            _CuerpoMensaje = _Row_Correo.Item("CuerpoMensaje")
+
+            Dim _Email As String
+            Dim _Host As String
+            Dim _Puerto As Integer
+            Dim _SSL As Boolean
+
+            _Email = _Row_Funcionario.Item("Email")
+            _Host = _Row_Funcionario.Item("Host")
+            _Puerto = _Row_Funcionario.Item("Puerto")
+            _SSL = _Row_Funcionario.Item("SSL")
+
+
+            _CuerpoMensaje = Replace(_CuerpoMensaje, "&lt;", "<")
+            _CuerpoMensaje = Replace(_CuerpoMensaje, "&gt;", ">")
+            _CuerpoMensaje = Replace(_CuerpoMensaje, "&quot;", """")
+
+            _CuerpoMensaje = Replace(_CuerpoMensaje, "'", "''")
+
+            If _Enviar_Correo Then
+
+                Dim _Fecha = "Getdate()"
+                Dim _Adjuntar_Documento As Boolean = Not String.IsNullOrEmpty(_NombreFormato_Correo)
+
+                'If _Enviar_al_otro_dia Then
+                '    _Fecha = "DATEADD(D,1,Getdate())"
+                'End If
+
+                Consulta_sql = "Insert Into " & _Global_BaseBk & "Zw_Demonio_Doc_Emitidos_Aviso_Correo (Id_Correo,Nombre_Correo,CodFuncionario,Asunto," &
+                                "Para,Cc,Idmaeedo,Tido,Nudo,NombreFormato,Enviar,Mensaje,Fecha,Adjuntar_Documento,Doc_Adjuntos,Adjuntar_DTE,Id_Dte)" &
+                                vbCrLf &
+                                "Values (" & _Id_Correo & ",'" & _Nombre_Correo & "','','" & _Asunto & "','" & _Para & "','" & _Cc &
+                                "'," & _Idmaeedo & ",'" & _Tido & "','" & _Nudo & "','" & _NombreFormato_Correo & "',1,'" & _CuerpoMensaje & "'," & _Fecha &
+                                "," & Convert.ToInt32(_Adjuntar_Documento) & ",'',1,0)"
+
+                _Sql.Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(Consulta_sql)
+
+                _Error = _Sql.Pro_Error
+
+                If Not String.IsNullOrEmpty(_Error) Then
+                    Throw New System.Exception(_Error)
+                End If
+
+            End If
+
+        Catch ex As Exception
+            _Error = ex.Message
+        End Try
+
+        If String.IsNullOrEmpty(_Error) Then
+            Consulta_sql = "Select Cast(1 As Bit) As Enviado,'Ok' As Error,'" & _Version & "' As Version"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        Else
+            Consulta_sql = "Select Cast(0 as Bit) As Enviado,'" & Replace(_Error, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End If
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds2, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
 
 #End Region
 
