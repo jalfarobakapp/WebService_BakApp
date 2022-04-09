@@ -120,6 +120,7 @@
   <ItemGroup>
     <Compile Include="Clases y Funciones BaKapp\Clases\Clase_Crear_Documento.vb" />
     <Compile Include="Clases y Funciones BaKapp\Clases\Class_Llave_Equipo.vb" />
+    <Compile Include="Clases y Funciones BaKapp\Clases\Cl_Enviar_Impresion_Diablito.vb" />
     <Compile Include="Clases y Funciones BaKapp\Clases\DataSet\Ds_Matriz_Documentos.Designer.vb">
       <DependentUpon>Ds_Matriz_Documentos.xsd</DependentUpon>
       <DesignTime>True</DesignTime>

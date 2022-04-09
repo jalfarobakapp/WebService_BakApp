@@ -1402,6 +1402,55 @@ Public Class Ws_BakApp
 
     End Function
 
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Traer_Descuento_Global_X_Cliente(_Global_BaseBk As String, _Koen As String, _Suen As String)
+
+        _Sql = New Class_SQL
+        Dim Consulta_sql As String
+
+        Dim _Ds As DataSet
+
+        Try
+
+            Consulta_sql = "Select * From PDIMCLI Where CODIGO = '" & _Koen & "'"
+            Dim _Row_Pdimcli As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            If IsNothing(_Row_Pdimcli) Then
+                Throw New System.Exception("No tiene registos en PDIMCLI el cliente")
+            End If
+
+            Dim _Campo_Dscto As String = _Sql.Fx_Trae_Dato(_Global_BaseBk & "Zw_TablaDeCaracterizaciones", "CodigoTabla", "Tabla = 'PDIMEN_Poswi'")
+
+            If String.IsNullOrEmpty(_Campo_Dscto) Then
+                Throw New System.Exception("Falta el campo en la tabla Zw_TablaDeCaracterizaciones, Tabla: PDIMEN_Poswi, Campo...")
+            End If
+
+            Dim _Porc_Dscto As Double = _Row_Pdimcli.Item(_Campo_Dscto)
+            Dim _TieneDsctoEspecial As Boolean = (_Porc_Dscto > 0)
+
+            Consulta_sql = "Select Cast(" & Convert.ToInt32(_TieneDsctoEspecial) & " As Bit) As TieneDsctoEspecial," &
+                            _Porc_Dscto & " As Descuento,'' As Error"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Catch ex As Exception
+
+            Consulta_sql = "Select Cast(0 As Bit) As TieneDsctoEspecial,0 As Descuento,'" & ex.Message & "' As Error"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        End Try
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
 
     <WebMethod(True)>
     Public Sub Sb_EnviarCorreoBakapp(_Global_BaseBk As String,
@@ -1449,7 +1498,8 @@ Public Class Ws_BakApp
             _Row_Funcionario = _Sql.Fx_Get_DataRow(Consulta_sql)
 
             If IsNothing(_Row_Funcionario) Then
-                Throw New System.Exception("Falta la configuración del correo del funcionario")
+                Throw New System.Exception("Falta la configuración del correo del funcionario" & vbCrLf &
+                                           "Revise el Emial en Zw_Usuarios Vs la conf. en Zw_Correos_Cuentas")
             End If
 
             Consulta_sql = "Select * From " & _Global_BaseBk & "Zw_Configuracion_Formatos_X_Modalidad" & vbCrLf &
@@ -1457,7 +1507,7 @@ Public Class Ws_BakApp
             _Row_ConfModDocumento = _Sql.Fx_Get_DataRow(Consulta_sql)
 
             If IsNothing(_Row_ConfModDocumento) Then
-                Throw New System.Exception("Falta la configuración de la modalidad")
+                Throw New System.Exception("Falta la configuración de la modalidad (" & _Modalidad & ")")
             End If
 
             _Enviar_Correo = _Row_ConfModDocumento.Item("Enviar_Correo")
@@ -1468,7 +1518,7 @@ Public Class Ws_BakApp
             _Row_Correo = _Sql.Fx_Get_DataRow(Consulta_sql)
 
             If IsNothing(_Row_Correo) Then
-                Throw New System.Exception("Falta el correo para la configuración de la modalidad")
+                Throw New System.Exception("Falta el correo para el documento " & _Tido & " en la configuración de la modalidad (" & _Modalidad & ")")
             End If
 
             _Nombre_Correo = _Row_Correo.Item("Nombre_Correo")
@@ -1505,7 +1555,7 @@ Public Class Ws_BakApp
                 Consulta_sql = "Insert Into " & _Global_BaseBk & "Zw_Demonio_Doc_Emitidos_Aviso_Correo (Id_Correo,Nombre_Correo,CodFuncionario,Asunto," &
                                 "Para,Cc,Idmaeedo,Tido,Nudo,NombreFormato,Enviar,Mensaje,Fecha,Adjuntar_Documento,Doc_Adjuntos,Adjuntar_DTE,Id_Dte)" &
                                 vbCrLf &
-                                "Values (" & _Id_Correo & ",'" & _Nombre_Correo & "','','" & _Asunto & "','" & _Para & "','" & _Cc &
+                                "Values (" & _Id_Correo & ",'" & _Nombre_Correo & "','" & _CodFuncionario & "','" & _Asunto & "','" & _Para & "','" & _Cc &
                                 "'," & _Idmaeedo & ",'" & _Tido & "','" & _Nudo & "','" & _NombreFormato_Correo & "',1,'" & _CuerpoMensaje & "'," & _Fecha &
                                 "," & Convert.ToInt32(_Adjuntar_Documento) & ",'',1,0)"
 
@@ -1517,6 +1567,52 @@ Public Class Ws_BakApp
                     Throw New System.Exception(_Error)
                 End If
 
+            End If
+
+        Catch ex As Exception
+            _Error = ex.Message
+        End Try
+
+        If String.IsNullOrEmpty(_Error) Then
+            Consulta_sql = "Select Cast(1 As Bit) As Enviado,'Ok' As Error,'" & _Version & "' As Version"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        Else
+            Consulta_sql = "Select Cast(0 as Bit) As Enviado,'" & Replace(_Error, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End If
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds2, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    Public Sub Sb_EnviarImprimirBakapp(_Global_BaseBk2 As String,
+                                       _Empresa As String,
+                                       _Modalidad As String,
+                                       _CodFuncionario As String,
+                                       _Idmaeedo As Integer)
+
+        _Sql = New Class_SQL
+        Dim _Ds2 As DataSet
+
+        Dim _Error = String.Empty
+
+        Try
+
+            _Global_BaseBk = _Global_BaseBk2
+
+            Dim _Cl_Imprimir As New Cl_Enviar_Impresion_Diablito(_Empresa, _CodFuncionario)
+            _Cl_Imprimir.SoloEnviarDocDeSucursalDelDiablito = False
+
+            If Not _Cl_Imprimir.Fx_Enviar_Impresion_Al_Diablito(_Modalidad, _Idmaeedo) Then
+                Throw New System.Exception(_Cl_Imprimir.Error)
             End If
 
         Catch ex As Exception
