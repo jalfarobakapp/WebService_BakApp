@@ -1638,6 +1638,64 @@ Public Class Ws_BakApp
 
     End Sub
 
+    <WebMethod(True)>
+    Public Sub Sb_Traer_Documento(_Global_BaseBk2 As String, _Tido As String, _Nudo As String)
+
+        _Sql = New Class_SQL
+        Dim Consulta_sql As String
+        Dim _Ds2 As DataSet
+
+        Dim _Idmaeedo As Integer
+        Dim _Error = String.Empty
+
+        Try
+
+            _Idmaeedo = _Sql.Fx_Trae_Dato("MAEEDO", "IDMAEEDO", "TIDO = '" & _Tido & "' And NUDO = '" & _Nudo & "'", True, False)
+
+            If _Idmaeedo = 0 Then
+                _Error = "No existe el documento " & _Tido & "-" & _Nudo
+                Throw New System.Exception(_Error)
+            End If
+
+            Consulta_sql = "Insert Into MAEEDOOB (IDMAEEDO,OBDO,OCDO) Values (" & _Idmaeedo & ",'','')"
+            _Sql.Fx_Ej_consulta_IDU(Consulta_sql, False)
+
+            Consulta_sql = "Select Edo.*,Obs.OBDO,Obs.OCDO From MAEEDO Edo" & vbCrLf &
+                           "Left Join MAEEDOOB Obs On Edo.IDMAEEDO = Obs.IDMAEEDO" & vbCrLf &
+                           "Where Edo.IDMAEEDO = " & _Idmaeedo
+            Dim _Row_Documento As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            If IsNothing(_Row_Documento) Then
+                _Error = "No existe el documento con IDMAEEDO = " & _Idmaeedo
+                Throw New System.Exception(_Error)
+            End If
+
+        Catch ex As Exception
+            _Error = ex.Message
+        End Try
+
+        If String.IsNullOrEmpty(_Error) Then
+            Consulta_sql = "Select Edo.*,NOKOEN,EMAIL,EMAILCOMER,Obs.OBDO,Obs.OCDO,Cast(1 As Bit) As Enviado,'Ok' As Error,'" & _Version & "' As Version From MAEEDO Edo" & vbCrLf &
+                           "Left Join MAEEDOOB Obs On Edo.IDMAEEDO = Obs.IDMAEEDO" & vbCrLf &
+                           "Left Join MAEEN On KOEN = ENDO And SUEN = SUENDO" & vbCrLf &
+                           "Where Edo.IDMAEEDO = " & _Idmaeedo
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        Else
+            Consulta_sql = "Select Cast(0 as Bit) As Enviado,'" & Replace(_Error, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End If
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds2, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
 #End Region
 
 End Class
