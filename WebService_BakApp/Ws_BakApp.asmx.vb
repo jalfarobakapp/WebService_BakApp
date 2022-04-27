@@ -25,22 +25,21 @@ Public Class Ws_BakApp
 
     <WebMethod()>
     Public Function Fx_Probar_Conexion_BD() As String
-        _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
+        _Sql = New Class_SQL
         Dim _Error As String = _Sql.Fx_Probar_Conexion
         Return _Error '"Hola a todos" 'http://localhost:34553
     End Function
 
     <WebMethod()>
     Public Function Fx_Cadena_Conexion(Cadena_Conexion_SQL_Server As String) As String
-        '_Global_Cadena_Conexion_SQL_Server = Cadena_Conexion_SQL_Server
-        _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
+        _Sql = New Class_SQL
         Dim _Error As String = _Sql.Fx_Probar_Conexion
         Return _Error
     End Function
 
     <WebMethod(True)>
     Function Fx_GetDataSet(Consulta_Sql As String) As DataSet
-        _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
+        _Sql = New Class_SQL
         Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_Sql)
         Return _Ds
     End Function
@@ -49,7 +48,7 @@ Public Class Ws_BakApp
     Function Fx_Trae_Dato_String(_Tabla As String,
                                  _Campo As String,
                                  _Condicion As String) As String
-        _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
+        _Sql = New Class_SQL
         Dim _Dato As String = _Sql.Fx_Trae_Dato(_Tabla, _Campo, _Condicion, , False, "")
         Return _Dato
     End Function
@@ -58,14 +57,14 @@ Public Class Ws_BakApp
     Function Fx_Trae_Dato_Numero(_Tabla As String,
                                  _Campo As String,
                                  _Condicion As String) As String
-        _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
+        _Sql = New Class_SQL
         Dim _Dato As Double = _Sql.Fx_Trae_Dato(_Tabla, _Campo, _Condicion, , True, 0)
         Return _Dato
     End Function
 
     <WebMethod(True)>
     Function Fx_Ej_consulta_IDU(Consulta_Sql As String) As String
-        _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
+        _Sql = New Class_SQL
 
         If _Sql.Fx_Ej_consulta_IDU(Consulta_Sql) Then
             Return ""
@@ -76,7 +75,7 @@ Public Class Ws_BakApp
 
     <WebMethod(True)>
     Function Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(Consulta_Sql As String) As String
-        _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
+        _Sql = New Class_SQL
 
         If _Sql.Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(Consulta_Sql) Then
             Return ""
@@ -88,7 +87,7 @@ Public Class Ws_BakApp
     <WebMethod(True)>
     Function Fx_Cuenta_Registros(_Tabla As String,
                                  _Condicion As String) As Double
-        _Sql = New Class_SQL '(_Global_Cadena_Conexion_SQL_Server)
+        _Sql = New Class_SQL
         Dim _Dato As Double = _Sql.Fx_Cuenta_Registros(_Tabla, _Condicion)
         Return _Dato
     End Function
@@ -241,9 +240,6 @@ Public Class Ws_BakApp
     <WebMethod(True)>
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Sb_Ds_Json_Prueba(Consulta_Sql As String)
-
-        'Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = 670916" & vbCrLf & _
-        '               "Select * From MAEDDO Where IDMAEEDO = 670916"
 
         Dim js As New JavaScriptSerializer
 
@@ -1032,7 +1028,6 @@ Public Class Ws_BakApp
 
     End Sub
 
-
     <WebMethod(True)>
     Public Sub Sb_CreaDocumentoJsonBakapp(_EncabezadoJs As String, _DestalleJs As String, _DescuentosJs As String, _ObservacionesJs As String)
 
@@ -1101,6 +1096,116 @@ Public Class Ws_BakApp
             _Nudo = _Row_Documento.Item("NUDO")
 
             Consulta_sql = "Select " & _Idmaeedo & " As Idmaeedo,'" & _Tido & "' As Tido,'" & _Nudo & "' As 'Nudo',Cast(1 as Bit) As Respuesta,'" & _Version & "' As Version"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        Else
+            Consulta_sql = "Select 0 As Idmaeedo,Cast(1 as Bit) As Respuesta,'" & Replace(_Error, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End If
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds2, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    Public Sub Sb_EditarDocumentoJsonBakapp(_OldIdmaeedo As Integer,
+                                            _Cod_Func_Eliminador As String,
+                                            _Global_BaseBk As String,
+                                            _EncabezadoJs As String, _DestalleJs As String, _DescuentosJs As String, _ObservacionesJs As String)
+
+        _Sql = New Class_SQL
+        Dim _Ds2 As DataSet
+
+        Dim _Error As String
+        Dim _NewIdmaeedo As Integer
+        Dim _Tido As String
+        Dim _Nudo As String
+
+        Dim _Row_OldMaeedo As DataRow
+
+        Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _OldIdmaeedo
+        _Row_OldMaeedo = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+        '_Tido = _Row_OldMaeedo.Item("TIDO")
+        _Nudo = _Row_OldMaeedo.Item("NUDO")
+
+        Try
+
+            Dim _Ds_Matriz_Documentos As New Ds_Matriz_Documentos
+
+            _Ds_Matriz_Documentos.Clear()
+            _Ds_Matriz_Documentos = New Ds_Matriz_Documentos
+
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _EncabezadoJs, "Encabezado_Doc")
+
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Post_Venta") = False
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Tipo_Documento") = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
+
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _DestalleJs, "Detalle_Doc")
+            If Not String.IsNullOrEmpty(_DescuentosJs) Then Fx_LlenarDatos(_Ds_Matriz_Documentos, _DescuentosJs, "Descuentos_Doc")
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _ObservacionesJs, "Observaciones_Doc")
+
+            Dim _Funcionario As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("CodFuncionario")
+            '_Global_BaseBk = "BAKAPP_VH.dbo."
+            Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
+
+            Dim _Modalidad As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Modalidad")
+            Dim _Empresa As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Empresa")
+
+            _Tido = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
+            _Nudo = Traer_Numero_Documento2(_Tido, _Empresa, _Modalidad)
+
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("NroDocumento") = _Nudo
+
+            _NewIdmaeedo = _New_Doc.Fx_Crear_Documento2(_Tido, _Nudo, False, False, _Ds_Matriz_Documentos)
+
+            _Error = _New_Doc.Error
+
+            If CBool(_NewIdmaeedo) Then
+
+                Dim _Class_E As New Clase_EliminarAnular_Documento
+
+                Dim _Eliminado As Boolean = _Class_E.Fx_EliminarAnular_Doc(_OldIdmaeedo,
+                                                                           _Cod_Func_Eliminador,
+                                                                           Clase_EliminarAnular_Documento._Accion_EA.Modificar,
+                                                                           False)
+
+                If _Eliminado Then
+
+                    Consulta_sql = "Update MAEEDO Set NUDO = '" & _Nudo & "' Where IDMAEEDO = " & _NewIdmaeedo & vbCrLf &
+                                   "Update MAEDDO Set NUDO = '" & _Nudo & "' Where IDMAEEDO = " & _NewIdmaeedo
+                    _Sql.Fx_Ej_consulta_IDU(Consulta_sql)
+
+                Else
+
+                    _Class_E.Fx_EliminarAnular_Doc(_NewIdmaeedo,
+                                                   _Cod_Func_Eliminador,
+                                                   Clase_EliminarAnular_Documento._Accion_EA.Modificar,
+                                                   False)
+
+                End If
+
+            End If
+
+        Catch ex As Exception
+            _Error = ex.Message
+        End Try
+
+        If CBool(_NewIdmaeedo) Then
+
+            Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _NewIdmaeedo
+            Dim _Row_Documento As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            _Tido = _Row_Documento.Item("TIDO")
+            _Nudo = _Row_Documento.Item("NUDO")
+
+            Consulta_sql = "Select " & _NewIdmaeedo & " As Idmaeedo,'" & _Tido & "' As Tido,'" & _Nudo & "' As 'Nudo',Cast(1 as Bit) As Respuesta,'" & _Version & "' As Version"
             _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
         Else
             Consulta_sql = "Select 0 As Idmaeedo,Cast(1 as Bit) As Respuesta,'" & Replace(_Error, "'", "''") & "' As Error,'" & _Version & "' As Version"
@@ -1451,7 +1556,6 @@ Public Class Ws_BakApp
 
     End Sub
 
-
     <WebMethod(True)>
     Public Sub Sb_EnviarCorreoBakapp(_Global_BaseBk As String,
                                      _Empresa As String,
@@ -1682,6 +1786,55 @@ Public Class Ws_BakApp
             _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
         Else
             Consulta_sql = "Select Cast(0 as Bit) As Enviado,'" & Replace(_Error, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End If
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds2, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    Public Sub Sb_Actualizar_Observaciones_Documento(_Idmaeedo As Integer,
+                                                      _Observaciones As String,
+                                                      _Orden_De_Compra As String)
+
+        _Sql = New Class_SQL
+        Dim Consulta_sql As String
+        Dim _Ds2 As DataSet
+
+        Dim _Error = String.Empty
+
+        Try
+
+            If _Idmaeedo = 0 Then
+                _Error = "Falta Nro IDMAEEDO"
+                Throw New System.Exception(_Error)
+            End If
+
+            Consulta_sql = "Update MAEEDOOB Set OBDO = '" & _Observaciones & "',OCDO = '" & _Orden_De_Compra & "' Where IDMAEEDO = " & _Idmaeedo
+            _Sql.Fx_Ej_consulta_IDU(Consulta_sql, False)
+
+            If Not String.IsNullOrEmpty(_Sql.Pro_Error) Then
+                _Error = _Sql.Pro_Error
+                Throw New System.Exception(_Error)
+            End If
+
+        Catch ex As Exception
+            _Error = ex.Message
+        End Try
+
+        If String.IsNullOrEmpty(_Error) Then
+            Consulta_sql = "Select Cast(1 as Bit) As Actualizado,'" & Replace(_Error, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        Else
+            Consulta_sql = "Select Cast(0 as Bit) As Actualizado,'" & Replace(_Error, "'", "''") & "' As Error,'" & _Version & "' As Version"
             _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
         End If
 

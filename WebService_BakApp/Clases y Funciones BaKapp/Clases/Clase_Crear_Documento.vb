@@ -196,8 +196,8 @@ Public Class Clase_Crear_Documento
                                _Es_ValeTransitorio As Boolean,
                                _Es_Documento_Electronico As Boolean,
                                Bd_Documento As DataSet,
-                               Optional ByVal EsAjuste As Boolean = False,
-                               Optional ByVal _Cambiar_Numeracion_Confiest As Boolean = True) As String
+                               Optional EsAjuste As Boolean = False,
+                               Optional _Cambiar_Numeracion_Confiest As Boolean = True) As String
 
         Dim cn2 As New SqlConnection
 
@@ -2564,7 +2564,7 @@ Public Class Clase_Crear_Documento
 
     End Function
 
-    Private Function Fx_Vencimientos(ByVal _RowEncabezado As DataRow) As String
+    Private Function Fx_Vencimientos(_RowEncabezado As DataRow) As String
 
         Dim _SqlQuery As String
 
@@ -2709,11 +2709,11 @@ Public Class Clase_Crear_Documento
 
 #Region "FUNCION CREAR DOCUMENTO RANDOM KASI"
 
-    Function Fx_Crear_Documento_KASI(ByVal _Tipo_de_documento As String, _
-                                     ByVal _Numero_de_documento As String, _
-                                     ByVal _Es_Documento_Electronico As Boolean, _
-                                     ByVal _Bd_Documento As DataSet, _
-                                     Optional ByVal _EsAjuste As Boolean = False) As Integer
+    Function Fx_Crear_Documento_KASI(_Tipo_de_documento As String,
+                                     _Numero_de_documento As String,
+                                     _Es_Documento_Electronico As Boolean,
+                                     _Bd_Documento As DataSet,
+                                     Optional _EsAjuste As Boolean = False) As Integer
 
 
 
@@ -2790,8 +2790,8 @@ Public Class Clase_Crear_Documento
             myTrans = cn2.BeginTransaction()
 
 
-            Consulta_sql = "INSERT INTO KASIEDO ( EMPRESA,TIDO,NUDO,ENDO,SUENDO )" & vbCrLf & _
-                           "VALUES ( '" & _Empresa & "','" & _Tido & "','" & _Nudo & _
+            Consulta_sql = "INSERT INTO KASIEDO ( EMPRESA,TIDO,NUDO,ENDO,SUENDO )" & vbCrLf &
+                           "VALUES ( '" & _Empresa & "','" & _Tido & "','" & _Nudo &
                            "','" & _Endo & "','" & _Suendo & "')"
 
             Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
@@ -2958,7 +2958,7 @@ Public Class Clase_Crear_Documento
                         Comando.Transaction = myTrans
                         Comando.ExecuteNonQuery()
 
-                        Dim _Reg As Integer = _Sql.Fx_Cuenta_Registros("INFORMATION_SCHEMA.COLUMNS", _
+                        Dim _Reg As Integer = _Sql.Fx_Cuenta_Registros("INFORMATION_SCHEMA.COLUMNS",
                                                               "COLUMN_NAME LIKE 'PPPRPMSUC' AND TABLE_NAME = 'KASIDDO'")
 
                         If CBool(_Reg) Then
@@ -2971,7 +2971,7 @@ Public Class Clase_Crear_Documento
                             End While
                             dfd1.Close()
 
-                            Consulta_sql = "UPDATE KASIDDO SET PPPRPMSUC = " & _Ppprmsuc & vbCrLf & _
+                            Consulta_sql = "UPDATE KASIDDO SET PPPRPMSUC = " & _Ppprmsuc & vbCrLf &
                                            "WHERE IDMAEDDO = " & _Idmaeddo
 
                             Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
@@ -2994,7 +2994,7 @@ Public Class Clase_Crear_Documento
                             Dim _Koimli As String = FImpto.Item("Koimli").ToString
                             Dim _Vaimli = De_Num_a_Tx_01(FImpto.Item("Vaimli").ToString, False, 5)
 
-                            Consulta_sql = "INSERT INTO KASIIMLI(IDMAEEDO,NULIDO,KOIMLI,POIMLI,VAIMLI,LILG) VALUES " & vbCrLf & _
+                            Consulta_sql = "INSERT INTO KASIIMLI(IDMAEEDO,NULIDO,KOIMLI,POIMLI,VAIMLI,LILG) VALUES " & vbCrLf &
                                            "(" & _Idmaeedo & ",'" & _Nulido & "','" & _Koimli & "'," & _Poimli & "," & _Vaimli & ",'')"
 
                             Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
@@ -3017,7 +3017,7 @@ Public Class Clase_Crear_Documento
                             Dim _Podt = De_Num_a_Tx_01(FDscto.Item("Podt").ToString, False, 5)
                             Dim _Vadt = De_Num_a_Tx_01(FDscto.Item("Vadt").ToString, False, 5)
 
-                            Consulta_sql = "INSERT INTO KASIDTLI (IDMAEEDO,NULIDO,KODT,PODT,VADT)" & vbCrLf & _
+                            Consulta_sql = "INSERT INTO KASIDTLI (IDMAEEDO,NULIDO,KODT,PODT,VADT)" & vbCrLf &
                                    "values (" & _Idmaeedo & ",'" & _Nulido & "','D_SIN_TIPO'," & _Podt & "," & _Vadt & ")"
 
 
@@ -3102,12 +3102,12 @@ Public Class Clase_Crear_Documento
             Comando.ExecuteNonQuery()
 
 
-            Dim Reg As Integer = _Sql.Fx_Cuenta_Registros("INFORMATION_SCHEMA.COLUMNS", _
+            Dim Reg As Integer = _Sql.Fx_Cuenta_Registros("INFORMATION_SCHEMA.COLUMNS",
                                                          "COLUMN_NAME LIKE 'LISACTIVA' AND TABLE_NAME = 'KASIEDO'")
 
             If CBool(Reg) Then
 
-                Consulta_sql = "UPDATE KASIEDO SET LISACTIVA = 'TABPP" & _Lisactiva & "'" & vbCrLf & _
+                Consulta_sql = "UPDATE KASIEDO SET LISACTIVA = 'TABPP" & _Lisactiva & "'" & vbCrLf &
                                "WHERE IDMAEEDO=" & _Idmaeedo
 
                 Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
@@ -3135,19 +3135,19 @@ Public Class Clase_Crear_Documento
 
             End With
 
-            Consulta_sql = "INSERT INTO KASIEDOB (IDMAEEDO,OBDO,CPDO,OCDO,DIENDESP,TEXTO1,TEXTO2,TEXTO3,TEXTO4,TEXTO5,TEXTO6," & vbCrLf & _
-                           "TEXTO7,TEXTO8,TEXTO9,TEXTO10,TEXTO11,TEXTO12,TEXTO13,TEXTO14,TEXTO15,CARRIER,BOOKING,LADING,AGENTE," & vbCrLf & _
-                           "MEDIOPAGO,TIPOTRANS,KOPAE,KOCIE,KOCME,FECHAE,HORAE,KOPAD,KOCID,KOCMD,FECHAD,HORAD,OBDOEXPO,MOTIVO," & vbCrLf & _
-                           "TEXTO16,TEXTO17,TEXTO18,TEXTO19,TEXTO20,TEXTO21,TEXTO22,TEXTO23,TEXTO24,TEXTO25,TEXTO26,TEXTO27," & vbCrLf & _
-                           "TEXTO28,TEXTO29,TEXTO30,TEXTO31,TEXTO32,TEXTO33,TEXTO34,TEXTO35,PLACAPAT) VALUES " & vbCrLf & _
-                           "(" & _Idmaeedo & ",'" & _Obdo & "','" & _Cpdo & "','" & _Ocdo & "','','" & Obs(0) & "','" & Obs(1) & _
-                           "','" & Obs(2) & "','" & Obs(3) & "','" & Obs(4) & "','" & Obs(5) & "','" & Obs(6) & "','" & Obs(7) & _
-                           "','" & Obs(8) & "','" & Obs(9) & "','" & Obs(10) & "','" & Obs(11) & "','" & Obs(12) & "','" & Obs(13) & _
-                           "','" & Obs(14) & "','','','','','','','','','',GETDATE(),'','','','',GETDATE(),'','','','" & Obs(15) & _
-                           "','" & Obs(16) & "','" & Obs(17) & "','" & Obs(18) & "','" & Obs(19) & _
-                           "','" & Obs(20) & "','" & Obs(21) & "','" & Obs(22) & "','" & Obs(23) & "','" & Obs(24) & _
-                           "','" & Obs(25) & "','" & Obs(26) & "','" & Obs(27) & "','" & Obs(28) & "','" & Obs(29) & _
-                           "','" & Obs(30) & "','" & Obs(31) & "','" & Obs(32) & "','" & Obs(33) & "','" & Obs(34) & _
+            Consulta_sql = "INSERT INTO KASIEDOB (IDMAEEDO,OBDO,CPDO,OCDO,DIENDESP,TEXTO1,TEXTO2,TEXTO3,TEXTO4,TEXTO5,TEXTO6," & vbCrLf &
+                           "TEXTO7,TEXTO8,TEXTO9,TEXTO10,TEXTO11,TEXTO12,TEXTO13,TEXTO14,TEXTO15,CARRIER,BOOKING,LADING,AGENTE," & vbCrLf &
+                           "MEDIOPAGO,TIPOTRANS,KOPAE,KOCIE,KOCME,FECHAE,HORAE,KOPAD,KOCID,KOCMD,FECHAD,HORAD,OBDOEXPO,MOTIVO," & vbCrLf &
+                           "TEXTO16,TEXTO17,TEXTO18,TEXTO19,TEXTO20,TEXTO21,TEXTO22,TEXTO23,TEXTO24,TEXTO25,TEXTO26,TEXTO27," & vbCrLf &
+                           "TEXTO28,TEXTO29,TEXTO30,TEXTO31,TEXTO32,TEXTO33,TEXTO34,TEXTO35,PLACAPAT) VALUES " & vbCrLf &
+                           "(" & _Idmaeedo & ",'" & _Obdo & "','" & _Cpdo & "','" & _Ocdo & "','','" & Obs(0) & "','" & Obs(1) &
+                           "','" & Obs(2) & "','" & Obs(3) & "','" & Obs(4) & "','" & Obs(5) & "','" & Obs(6) & "','" & Obs(7) &
+                           "','" & Obs(8) & "','" & Obs(9) & "','" & Obs(10) & "','" & Obs(11) & "','" & Obs(12) & "','" & Obs(13) &
+                           "','" & Obs(14) & "','','','','','','','','','',GETDATE(),'','','','',GETDATE(),'','','','" & Obs(15) &
+                           "','" & Obs(16) & "','" & Obs(17) & "','" & Obs(18) & "','" & Obs(19) &
+                           "','" & Obs(20) & "','" & Obs(21) & "','" & Obs(22) & "','" & Obs(23) & "','" & Obs(24) &
+                           "','" & Obs(25) & "','" & Obs(26) & "','" & Obs(27) & "','" & Obs(28) & "','" & Obs(29) &
+                           "','" & Obs(30) & "','" & Obs(31) & "','" & Obs(32) & "','" & Obs(33) & "','" & Obs(34) &
                            "','')"
 
             Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
@@ -3186,8 +3186,8 @@ Public Class Clase_Crear_Documento
 
 #Region "FUNCION CREAR DOCUMENTO RANDOM CASI DEFINITIVO"
 
-    Function Fx_Crear_Documento_En_BakApp_Casi(ByVal Bd_Documento As DataSet, _
-                                               Optional ByVal EsAjuste As Boolean = False) As Integer
+    Function Fx_Crear_Documento_En_BakApp_Casi(Bd_Documento As DataSet,
+                                               Optional EsAjuste As Boolean = False) As Integer
 
         Dim _Id_DocEnc As Integer
 
@@ -3413,8 +3413,8 @@ Public Class Clase_Crear_Documento
             myTrans = cn2.BeginTransaction()
 
 
-            Consulta_sql = "INSERT INTO " & _Global_BaseBk & "Zw_Casi_DocEnc (Empresa,TipoDoc,NroDocumento,CodEntidad,CodSucEntidad )" & vbCrLf & _
-                           "VALUES ( '" & _Empresa & "','" & _TipoDoc & "','" & _NroDocumento & _
+            Consulta_sql = "INSERT INTO " & _Global_BaseBk & "Zw_Casi_DocEnc (Empresa,TipoDoc,NroDocumento,CodEntidad,CodSucEntidad )" & vbCrLf &
+                           "VALUES ( '" & _Empresa & "','" & _TipoDoc & "','" & _NroDocumento &
                            "','" & _CodEntidad & "','" & _CodSucEntidad & "')"
 
             Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
@@ -3717,40 +3717,40 @@ Public Class Clase_Crear_Documento
                               ",'" & _Operacion & "'," & _Potencia & ",'" & _Eslido & "',' " & _Observa & "')"
 
 
-                        Consulta_sql = "Insert Into " & _Global_BaseBk & "Zw_Casi_DocDet " & vbCrLf & _
-                                       "(Id_DocEnc,Sucursal,Bodega,UnTrans,Lincondest,NroLinea,Codigo,CodigoProv," & _
-                                       "UdTrans,Cantidad,TipoValor,Precio,DescuentoPorc,DescuentoValor,Descripcion," & _
-                                       "PrecioNetoUd,PrecioNetoUdLista,PrecioBrutoUd,PrecioBrutoUdLista,Rtu,Ud01PR,CantUd1," & _
-                                       "CDespUd1,CaprexUd1,CaprncUd1,CodVendedor,Prct,Tict,Tipr,DsctoNeto,DsctoBruto,Ud02PR," & _
-                                       "CantUd2,CDespUd2,CaprexUd2,CaprncUd12,ValVtaDescMax,ValVtaStockInf,CodLista," & _
-                                       "DescMaximo,NroDscto,NroImpuestos,PorIva,PorIla,ValIvaLinea,ValIlaLinea,ValSubNetoLinea," & _
-                                       "ValNetoLinea,ValBrutoLinea,PmLinea,PmSucLinea,PrecioNetoRealUd1,PrecioNetoRealUd2," & _
-                                       "FechaEmision_Linea,FechaRecepcion_Linea," & _
-                                       "Idmaeedo_Dori,Idmaeddo_Dori,CantUd1_Dori,CantUd2_Dori,Estado,Tidopa,NudoPa,SubTotal," & _
-                                       "StockBodega,UbicacionBod,DsctoRealPorc,DsctoRealValor,DsctoGlobalSuperado,Tiene_Dscto,CantidadCalculo," & _
-                                       "Operacion,Potencia,PrecioCalculo,OCCGenerada,Bloqueapr,Observa,CodFunAutoriza," & _
-                                       "CodPermiso,Nuevo_Producto,Solicitado_bodega,Moneda,Tipo_Moneda,Tipo_Cambio) Values" & vbCrLf & _
-                                       "(" & _Id_DocEnc & ",'" & _Sucursal & "','" & _Bodega & "'," & _UnTrans & "," & _Lincondest & _
-                                       ",'" & _NroLinea & "','" & _Codigo & "','" & _CodigoProv & "','" & _UdTrans & _
-                                       "'," & _Cantidad & ",'" & _TipoValor & "'," & _Precio & "," & _DescuentoPorc & _
-                                       "," & _DescuentoValor & ",'" & _Descripcion & "'," & _PrecioNetoUd & _
-                                       "," & _PrecioNetoUdLista & "," & _PrecioBrutoUd & "," & _PrecioBrutoUdLista & _
-                                       "," & _Rtu & ",'" & _Ud01PR & "'," & _CantUd1 & "," & _CDespUd1 & "," & _CaprexUd1 & _
-                                       "," & _CaprncUd1 & ",'" & _CodVendedor & "'," & _Prct & ",'" & _Tict & "','" & _Tipr & _
-                                       "'," & _DsctoNeto & "," & _DsctoBruto & ",'" & _Ud02PR & "'," & _CantUd2 & _
-                                       "," & _CDespUd2 & "," & _CaprexUd2 & "," & _CaprncUd2 & "," & _ValVtaDescMax & _
-                                       "," & _ValVtaStockInf & ",'" & _CodLista & "'," & _DescMaximo & "," & _NroDscto & _
-                                       "," & _NroImpuestos & "," & _PorIva & "," & _PorIla & "," & _ValIvaLinea & _
-                                       "," & _ValIlaLinea & "," & _ValSubNetoLinea & "," & _ValNetoLinea & _
-                                       "," & _ValBrutoLinea & "," & _PmLinea & "," & _PmSucLinea & "," & _PrecioNetoRealUd1 & _
-                                       "," & _PrecioNetoRealUd2 & ",'" & _FechaEmision & "','" & _FechaRecepcion & _
-                                       "'," & _Idmaeedo_Dori & "," & _Idmaeddo_Dori & "," & _CantUd1_Dori & "," & _CantUd2_Dori & _
-                                       ",'" & _Estado & "','" & _Tidopa & "','" & _NudoPa & _
-                                       "'," & _SubTotal & "," & _StockBodega & ",'" & Trim(_UbicacionBod) & "'," & _DsctoRealPorc & _
-                                       "," & _DsctoRealValor & "," & _DsctoGlobalSuperado & "," & _Tiene_Dscto & "," & _CantidadCalculo & _
-                                       ",'" & _Operacion & "'," & _Potencia & "," & _PrecioCalculo & "," & _OCCGenerada & _
-                                       ",'" & _Bloqueapr & "','" & _Observa & "','" & _CodFunAutoriza & "','" & _CodPermiso & _
-                                       "'," & _Nuevo_Producto & "," & _Solicitado_bodega & ",'" & _Moneda & "','" & _Tipo_Moneda & _
+                        Consulta_sql = "Insert Into " & _Global_BaseBk & "Zw_Casi_DocDet " & vbCrLf &
+                                       "(Id_DocEnc,Sucursal,Bodega,UnTrans,Lincondest,NroLinea,Codigo,CodigoProv," &
+                                       "UdTrans,Cantidad,TipoValor,Precio,DescuentoPorc,DescuentoValor,Descripcion," &
+                                       "PrecioNetoUd,PrecioNetoUdLista,PrecioBrutoUd,PrecioBrutoUdLista,Rtu,Ud01PR,CantUd1," &
+                                       "CDespUd1,CaprexUd1,CaprncUd1,CodVendedor,Prct,Tict,Tipr,DsctoNeto,DsctoBruto,Ud02PR," &
+                                       "CantUd2,CDespUd2,CaprexUd2,CaprncUd12,ValVtaDescMax,ValVtaStockInf,CodLista," &
+                                       "DescMaximo,NroDscto,NroImpuestos,PorIva,PorIla,ValIvaLinea,ValIlaLinea,ValSubNetoLinea," &
+                                       "ValNetoLinea,ValBrutoLinea,PmLinea,PmSucLinea,PrecioNetoRealUd1,PrecioNetoRealUd2," &
+                                       "FechaEmision_Linea,FechaRecepcion_Linea," &
+                                       "Idmaeedo_Dori,Idmaeddo_Dori,CantUd1_Dori,CantUd2_Dori,Estado,Tidopa,NudoPa,SubTotal," &
+                                       "StockBodega,UbicacionBod,DsctoRealPorc,DsctoRealValor,DsctoGlobalSuperado,Tiene_Dscto,CantidadCalculo," &
+                                       "Operacion,Potencia,PrecioCalculo,OCCGenerada,Bloqueapr,Observa,CodFunAutoriza," &
+                                       "CodPermiso,Nuevo_Producto,Solicitado_bodega,Moneda,Tipo_Moneda,Tipo_Cambio) Values" & vbCrLf &
+                                       "(" & _Id_DocEnc & ",'" & _Sucursal & "','" & _Bodega & "'," & _UnTrans & "," & _Lincondest &
+                                       ",'" & _NroLinea & "','" & _Codigo & "','" & _CodigoProv & "','" & _UdTrans &
+                                       "'," & _Cantidad & ",'" & _TipoValor & "'," & _Precio & "," & _DescuentoPorc &
+                                       "," & _DescuentoValor & ",'" & _Descripcion & "'," & _PrecioNetoUd &
+                                       "," & _PrecioNetoUdLista & "," & _PrecioBrutoUd & "," & _PrecioBrutoUdLista &
+                                       "," & _Rtu & ",'" & _Ud01PR & "'," & _CantUd1 & "," & _CDespUd1 & "," & _CaprexUd1 &
+                                       "," & _CaprncUd1 & ",'" & _CodVendedor & "'," & _Prct & ",'" & _Tict & "','" & _Tipr &
+                                       "'," & _DsctoNeto & "," & _DsctoBruto & ",'" & _Ud02PR & "'," & _CantUd2 &
+                                       "," & _CDespUd2 & "," & _CaprexUd2 & "," & _CaprncUd2 & "," & _ValVtaDescMax &
+                                       "," & _ValVtaStockInf & ",'" & _CodLista & "'," & _DescMaximo & "," & _NroDscto &
+                                       "," & _NroImpuestos & "," & _PorIva & "," & _PorIla & "," & _ValIvaLinea &
+                                       "," & _ValIlaLinea & "," & _ValSubNetoLinea & "," & _ValNetoLinea &
+                                       "," & _ValBrutoLinea & "," & _PmLinea & "," & _PmSucLinea & "," & _PrecioNetoRealUd1 &
+                                       "," & _PrecioNetoRealUd2 & ",'" & _FechaEmision & "','" & _FechaRecepcion &
+                                       "'," & _Idmaeedo_Dori & "," & _Idmaeddo_Dori & "," & _CantUd1_Dori & "," & _CantUd2_Dori &
+                                       ",'" & _Estado & "','" & _Tidopa & "','" & _NudoPa &
+                                       "'," & _SubTotal & "," & _StockBodega & ",'" & Trim(_UbicacionBod) & "'," & _DsctoRealPorc &
+                                       "," & _DsctoRealValor & "," & _DsctoGlobalSuperado & "," & _Tiene_Dscto & "," & _CantidadCalculo &
+                                       ",'" & _Operacion & "'," & _Potencia & "," & _PrecioCalculo & "," & _OCCGenerada &
+                                       ",'" & _Bloqueapr & "','" & _Observa & "','" & _CodFunAutoriza & "','" & _CodPermiso &
+                                       "'," & _Nuevo_Producto & "," & _Solicitado_bodega & ",'" & _Moneda & "','" & _Tipo_Moneda &
                                        "'," & _Tipo_Cambio & ")"
 
 
@@ -3794,7 +3794,7 @@ Public Class Clase_Crear_Documento
                             Dim _Koimli As String = FImpto.Item("Koimli").ToString
                             Dim _Vaimli = De_Num_a_Tx_01(FImpto.Item("Vaimli").ToString, False, 5)
 
-                            Consulta_sql = "INSERT INTO " & _Global_BaseBk & "Zw_DocImp (Id_DocEnc,Nulido,Koimli,Poimli,Vaimli,Lilg) VALUES " & vbCrLf & _
+                            Consulta_sql = "INSERT INTO " & _Global_BaseBk & "Zw_DocImp (Id_DocEnc,Nulido,Koimli,Poimli,Vaimli,Lilg) VALUES " & vbCrLf &
                                            "(" & _Id_DocEnc & ",'" & _Nulido & "','" & _Koimli & "'," & _Poimli & "," & _Vaimli & ",'')"
 
                             Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
@@ -3817,7 +3817,7 @@ Public Class Clase_Crear_Documento
                             Dim _Podt = De_Num_a_Tx_01(FDscto.Item("Podt").ToString, False, 5)
                             Dim _Vadt = De_Num_a_Tx_01(FDscto.Item("Vadt").ToString, False, 5)
 
-                            Consulta_sql = "INSERT INTO " & _Global_BaseBk & "Zw_Casi_DocDsc (Id_DocEnc,Nulido,Kodt,Podt,Vadt)" & vbCrLf & _
+                            Consulta_sql = "INSERT INTO " & _Global_BaseBk & "Zw_Casi_DocDsc (Id_DocEnc,Nulido,Kodt,Podt,Vadt)" & vbCrLf &
                                    "values (" & _Id_DocEnc & ",'" & _NroLinea & "','D_SIN_TIPO'," & _Podt & "," & _Vadt & ")"
 
 
@@ -3911,38 +3911,38 @@ Public Class Clase_Crear_Documento
                            "WHERE IDMAEEDO=" & _Idmaeedo
             'Empresa,TipoDoc,NroDocumento,CodEntidad,CodSucEntidad
 
-            Consulta_sql = "Update " & _Global_BaseBk & "Zw_Casi_DocEnc SET" & vbCrLf & _
-                           "Modalidad = '" & _Modalidad & "'" & vbCrLf & _
-                           ",Sucursal = '" & _Sucursal & "'" & vbCrLf & _
-                           ",Nombre_Entidad = '" & _Nombre_Entidad & "'" & vbCrLf & _
-                           ",FechaEmision = '" & _FechaEmision & "'" & vbCrLf & _
-                           ",Fecha_1er_Vencimiento = '" & _Fecha_1er_Vencimiento & "'" & vbCrLf & _
-                           ",FechaUltVencimiento = '" & _FechaUltVencimiento & "'" & vbCrLf & _
-                           ",FechaRecepcion = '" & _FechaRecepcion & "'" & vbCrLf & _
-                           ",Cuotas = '" & _Cuotas & "'" & vbCrLf & _
-                           ",Dias_1er_Vencimiento = '" & _Dias_1er_Vencimiento & "'" & vbCrLf & _
-                           ",Dias_Vencimiento = '" & _Dias_Vencimiento & "'" & vbCrLf & _
-                           ",ListaPrecios = '" & _ListaPrecios & "'" & vbCrLf & _
-                           ",CodEntidadFisica = '" & _CodEntidadFisica & "'" & vbCrLf & _
-                           ",CodSucEntidadFisica = '" & _CodSucEntidadFisica & "'" & vbCrLf & _
-                           ",Nombre_Entidad_Fisica = '" & _Nombre_Entidad_Fisica & "'" & vbCrLf & _
-                           ",Contacto_Ent = '" & _Contacto_Ent & "'" & vbCrLf & _
-                           ",CodFuncionario = '" & _CodFuncionario & "'" & vbCrLf & _
-                           ",NomFuncionario = '" & _NomFuncionario & "'" & vbCrLf & _
-                           ",Centro_Costo = '" & _Centro_Costo & "'" & vbCrLf & _
-                           ",Moneda_Doc = '" & _Moneda_Doc & "'" & vbCrLf & _
-                           ",Valor_Dolar = " & _Valor_Dolar & vbCrLf & _
-                           ",TotalNetoDoc = " & _TotalNetoDoc & vbCrLf & _
-                           ",TotalIvaDoc = " & _TotalIvaDoc & vbCrLf & _
-                           ",TotalIlaDoc = " & _TotalIlaDoc & vbCrLf & _
-                           ",TotalBrutoDoc = " & _TotalBrutoDoc & vbCrLf & _
-                           ",CantTotal = " & _CantTotal & vbCrLf & _
-                           ",CantDesp = " & _CantDesp & vbCrLf & _
-                           ",DocEn_Neto_Bruto = '" & _DocEn_Neto_Bruto & "'" & vbCrLf & _
-                           ",Es_ValeTransitorio = " & CInt(_Es_ValeTransitorio) & vbCrLf & _
-                           ",Es_Electronico = " & _Es_Electronico & vbCrLf & _
-                           ",TipoMoneda = '" & _TipoMoneda & "'" & vbCrLf & _
-                           ",Vizado = '" & _Vizado & "'" & vbCrLf & _
+            Consulta_sql = "Update " & _Global_BaseBk & "Zw_Casi_DocEnc SET" & vbCrLf &
+                           "Modalidad = '" & _Modalidad & "'" & vbCrLf &
+                           ",Sucursal = '" & _Sucursal & "'" & vbCrLf &
+                           ",Nombre_Entidad = '" & _Nombre_Entidad & "'" & vbCrLf &
+                           ",FechaEmision = '" & _FechaEmision & "'" & vbCrLf &
+                           ",Fecha_1er_Vencimiento = '" & _Fecha_1er_Vencimiento & "'" & vbCrLf &
+                           ",FechaUltVencimiento = '" & _FechaUltVencimiento & "'" & vbCrLf &
+                           ",FechaRecepcion = '" & _FechaRecepcion & "'" & vbCrLf &
+                           ",Cuotas = '" & _Cuotas & "'" & vbCrLf &
+                           ",Dias_1er_Vencimiento = '" & _Dias_1er_Vencimiento & "'" & vbCrLf &
+                           ",Dias_Vencimiento = '" & _Dias_Vencimiento & "'" & vbCrLf &
+                           ",ListaPrecios = '" & _ListaPrecios & "'" & vbCrLf &
+                           ",CodEntidadFisica = '" & _CodEntidadFisica & "'" & vbCrLf &
+                           ",CodSucEntidadFisica = '" & _CodSucEntidadFisica & "'" & vbCrLf &
+                           ",Nombre_Entidad_Fisica = '" & _Nombre_Entidad_Fisica & "'" & vbCrLf &
+                           ",Contacto_Ent = '" & _Contacto_Ent & "'" & vbCrLf &
+                           ",CodFuncionario = '" & _CodFuncionario & "'" & vbCrLf &
+                           ",NomFuncionario = '" & _NomFuncionario & "'" & vbCrLf &
+                           ",Centro_Costo = '" & _Centro_Costo & "'" & vbCrLf &
+                           ",Moneda_Doc = '" & _Moneda_Doc & "'" & vbCrLf &
+                           ",Valor_Dolar = " & _Valor_Dolar & vbCrLf &
+                           ",TotalNetoDoc = " & _TotalNetoDoc & vbCrLf &
+                           ",TotalIvaDoc = " & _TotalIvaDoc & vbCrLf &
+                           ",TotalIlaDoc = " & _TotalIlaDoc & vbCrLf &
+                           ",TotalBrutoDoc = " & _TotalBrutoDoc & vbCrLf &
+                           ",CantTotal = " & _CantTotal & vbCrLf &
+                           ",CantDesp = " & _CantDesp & vbCrLf &
+                           ",DocEn_Neto_Bruto = '" & _DocEn_Neto_Bruto & "'" & vbCrLf &
+                           ",Es_ValeTransitorio = " & CInt(_Es_ValeTransitorio) & vbCrLf &
+                           ",Es_Electronico = " & _Es_Electronico & vbCrLf &
+                           ",TipoMoneda = '" & _TipoMoneda & "'" & vbCrLf &
+                           ",Vizado = '" & _Vizado & "'" & vbCrLf &
                            "Where Id_DocEnc = " & _Id_DocEnc
 
 
@@ -3986,32 +3986,32 @@ Public Class Clase_Crear_Documento
 
             End With
 
-            Consulta_sql = "INSERT INTO MAEEDOOB (IDMAEEDO,OBDO,CPDO,OCDO,DIENDESP,TEXTO1,TEXTO2,TEXTO3,TEXTO4,TEXTO5,TEXTO6," & vbCrLf & _
-                           "TEXTO7,TEXTO8,TEXTO9,TEXTO10,TEXTO11,TEXTO12,TEXTO13,TEXTO14,TEXTO15,CARRIER,BOOKING,LADING,AGENTE," & vbCrLf & _
-                           "MEDIOPAGO,TIPOTRANS,KOPAE,KOCIE,KOCME,FECHAE,HORAE,KOPAD,KOCID,KOCMD,FECHAD,HORAD,OBDOEXPO,MOTIVO," & vbCrLf & _
-                           "TEXTO16,TEXTO17,TEXTO18,TEXTO19,TEXTO20,TEXTO21,TEXTO22,TEXTO23,TEXTO24,TEXTO25,TEXTO26,TEXTO27," & vbCrLf & _
-                           "TEXTO28,TEXTO29,TEXTO30,TEXTO31,TEXTO32,TEXTO33,TEXTO34,TEXTO35,PLACAPAT) VALUES " & vbCrLf & _
-                           "(" & _Idmaeedo & ",'" & _Obdo & "','" & _Cpdo & "','" & _Ocdo & "','','" & Obs(0) & "','" & Obs(1) & _
-                           "','" & Obs(2) & "','" & Obs(3) & "','" & Obs(4) & "','" & Obs(5) & "','" & Obs(6) & "','" & Obs(7) & _
-                           "','" & Obs(8) & "','" & Obs(9) & "','" & Obs(10) & "','" & Obs(11) & "','" & Obs(12) & "','" & Obs(13) & _
-                           "','" & Obs(14) & "','','','','','','','','','',GETDATE(),'','','','',GETDATE(),'','','','" & Obs(15) & _
-                           "','" & Obs(16) & "','" & Obs(17) & "','" & Obs(18) & "','" & Obs(19) & _
-                           "','" & Obs(20) & "','" & Obs(21) & "','" & Obs(22) & "','" & Obs(23) & "','" & Obs(24) & _
-                           "','" & Obs(25) & "','" & Obs(26) & "','" & Obs(27) & "','" & Obs(28) & "','" & Obs(29) & _
-                           "','" & Obs(30) & "','" & Obs(31) & "','" & Obs(32) & "','" & Obs(33) & "','" & Obs(34) & _
+            Consulta_sql = "INSERT INTO MAEEDOOB (IDMAEEDO,OBDO,CPDO,OCDO,DIENDESP,TEXTO1,TEXTO2,TEXTO3,TEXTO4,TEXTO5,TEXTO6," & vbCrLf &
+                           "TEXTO7,TEXTO8,TEXTO9,TEXTO10,TEXTO11,TEXTO12,TEXTO13,TEXTO14,TEXTO15,CARRIER,BOOKING,LADING,AGENTE," & vbCrLf &
+                           "MEDIOPAGO,TIPOTRANS,KOPAE,KOCIE,KOCME,FECHAE,HORAE,KOPAD,KOCID,KOCMD,FECHAD,HORAD,OBDOEXPO,MOTIVO," & vbCrLf &
+                           "TEXTO16,TEXTO17,TEXTO18,TEXTO19,TEXTO20,TEXTO21,TEXTO22,TEXTO23,TEXTO24,TEXTO25,TEXTO26,TEXTO27," & vbCrLf &
+                           "TEXTO28,TEXTO29,TEXTO30,TEXTO31,TEXTO32,TEXTO33,TEXTO34,TEXTO35,PLACAPAT) VALUES " & vbCrLf &
+                           "(" & _Idmaeedo & ",'" & _Obdo & "','" & _Cpdo & "','" & _Ocdo & "','','" & Obs(0) & "','" & Obs(1) &
+                           "','" & Obs(2) & "','" & Obs(3) & "','" & Obs(4) & "','" & Obs(5) & "','" & Obs(6) & "','" & Obs(7) &
+                           "','" & Obs(8) & "','" & Obs(9) & "','" & Obs(10) & "','" & Obs(11) & "','" & Obs(12) & "','" & Obs(13) &
+                           "','" & Obs(14) & "','','','','','','','','','',GETDATE(),'','','','',GETDATE(),'','','','" & Obs(15) &
+                           "','" & Obs(16) & "','" & Obs(17) & "','" & Obs(18) & "','" & Obs(19) &
+                           "','" & Obs(20) & "','" & Obs(21) & "','" & Obs(22) & "','" & Obs(23) & "','" & Obs(24) &
+                           "','" & Obs(25) & "','" & Obs(26) & "','" & Obs(27) & "','" & Obs(28) & "','" & Obs(29) &
+                           "','" & Obs(30) & "','" & Obs(31) & "','" & Obs(32) & "','" & Obs(33) & "','" & Obs(34) &
                            "','')"
 
-            Consulta_sql = "Insert Into " & _Global_BaseBk & "Zw_Casi_DocObs (Id_DocEnc,Observaciones,Forma_pago,Orden_compra,Obs1," & _
-                           "Obs2,Obs3,Obs4,Obs5,Obs6,Obs7,Obs8,Obs9,Obs10," & _
-                           "Obs11,Obs12,Obs13,Obs14,Obs15,Obs16,Obs17,Obs18,Obs19,Obs20,Obs21,Obs22,Obs23,Obs24,Obs25,Obs26," & _
-                           "Obs27,Obs28,Obs29,Obs30,Obs31,Obs32,Obs33,Obs34,Obs35) Values " & vbCrLf & _
-                           "(" & _Id_DocEnc & ",'" & _Obdo & "','" & _Cpdo & "','" & _Ocdo & _
-                           "','" & Obs(0) & "','" & Obs(1) & "','" & Obs(2) & "','" & Obs(3) & "','" & Obs(4) & "','" & Obs(5) & _
-                           "','" & Obs(6) & "','" & Obs(7) & "','" & Obs(8) & "','" & Obs(9) & "','" & Obs(10) & _
-                           "','" & Obs(11) & "','" & Obs(12) & "','" & Obs(13) & "','" & Obs(14) & "','" & Obs(15) & _
-                           "','" & Obs(16) & "','" & Obs(17) & "','" & Obs(18) & "','" & Obs(19) & "','" & Obs(20) & _
-                           "','" & Obs(21) & "','" & Obs(22) & "','" & Obs(23) & "','" & Obs(24) & "','" & Obs(25) & _
-                           "','" & Obs(26) & "','" & Obs(27) & "','" & Obs(28) & "','" & Obs(29) & "','" & Obs(30) & _
+            Consulta_sql = "Insert Into " & _Global_BaseBk & "Zw_Casi_DocObs (Id_DocEnc,Observaciones,Forma_pago,Orden_compra,Obs1," &
+                           "Obs2,Obs3,Obs4,Obs5,Obs6,Obs7,Obs8,Obs9,Obs10," &
+                           "Obs11,Obs12,Obs13,Obs14,Obs15,Obs16,Obs17,Obs18,Obs19,Obs20,Obs21,Obs22,Obs23,Obs24,Obs25,Obs26," &
+                           "Obs27,Obs28,Obs29,Obs30,Obs31,Obs32,Obs33,Obs34,Obs35) Values " & vbCrLf &
+                           "(" & _Id_DocEnc & ",'" & _Obdo & "','" & _Cpdo & "','" & _Ocdo &
+                           "','" & Obs(0) & "','" & Obs(1) & "','" & Obs(2) & "','" & Obs(3) & "','" & Obs(4) & "','" & Obs(5) &
+                           "','" & Obs(6) & "','" & Obs(7) & "','" & Obs(8) & "','" & Obs(9) & "','" & Obs(10) &
+                           "','" & Obs(11) & "','" & Obs(12) & "','" & Obs(13) & "','" & Obs(14) & "','" & Obs(15) &
+                           "','" & Obs(16) & "','" & Obs(17) & "','" & Obs(18) & "','" & Obs(19) & "','" & Obs(20) &
+                           "','" & Obs(21) & "','" & Obs(22) & "','" & Obs(23) & "','" & Obs(24) & "','" & Obs(25) &
+                           "','" & Obs(26) & "','" & Obs(27) & "','" & Obs(28) & "','" & Obs(29) & "','" & Obs(30) &
                            "','" & Obs(31) & "','" & Obs(32) & "','" & Obs(33) & "','" & Obs(34) & "')"
 
 
@@ -5046,9 +5046,9 @@ Public Class Clase_Crear_Documento
 
 #Region "EDITAR DOCUMENTO"
 
-    Function Fx_Editar_Documento(ByVal _Idmaeedo As Integer, _
-                                 ByVal _Cod_Func_Eliminado As String, _
-                                 ByVal Bd_Documento As DataSet) As Integer
+    Function Fx_Editar_Documento(_Idmaeedo As Integer,
+                                 _Cod_Func_Eliminado As String,
+                                 Bd_Documento As DataSet) As Integer
 
         ' Obtengo el tipo y numero de documento que hay que modificar
         Dim _Tipo_de_documento As String = _Sql.Fx_Trae_Dato("TIDO", "MAEEDO", "IDMAEEDO = " & _Idmaeedo)
@@ -5057,34 +5057,34 @@ Public Class Clase_Crear_Documento
         ' Obtengo la fecha del servidor para poner la fecha de eliminación del documento
         Dim _FechaEliminacion = FechaDelServidor()
 
-        Dim _New_Idmaeedo As Integer = Fx_Crear_Documento(_Tipo_de_documento, _
-                                                          _Numero_de_documento, _
-                                                          False, _
-                                                          False, _
-                                                          Bd_Documento, _
-                                                          False, _
+        Dim _New_Idmaeedo As Integer = Fx_Crear_Documento(_Tipo_de_documento,
+                                                          _Numero_de_documento,
+                                                          False,
+                                                          False,
+                                                          Bd_Documento,
+                                                          False,
                                                           False)
 
         If CBool(_New_Idmaeedo) Then
 
             Dim _Class_E As New Clase_EliminarAnular_Documento
 
-            Dim _Eliminado As Boolean = _Class_E.Fx_EliminarAnular_Doc(_Idmaeedo, _
-                                                                       _Cod_Func_Eliminado, _
-                                                                       Clase_EliminarAnular_Documento._Accion_EA.Modificar, _
+            Dim _Eliminado As Boolean = _Class_E.Fx_EliminarAnular_Doc(_Idmaeedo,
+                                                                       _Cod_Func_Eliminado,
+                                                                       Clase_EliminarAnular_Documento._Accion_EA.Modificar,
                                                                        False)
 
             If _Eliminado Then
 
-                Consulta_sql = "Update MAEEDO Set NUDO = '" & _Numero_de_documento & "' Where IDMAEEDO = " & _New_Idmaeedo & vbCrLf & _
+                Consulta_sql = "Update MAEEDO Set NUDO = '" & _Numero_de_documento & "' Where IDMAEEDO = " & _New_Idmaeedo & vbCrLf &
                                "Update MAEDDO Set NUDO = '" & _Numero_de_documento & "' Where IDMAEEDO = " & _New_Idmaeedo
-                If _Sql.Fx_Ej_consulta_IDU(Consulta_sql) Then 'Ej_consulta_IDU(Consulta_sql, cn1) Then
+                If _Sql.Fx_Ej_consulta_IDU(Consulta_sql) Then
                     Return _New_Idmaeedo
                 End If
             Else
-                _Class_E.Fx_EliminarAnular_Doc(_New_Idmaeedo, _
-                                               _Cod_Func_Eliminado, _
-                                               Clase_EliminarAnular_Documento._Accion_EA.Modificar, _
+                _Class_E.Fx_EliminarAnular_Doc(_New_Idmaeedo,
+                                               _Cod_Func_Eliminado,
+                                               Clase_EliminarAnular_Documento._Accion_EA.Modificar,
                                                False)
             End If
 
