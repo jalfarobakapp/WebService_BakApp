@@ -1132,7 +1132,7 @@ Public Class Ws_BakApp
         Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _OldIdmaeedo
         _Row_OldMaeedo = _Sql.Fx_Get_DataRow(Consulta_sql)
 
-        '_Tido = _Row_OldMaeedo.Item("TIDO")
+        _Tido = _Row_OldMaeedo.Item("TIDO")
         _Nudo = _Row_OldMaeedo.Item("NUDO")
 
         Try
@@ -1188,6 +1188,7 @@ Public Class Ws_BakApp
                                                    _Cod_Func_Eliminador,
                                                    Clase_EliminarAnular_Documento._Accion_EA.Modificar,
                                                    False)
+                    _NewIdmaeedo = 0
 
                 End If
 
