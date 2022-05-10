@@ -3,10 +3,10 @@
 Public Interface IService1
 
     <OperationContract()> _
-    Function GetData(ByVal value As Integer) As String
+    Function GetData(value As Integer) As String
 
     <OperationContract()> _
-    Function GetDataUsingDataContract(ByVal composite As CompositeType) As CompositeType
+    Function GetDataUsingDataContract(composite As CompositeType) As CompositeType
 
     ' TAREAS PENDIENTES: agregue aquí sus operaciones de servicio
 
@@ -24,7 +24,7 @@ Public Class CompositeType
         Get
             Return Me.boolValueField
         End Get
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             Me.boolValueField = value
         End Set
     End Property
@@ -34,7 +34,7 @@ Public Class CompositeType
         Get
             Return Me.stringValueField
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             Me.stringValueField = value
         End Set
     End Property

@@ -9,7 +9,7 @@ Public Module Funciones_Especiales_BakApp
 
     Dim Consulta_sql As String
 
-    Function Fx_Cambiar_Numeracion_Modalidad(ByVal _Tido As String,
+    Function Fx_Cambiar_Numeracion_Modalidad(_Tido As String,
                                              _Empresa As String,
                                              _Modalidad As String) As Boolean
 
@@ -118,10 +118,10 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function Fx_Genera_Licencia_BakApp(ByVal _RutEmpresa As String,
-                                        ByVal _FechaCaduca As Date,
-                                        ByVal _CantLicencias As Integer,
-                                        ByVal _Palabra_X As String) As String()
+    Function Fx_Genera_Licencia_BakApp(_RutEmpresa As String,
+                                        _FechaCaduca As Date,
+                                        _CantLicencias As Integer,
+                                        _Palabra_X As String) As String()
 
         Dim _Llave1, _Llave2, _Llave3, _Llave4 As String
 
@@ -141,7 +141,7 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Private Function Encripta_md5(ByVal TextoAEncriptar As String) As String
+    Private Function Encripta_md5(TextoAEncriptar As String) As String
         Dim vlo_MD5 As New MD5CryptoServiceProvider
         Dim vlby_Byte(), vlby_Hash() As Byte
         Dim vls_TextoEncriptado As String = ""
@@ -161,8 +161,8 @@ Public Module Funciones_Especiales_BakApp
         Return vls_TextoEncriptado
     End Function
 
-    Public Function Fx_Tipo_Grab_Modalidad(ByVal _TipoDoc As String,
-                                           ByVal _NrNumeroDoco As String) As String
+    Public Function Fx_Tipo_Grab_Modalidad(_TipoDoc As String,
+                                           _NrNumeroDoco As String) As String
 
 
         Dim Continua As Boolean = True
@@ -177,7 +177,7 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function _Dev_HoraGrab(ByVal Hora As String)
+    Function _Dev_HoraGrab(Hora As String)
 
         Dim _HH, _MM, _SS As Double
         Dim _Horagrab As Integer
@@ -212,8 +212,8 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function Fx_Trae_Permiso_Bk(ByVal _CodUsuario As String,
-                                ByVal _CodPremiso As String) As DataTable
+    Function Fx_Trae_Permiso_Bk(_CodUsuario As String,
+                                _CodPremiso As String) As DataTable
 
         Dim _Sql As New Class_SQL()
 
@@ -228,7 +228,7 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function Fx_Traer_Datos_Entidad(ByVal _CodEntidad As String, ByVal _SucEntidad As String) As DataSet
+    Function Fx_Traer_Datos_Entidad(_CodEntidad As String, _SucEntidad As String) As DataSet
 
         Dim _Sql As New Class_SQL()
 
@@ -254,7 +254,7 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function TraeClaveRD(ByVal Texto As String) As String
+    Function TraeClaveRD(Texto As String) As String
 
         Dim valorAscii As Integer
         Dim PassEncriptado, Letra As String
@@ -287,13 +287,13 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function Fx_Stock_Disponible(ByVal _Tido As String,
-                                 ByVal _Empresa As String,
-                                 ByVal _Sucursal As String,
-                                 ByVal _Bodega As String,
-                                 ByVal _Codigo As String,
-                                 ByVal _Ud As Integer,
-                                 ByVal _Campo As String) As Double
+    Function Fx_Stock_Disponible(_Tido As String,
+                                 _Empresa As String,
+                                 _Sucursal As String,
+                                 _Bodega As String,
+                                 _Codigo As String,
+                                 _Ud As Integer,
+                                 _Campo As String) As Double
 
 
         Dim _Sql As New Class_SQL()
@@ -371,10 +371,10 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Public Function Fx_Suma_cantidades(ByVal CAMPO As String,
-                                       ByVal TABLA As String,
-                                       Optional ByVal condicion As String = "",
-                                       Optional ByVal Decimales As Integer = 0) As Double
+    Public Function Fx_Suma_cantidades(CAMPO As String,
+                                       TABLA As String,
+                                       Optional condicion As String = "",
+                                       Optional Decimales As Integer = 0) As Double
 
         Dim _Sql As New Class_SQL()
 
@@ -406,8 +406,8 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function Fx_Solo_Enteros(ByVal _Cantidad As Double,
-                             ByVal _Divisible As String) As Boolean
+    Function Fx_Solo_Enteros(_Cantidad As Double,
+                             _Divisible As String) As Boolean
 
         Dim _Sql As New Class_SQL()
 
@@ -440,8 +440,8 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function Fx_Precio_Formula(ByVal _CPrecio As _Campo_Precio,
-                           ByVal _RowPrecio As DataRow)
+    Function Fx_Precio_Formula(_CPrecio As _Campo_Precio,
+                           _RowPrecio As DataRow)
 
         Dim _Sql As New Class_SQL()
 
@@ -905,7 +905,7 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function Fx_Redondeo_Random(ByVal _Redondeo As String) As Redondeo
+    Function Fx_Redondeo_Random(_Redondeo As String) As Redondeo
 
         Select Case _Redondeo
             Case 1
@@ -953,7 +953,7 @@ Public Module Funciones_Especiales_BakApp
         Redondear_al_entero_superior
     End Enum
 
-    Function Fx_Redondear_Precio(ByVal _Precio As Double, ByVal _Redondedo As Redondeo) As Double
+    Function Fx_Redondear_Precio(_Precio As Double, _Redondedo As Redondeo) As Double
 
         Dim _Valor As String = De_Num_a_Tx_01(_Precio, False, 5)
 
@@ -1254,7 +1254,7 @@ Public Module Modulo_Precios_Costos
 
     End Function
 
-    Function Fx_Redondeo_Random(ByVal _Redondeo As String) As Redondeo
+    Function Fx_Redondeo_Random(_Redondeo As String) As Redondeo
 
         Select Case _Redondeo
             Case 1
@@ -1302,7 +1302,7 @@ Public Module Modulo_Precios_Costos
         Redondear_al_entero_superior
     End Enum
 
-    Function Fx_Redondear_Precio(ByVal _Precio As Double, ByVal _Redondedo As Redondeo) As Double
+    Function Fx_Redondear_Precio(_Precio As Double, _Redondedo As Redondeo) As Double
 
         Dim _Valor As String = De_Num_a_Tx_01(_Precio, False, 5)
 
@@ -1403,9 +1403,9 @@ Public Module Modulo_Precios_Costos
 
     End Function
 
-    Function Fx_Formato_Numerico(ByVal _Valor As String,
-                                 ByVal _Formato As String,
-                                 ByVal _Es_Descuento As Boolean) As String
+    Function Fx_Formato_Numerico(_Valor As String,
+                                 _Formato As String,
+                                 _Es_Descuento As Boolean) As String
 
         Dim _Cant_Caracteres As Integer = Len(_Formato)
         Dim _Moneda As Boolean

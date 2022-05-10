@@ -33,7 +33,7 @@ Public Class Class_Conectar_Base_BakApp
     End Sub
 
 
-    Private Function Fx_Existe_Base_En_SQLServer(ByVal _Row As DataRow) As Boolean
+    Private Function Fx_Existe_Base_En_SQLServer(_Row As DataRow) As Boolean
 
         Dim _Reg As Boolean
 

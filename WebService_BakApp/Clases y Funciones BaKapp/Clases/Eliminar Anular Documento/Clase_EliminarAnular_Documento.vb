@@ -11,10 +11,10 @@ Public Class Clase_EliminarAnular_Documento
         Modificar
     End Enum
 
-    Function Fx_EliminarAnular_Doc(ByVal _Idmaeedo As Integer, _
-                                   ByVal _Cod_Func_Eliminador As String, _
-                                   ByVal _Accion As _Accion_EA, _
-                                   ByVal _Mostrar_Mensaje As Boolean) As Boolean
+    Function Fx_EliminarAnular_Doc(_Idmaeedo As Integer,
+                                   _Cod_Func_Eliminador As String,
+                                   _Accion As _Accion_EA,
+                                   _Mostrar_Mensaje As Boolean) As Boolean
 
         Dim _FechaEliminacion = FechaDelServidor()
 
@@ -27,8 +27,8 @@ Public Class Clase_EliminarAnular_Documento
 
             Dim Fecha_Elimi As String = Format(_FechaEliminacion, "yyyyMMdd")
 
-            Consulta_sql = "Select EMPRESA,SUDO,TIDO,NUDO,ENDO,SUENDO,FEEMDO,KOFUDO,VANEDO,VABRDO" & vbCrLf & _
-                           "FROM MAEEDO" & vbCrLf & _
+            Consulta_sql = "Select EMPRESA,SUDO,TIDO,NUDO,ENDO,SUENDO,FEEMDO,KOFUDO,VANEDO,VABRDO" & vbCrLf &
+                           "FROM MAEEDO" & vbCrLf &
                            "WHERE IDMAEEDO = " & _Idmaeedo
             Dim Tabla_Doc As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
 
@@ -53,18 +53,18 @@ Public Class Clase_EliminarAnular_Documento
 
                 If _Accion = _Accion_EA.Anular Then
 
-                    Consulta_sql = "INSERT INTO ELIDDO SELECT * FROM MAEDDO WHERE MAEDDO.IDMAEEDO = " & _Idmaeedo & vbCrLf & _
-                                   "INSERT INTO ELIEDO SELECT * FROM MAEEDO WHERE MAEEDO.IDMAEEDO = " & _Idmaeedo & vbCrLf & _
+                    Consulta_sql = "INSERT INTO ELIDDO SELECT * FROM MAEDDO WHERE MAEDDO.IDMAEEDO = " & _Idmaeedo & vbCrLf &
+                                   "INSERT INTO ELIEDO SELECT * FROM MAEEDO WHERE MAEEDO.IDMAEEDO = " & _Idmaeedo & vbCrLf &
                                    "Update MAEEDO Set ESDO = 'N',LIBRO = '',KOFUAUDO = '" & _Cod_Func_Eliminador & "' Where IDMAEEDO =" & _Idmaeedo & vbCrLf & vbCrLf
 
                 ElseIf _Accion = _Accion_EA.Eliminar Then
 
-                    Consulta_sql = "INSERT INTO MAEELIMI (EMPRESA,TIDO,NUDO,ENDO,SUENDO,FEEMDO,FEELIDO,KOFUDO,VANEDO,VABRDO)" & vbCrLf & _
-                                   "SELECT EMPRESA,TIDO,NUDO,ENDO,SUENDO,FEEMDO,'" & _Fecha_Eliminacion & _
-                                   "',KOFUDO,VANEDO,VABRDO FROM MAEEDO" & vbCrLf & _
-                                   "Where IDMAEEDO =" & _Idmaeedo & vbCrLf & _
-                                   "INSERT INTO ELIDDO SELECT * FROM MAEDDO WHERE MAEDDO.IDMAEEDO = " & _Idmaeedo & vbCrLf & _
-                                   "INSERT INTO ELIEDO SELECT * FROM MAEEDO WHERE MAEEDO.IDMAEEDO = " & _Idmaeedo & vbCrLf & _
+                    Consulta_sql = "INSERT INTO MAEELIMI (EMPRESA,TIDO,NUDO,ENDO,SUENDO,FEEMDO,FEELIDO,KOFUDO,VANEDO,VABRDO)" & vbCrLf &
+                                   "SELECT EMPRESA,TIDO,NUDO,ENDO,SUENDO,FEEMDO,'" & _Fecha_Eliminacion &
+                                   "',KOFUDO,VANEDO,VABRDO FROM MAEEDO" & vbCrLf &
+                                   "Where IDMAEEDO =" & _Idmaeedo & vbCrLf &
+                                   "INSERT INTO ELIDDO SELECT * FROM MAEDDO WHERE MAEDDO.IDMAEEDO = " & _Idmaeedo & vbCrLf &
+                                   "INSERT INTO ELIEDO SELECT * FROM MAEEDO WHERE MAEEDO.IDMAEEDO = " & _Idmaeedo & vbCrLf &
                                    "DELETE MAEEDO WHERE IDMAEEDO =" & _Idmaeedo & vbCrLf
 
                 ElseIf _Accion = _Accion_EA.Modificar Then
@@ -73,17 +73,17 @@ Public Class Clase_EliminarAnular_Documento
 
                 End If
 
-                Consulta_sql += _
-                               "DELETE FROM MAEPOSLI" & vbCrLf & _
-                               "WHERE MAEPOSLI.IDMAEDDO IN (SELECT IDMAEDDO FROM MAEDDO WHERE IDMAEEDO=" & _Idmaeedo & ")" & vbCrLf & _
-                               "DELETE FROM MEVENTO WHERE ARCHIRVE='MAEEDO' AND IDRVE=" & _Idmaeedo & vbCrLf & _
-                               "DELETE FROM MAEIMLI WHERE IDMAEEDO =" & _Idmaeedo & vbCrLf & _
-                               "DELETE FROM MAEDTLI WHERE IDMAEEDO=" & _Idmaeedo & vbCrLf & _
-                               "DELETE FROM MEVENTO " & _
-                               "WHERE ARCHIRVE='MAEDDO' AND IDRVE IN (SELECT IDMAEDDO FROM MAEDDO WHERE IDMAEEDO=" & _Idmaeedo & ")" & vbCrLf & _
-                               "DELETE FROM MAEDDO WHERE IDMAEEDO=" & _Idmaeedo & vbCrLf & _
-                               "DELETE FROM MAEVEN WHERE IDMAEEDO=" & _Idmaeedo & vbCrLf & _
-                               "DELETE FROM MAEEDOOB WHERE IDMAEEDO=" & _Idmaeedo & vbCrLf & _
+                Consulta_sql +=
+                               "DELETE FROM MAEPOSLI" & vbCrLf &
+                               "WHERE MAEPOSLI.IDMAEDDO IN (SELECT IDMAEDDO FROM MAEDDO WHERE IDMAEEDO=" & _Idmaeedo & ")" & vbCrLf &
+                               "DELETE FROM MEVENTO WHERE ARCHIRVE='MAEEDO' AND IDRVE=" & _Idmaeedo & vbCrLf &
+                               "DELETE FROM MAEIMLI WHERE IDMAEEDO =" & _Idmaeedo & vbCrLf &
+                               "DELETE FROM MAEDTLI WHERE IDMAEEDO=" & _Idmaeedo & vbCrLf &
+                               "DELETE FROM MEVENTO " &
+                               "WHERE ARCHIRVE='MAEDDO' AND IDRVE IN (SELECT IDMAEDDO FROM MAEDDO WHERE IDMAEEDO=" & _Idmaeedo & ")" & vbCrLf &
+                               "DELETE FROM MAEDDO WHERE IDMAEEDO=" & _Idmaeedo & vbCrLf &
+                               "DELETE FROM MAEVEN WHERE IDMAEEDO=" & _Idmaeedo & vbCrLf &
+                               "DELETE FROM MAEEDOOB WHERE IDMAEEDO=" & _Idmaeedo & vbCrLf &
                                "DELETE FROM TABPERMISO WHERE IDRST=" & _Idmaeedo & " AND ARCHIRST='MAEEDO'" & vbCrLf '& _
                 ' "SELECT TOP 1 * FROM MAEDCR WITH (NOLOCK) WHERE IDMAEEDO=" & _Idmaeedo & vbCrLf & _
                 ' "DELETE FROM MAEDCR WHERE IDMAEEDO=" & _Idmaeedo & vbCrLf
@@ -104,9 +104,9 @@ Public Class Clase_EliminarAnular_Documento
 
     End Function
 
-    Function Revisar_Si_Se_Puede_Eliminar_El_Documento(ByVal _Idmaeedo As Integer, _
-                                                       ByVal _Accion As _Accion_EA, _
-                                                       Optional ByVal _Mostrar_Mensaje As Boolean = False) As Boolean
+    Function Revisar_Si_Se_Puede_Eliminar_El_Documento(_Idmaeedo As Integer,
+                                                       _Accion As _Accion_EA,
+                                                       Optional _Mostrar_Mensaje As Boolean = False) As Boolean
 
         Consulta_sql = "Select Top 1 * From MAEEDO Where IDMAEEDO = " & _Idmaeedo
         Dim _RowMaeedo As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
@@ -130,8 +130,8 @@ Public Class Clase_EliminarAnular_Documento
 
             If CBool(Tabla.Rows.Count) Then
                 If _Mostrar_Mensaje Then
-                    MsgBox("El documento es sustentatorio de otro documento" & vbCrLf & _
-                           "No es posible " & _Accion.ToString & " documento", MsgBoxStyle.Critical, _
+                    MsgBox("El documento es sustentatorio de otro documento" & vbCrLf &
+                           "No es posible " & _Accion.ToString & " documento", MsgBoxStyle.Critical,
                            UCase(_Accion) & " DOCUMENTO")
 
                 End If

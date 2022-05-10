@@ -63,7 +63,7 @@ Partial Public Class Ds_Matriz_Documentos
     
     <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-    Protected Sub New(ByVal info As Global.System.Runtime.Serialization.SerializationInfo, ByVal context As Global.System.Runtime.Serialization.StreamingContext)
+    Protected Sub New(info As Global.System.Runtime.Serialization.SerializationInfo, context As Global.System.Runtime.Serialization.StreamingContext)
         MyBase.New(info, context, false)
         If (Me.IsBinarySerialized(info, context) = true) Then
             Me.InitVars(false)
@@ -298,7 +298,7 @@ Partial Public Class Ds_Matriz_Documentos
     
     <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-    Protected Overrides Sub ReadXmlSerializable(ByVal reader As Global.System.Xml.XmlReader)
+    Protected Overrides Sub ReadXmlSerializable(reader As Global.System.Xml.XmlReader)
         If (Me.DetermineSchemaSerializationMode(reader) = Global.System.Data.SchemaSerializationMode.IncludeSchema) Then
             Me.Reset
             Dim ds As Global.System.Data.DataSet = New Global.System.Data.DataSet()
@@ -367,7 +367,7 @@ Partial Public Class Ds_Matriz_Documentos
     
     <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-    Friend Overloads Sub InitVars(ByVal initTable As Boolean)
+    Friend Overloads Sub InitVars(initTable As Boolean)
         Me.tableObservaciones_Doc = CType(MyBase.Tables("Observaciones_Doc"),Observaciones_DocDataTable)
         If (initTable = true) Then
             If (Not (Me.tableObservaciones_Doc) Is Nothing) Then
@@ -536,7 +536,7 @@ Partial Public Class Ds_Matriz_Documentos
     
     <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-    Private Sub SchemaChanged(ByVal sender As Object, ByVal e As Global.System.ComponentModel.CollectionChangeEventArgs)
+    Private Sub SchemaChanged(sender As Object, e As Global.System.ComponentModel.CollectionChangeEventArgs)
         If (e.Action = Global.System.ComponentModel.CollectionChangeAction.Remove) Then
             Me.InitVars
         End If
@@ -544,7 +544,7 @@ Partial Public Class Ds_Matriz_Documentos
     
     <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-    Public Shared Function GetTypedDataSetSchema(ByVal xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
+    Public Shared Function GetTypedDataSetSchema(xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
         Dim ds As Ds_Matriz_Documentos = New Ds_Matriz_Documentos()
         Dim type As Global.System.Xml.Schema.XmlSchemaComplexType = New Global.System.Xml.Schema.XmlSchemaComplexType()
         Dim sequence As Global.System.Xml.Schema.XmlSchemaSequence = New Global.System.Xml.Schema.XmlSchemaSequence()
@@ -593,37 +593,37 @@ Partial Public Class Ds_Matriz_Documentos
     End Function
     
     <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-    Public Delegate Sub Observaciones_DocRowChangeEventHandler(ByVal sender As Object, ByVal e As Observaciones_DocRowChangeEvent)
+    Public Delegate Sub Observaciones_DocRowChangeEventHandler(sender As Object, e As Observaciones_DocRowChangeEvent)
     
     <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-    Public Delegate Sub Descuentos_DocRowChangeEventHandler(ByVal sender As Object, ByVal e As Descuentos_DocRowChangeEvent)
+    Public Delegate Sub Descuentos_DocRowChangeEventHandler(sender As Object, e As Descuentos_DocRowChangeEvent)
     
     <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-    Public Delegate Sub Vencimientos_DocRowChangeEventHandler(ByVal sender As Object, ByVal e As Vencimientos_DocRowChangeEvent)
+    Public Delegate Sub Vencimientos_DocRowChangeEventHandler(sender As Object, e As Vencimientos_DocRowChangeEvent)
     
     <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-    Public Delegate Sub Impuestos_DocRowChangeEventHandler(ByVal sender As Object, ByVal e As Impuestos_DocRowChangeEvent)
+    Public Delegate Sub Impuestos_DocRowChangeEventHandler(sender As Object, e As Impuestos_DocRowChangeEvent)
     
     <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-    Public Delegate Sub Encabezado_DocRowChangeEventHandler(ByVal sender As Object, ByVal e As Encabezado_DocRowChangeEvent)
+    Public Delegate Sub Encabezado_DocRowChangeEventHandler(sender As Object, e As Encabezado_DocRowChangeEvent)
     
     <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-    Public Delegate Sub Detalle_DocRowChangeEventHandler(ByVal sender As Object, ByVal e As Detalle_DocRowChangeEvent)
+    Public Delegate Sub Detalle_DocRowChangeEventHandler(sender As Object, e As Detalle_DocRowChangeEvent)
     
     <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-    Public Delegate Sub Tbl_WmsRowChangeEventHandler(ByVal sender As Object, ByVal e As Tbl_WmsRowChangeEvent)
+    Public Delegate Sub Tbl_WmsRowChangeEventHandler(sender As Object, e As Tbl_WmsRowChangeEvent)
     
     <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-    Public Delegate Sub Permisos_Necesarios_DocRowChangeEventHandler(ByVal sender As Object, ByVal e As Permisos_Necesarios_DocRowChangeEvent)
+    Public Delegate Sub Permisos_Necesarios_DocRowChangeEventHandler(sender As Object, e As Permisos_Necesarios_DocRowChangeEvent)
     
     <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-    Public Delegate Sub Tbl_Lector_BarraRowChangeEventHandler(ByVal sender As Object, ByVal e As Tbl_Lector_BarraRowChangeEvent)
+    Public Delegate Sub Tbl_Lector_BarraRowChangeEventHandler(sender As Object, e As Tbl_Lector_BarraRowChangeEvent)
     
     <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-    Public Delegate Sub Tbl_EmpaqueRowChangeEventHandler(ByVal sender As Object, ByVal e As Tbl_EmpaqueRowChangeEvent)
+    Public Delegate Sub Tbl_EmpaqueRowChangeEventHandler(sender As Object, e As Tbl_EmpaqueRowChangeEvent)
     
     <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-    Public Delegate Sub Permisos_DocRowChangeEventHandler(ByVal sender As Object, ByVal e As Permisos_DocRowChangeEvent)
+    Public Delegate Sub Permisos_DocRowChangeEventHandler(sender As Object, e As Permisos_DocRowChangeEvent)
     
     '''<summary>
     '''Represents the strongly named DataTable class.
@@ -725,7 +725,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal table As Global.System.Data.DataTable)
+        Friend Sub New(table As Global.System.Data.DataTable)
             MyBase.New
             Me.TableName = table.TableName
             If (table.CaseSensitive <> table.DataSet.CaseSensitive) Then
@@ -743,7 +743,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Sub New(ByVal info As Global.System.Runtime.Serialization.SerializationInfo, ByVal context As Global.System.Runtime.Serialization.StreamingContext)
+        Protected Sub New(info As Global.System.Runtime.Serialization.SerializationInfo, context As Global.System.Runtime.Serialization.StreamingContext)
             MyBase.New(info, context)
             Me.InitVars
         End Sub
@@ -1079,7 +1079,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Default ReadOnly Property Item(ByVal index As Integer) As Observaciones_DocRow
+        Public Default ReadOnly Property Item(index As Integer) As Observaciones_DocRow
             Get
                 Return CType(Me.Rows(index),Observaciones_DocRow)
             End Get
@@ -1099,53 +1099,53 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Sub AddObservaciones_DocRow(ByVal row As Observaciones_DocRow)
+        Public Overloads Sub AddObservaciones_DocRow(row As Observaciones_DocRow)
             Me.Rows.Add(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
         Public Overloads Function AddObservaciones_DocRow( _
-                    ByVal Observaciones As String,  _
-                    ByVal Forma_pago As String,  _
-                    ByVal Orden_compra As String,  _
-                    ByVal Obs1 As String,  _
-                    ByVal Obs2 As String,  _
-                    ByVal Obs3 As String,  _
-                    ByVal Obs4 As String,  _
-                    ByVal Obs5 As String,  _
-                    ByVal Obs6 As String,  _
-                    ByVal Obs7 As String,  _
-                    ByVal Obs8 As String,  _
-                    ByVal Obs9 As String,  _
-                    ByVal Obs10 As String,  _
-                    ByVal Obs11 As String,  _
-                    ByVal Obs12 As String,  _
-                    ByVal Obs13 As String,  _
-                    ByVal Obs14 As String,  _
-                    ByVal Obs15 As String,  _
-                    ByVal Obs16 As String,  _
-                    ByVal Obs17 As String,  _
-                    ByVal Obs18 As String,  _
-                    ByVal Obs19 As String,  _
-                    ByVal Obs20 As String,  _
-                    ByVal Obs21 As String,  _
-                    ByVal Obs22 As String,  _
-                    ByVal Obs23 As String,  _
-                    ByVal Obs24 As String,  _
-                    ByVal Obs25 As String,  _
-                    ByVal Obs26 As String,  _
-                    ByVal Obs27 As String,  _
-                    ByVal Obs28 As String,  _
-                    ByVal Obs29 As String,  _
-                    ByVal Obs30 As String,  _
-                    ByVal Obs31 As String,  _
-                    ByVal Obs32 As String,  _
-                    ByVal Obs33 As String,  _
-                    ByVal Obs34 As String,  _
-                    ByVal Obs35 As String,  _
-                    ByVal Placa As String,  _
-                    ByVal CodRetirador As String) As Observaciones_DocRow
+                    Observaciones As String,  _
+                    Forma_pago As String,  _
+                    Orden_compra As String,  _
+                    Obs1 As String,  _
+                    Obs2 As String,  _
+                    Obs3 As String,  _
+                    Obs4 As String,  _
+                    Obs5 As String,  _
+                    Obs6 As String,  _
+                    Obs7 As String,  _
+                    Obs8 As String,  _
+                    Obs9 As String,  _
+                    Obs10 As String,  _
+                    Obs11 As String,  _
+                    Obs12 As String,  _
+                    Obs13 As String,  _
+                    Obs14 As String,  _
+                    Obs15 As String,  _
+                    Obs16 As String,  _
+                    Obs17 As String,  _
+                    Obs18 As String,  _
+                    Obs19 As String,  _
+                    Obs20 As String,  _
+                    Obs21 As String,  _
+                    Obs22 As String,  _
+                    Obs23 As String,  _
+                    Obs24 As String,  _
+                    Obs25 As String,  _
+                    Obs26 As String,  _
+                    Obs27 As String,  _
+                    Obs28 As String,  _
+                    Obs29 As String,  _
+                    Obs30 As String,  _
+                    Obs31 As String,  _
+                    Obs32 As String,  _
+                    Obs33 As String,  _
+                    Obs34 As String,  _
+                    Obs35 As String,  _
+                    Placa As String,  _
+                    CodRetirador As String) As Observaciones_DocRow
             Dim rowObservaciones_DocRow As Observaciones_DocRow = CType(Me.NewRow,Observaciones_DocRow)
             Dim columnValuesArray() As Object = New Object() {Observaciones, Forma_pago, Orden_compra, Obs1, Obs2, Obs3, Obs4, Obs5, Obs6, Obs7, Obs8, Obs9, Obs10, Obs11, Obs12, Obs13, Obs14, Obs15, Obs16, Obs17, Obs18, Obs19, Obs20, Obs21, Obs22, Obs23, Obs24, Obs25, Obs26, Obs27, Obs28, Obs29, Obs30, Obs31, Obs32, Obs33, Obs34, Obs35, Placa, CodRetirador}
             rowObservaciones_DocRow.ItemArray = columnValuesArray
@@ -1381,7 +1381,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Function NewRowFromBuilder(ByVal builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
+        Protected Overrides Function NewRowFromBuilder(builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
             Return New Observaciones_DocRow(builder)
         End Function
         
@@ -1393,7 +1393,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanged(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanged(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanged(e)
             If (Not (Me.Observaciones_DocRowChangedEvent) Is Nothing) Then
                 RaiseEvent Observaciones_DocRowChanged(Me, New Observaciones_DocRowChangeEvent(CType(e.Row,Observaciones_DocRow), e.Action))
@@ -1402,7 +1402,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanging(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanging(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanging(e)
             If (Not (Me.Observaciones_DocRowChangingEvent) Is Nothing) Then
                 RaiseEvent Observaciones_DocRowChanging(Me, New Observaciones_DocRowChangeEvent(CType(e.Row,Observaciones_DocRow), e.Action))
@@ -1411,7 +1411,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleted(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleted(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleted(e)
             If (Not (Me.Observaciones_DocRowDeletedEvent) Is Nothing) Then
                 RaiseEvent Observaciones_DocRowDeleted(Me, New Observaciones_DocRowChangeEvent(CType(e.Row,Observaciones_DocRow), e.Action))
@@ -1420,7 +1420,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleting(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleting(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleting(e)
             If (Not (Me.Observaciones_DocRowDeletingEvent) Is Nothing) Then
                 RaiseEvent Observaciones_DocRowDeleting(Me, New Observaciones_DocRowChangeEvent(CType(e.Row,Observaciones_DocRow), e.Action))
@@ -1429,13 +1429,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub RemoveObservaciones_DocRow(ByVal row As Observaciones_DocRow)
+        Public Sub RemoveObservaciones_DocRow(row As Observaciones_DocRow)
             Me.Rows.Remove(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Shared Function GetTypedTableSchema(ByVal xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
+        Public Shared Function GetTypedTableSchema(xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
             Dim type As Global.System.Xml.Schema.XmlSchemaComplexType = New Global.System.Xml.Schema.XmlSchemaComplexType()
             Dim sequence As Global.System.Xml.Schema.XmlSchemaSequence = New Global.System.Xml.Schema.XmlSchemaSequence()
             Dim ds As Ds_Matriz_Documentos = New Ds_Matriz_Documentos()
@@ -1530,7 +1530,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal table As Global.System.Data.DataTable)
+        Friend Sub New(table As Global.System.Data.DataTable)
             MyBase.New
             Me.TableName = table.TableName
             If (table.CaseSensitive <> table.DataSet.CaseSensitive) Then
@@ -1548,7 +1548,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Sub New(ByVal info As Global.System.Runtime.Serialization.SerializationInfo, ByVal context As Global.System.Runtime.Serialization.StreamingContext)
+        Protected Sub New(info As Global.System.Runtime.Serialization.SerializationInfo, context As Global.System.Runtime.Serialization.StreamingContext)
             MyBase.New(info, context)
             Me.InitVars
         End Sub
@@ -1604,7 +1604,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Default ReadOnly Property Item(ByVal index As Integer) As Descuentos_DocRow
+        Public Default ReadOnly Property Item(index As Integer) As Descuentos_DocRow
             Get
                 Return CType(Me.Rows(index),Descuentos_DocRow)
             End Get
@@ -1624,13 +1624,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Sub AddDescuentos_DocRow(ByVal row As Descuentos_DocRow)
+        Public Overloads Sub AddDescuentos_DocRow(row As Descuentos_DocRow)
             Me.Rows.Add(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Function AddDescuentos_DocRow(ByVal Id As Integer, ByVal Podt As Double, ByVal Vadt As Double, ByVal Podt_Original As Double) As Descuentos_DocRow
+        Public Overloads Function AddDescuentos_DocRow(Id As Integer, Podt As Double, Vadt As Double, Podt_Original As Double) As Descuentos_DocRow
             Dim rowDescuentos_DocRow As Descuentos_DocRow = CType(Me.NewRow,Descuentos_DocRow)
             Dim columnValuesArray() As Object = New Object() {Nothing, Id, Podt, Vadt, Podt_Original}
             rowDescuentos_DocRow.ItemArray = columnValuesArray
@@ -1692,7 +1692,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Function NewRowFromBuilder(ByVal builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
+        Protected Overrides Function NewRowFromBuilder(builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
             Return New Descuentos_DocRow(builder)
         End Function
         
@@ -1704,7 +1704,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanged(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanged(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanged(e)
             If (Not (Me.Descuentos_DocRowChangedEvent) Is Nothing) Then
                 RaiseEvent Descuentos_DocRowChanged(Me, New Descuentos_DocRowChangeEvent(CType(e.Row,Descuentos_DocRow), e.Action))
@@ -1713,7 +1713,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanging(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanging(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanging(e)
             If (Not (Me.Descuentos_DocRowChangingEvent) Is Nothing) Then
                 RaiseEvent Descuentos_DocRowChanging(Me, New Descuentos_DocRowChangeEvent(CType(e.Row,Descuentos_DocRow), e.Action))
@@ -1722,7 +1722,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleted(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleted(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleted(e)
             If (Not (Me.Descuentos_DocRowDeletedEvent) Is Nothing) Then
                 RaiseEvent Descuentos_DocRowDeleted(Me, New Descuentos_DocRowChangeEvent(CType(e.Row,Descuentos_DocRow), e.Action))
@@ -1731,7 +1731,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleting(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleting(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleting(e)
             If (Not (Me.Descuentos_DocRowDeletingEvent) Is Nothing) Then
                 RaiseEvent Descuentos_DocRowDeleting(Me, New Descuentos_DocRowChangeEvent(CType(e.Row,Descuentos_DocRow), e.Action))
@@ -1740,13 +1740,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub RemoveDescuentos_DocRow(ByVal row As Descuentos_DocRow)
+        Public Sub RemoveDescuentos_DocRow(row As Descuentos_DocRow)
             Me.Rows.Remove(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Shared Function GetTypedTableSchema(ByVal xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
+        Public Shared Function GetTypedTableSchema(xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
             Dim type As Global.System.Xml.Schema.XmlSchemaComplexType = New Global.System.Xml.Schema.XmlSchemaComplexType()
             Dim sequence As Global.System.Xml.Schema.XmlSchemaSequence = New Global.System.Xml.Schema.XmlSchemaSequence()
             Dim ds As Ds_Matriz_Documentos = New Ds_Matriz_Documentos()
@@ -1847,7 +1847,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal table As Global.System.Data.DataTable)
+        Friend Sub New(table As Global.System.Data.DataTable)
             MyBase.New
             Me.TableName = table.TableName
             If (table.CaseSensitive <> table.DataSet.CaseSensitive) Then
@@ -1865,7 +1865,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Sub New(ByVal info As Global.System.Runtime.Serialization.SerializationInfo, ByVal context As Global.System.Runtime.Serialization.StreamingContext)
+        Protected Sub New(info As Global.System.Runtime.Serialization.SerializationInfo, context As Global.System.Runtime.Serialization.StreamingContext)
             MyBase.New(info, context)
             Me.InitVars
         End Sub
@@ -1945,7 +1945,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Default ReadOnly Property Item(ByVal index As Integer) As Vencimientos_DocRow
+        Public Default ReadOnly Property Item(index As Integer) As Vencimientos_DocRow
             Get
                 Return CType(Me.Rows(index),Vencimientos_DocRow)
             End Get
@@ -1965,13 +1965,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Sub AddVencimientos_DocRow(ByVal row As Vencimientos_DocRow)
+        Public Overloads Sub AddVencimientos_DocRow(row As Vencimientos_DocRow)
             Me.Rows.Add(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Function AddVencimientos_DocRow(ByVal Id As String, ByVal Fecha_Vencimiento As Date, ByVal Estado_Pago As String, ByVal Valor_Vencimiento As Double, ByVal Valor_Abonado As Double, ByVal Archirst As String, ByVal Porestpag As String, ByVal Observacion As String) As Vencimientos_DocRow
+        Public Overloads Function AddVencimientos_DocRow(Id As String, Fecha_Vencimiento As Date, Estado_Pago As String, Valor_Vencimiento As Double, Valor_Abonado As Double, Archirst As String, Porestpag As String, Observacion As String) As Vencimientos_DocRow
             Dim rowVencimientos_DocRow As Vencimientos_DocRow = CType(Me.NewRow,Vencimientos_DocRow)
             Dim columnValuesArray() As Object = New Object() {Id, Fecha_Vencimiento, Estado_Pago, Valor_Vencimiento, Valor_Abonado, Archirst, Porestpag, Observacion}
             rowVencimientos_DocRow.ItemArray = columnValuesArray
@@ -2037,7 +2037,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Function NewRowFromBuilder(ByVal builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
+        Protected Overrides Function NewRowFromBuilder(builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
             Return New Vencimientos_DocRow(builder)
         End Function
         
@@ -2049,7 +2049,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanged(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanged(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanged(e)
             If (Not (Me.Vencimientos_DocRowChangedEvent) Is Nothing) Then
                 RaiseEvent Vencimientos_DocRowChanged(Me, New Vencimientos_DocRowChangeEvent(CType(e.Row,Vencimientos_DocRow), e.Action))
@@ -2058,7 +2058,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanging(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanging(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanging(e)
             If (Not (Me.Vencimientos_DocRowChangingEvent) Is Nothing) Then
                 RaiseEvent Vencimientos_DocRowChanging(Me, New Vencimientos_DocRowChangeEvent(CType(e.Row,Vencimientos_DocRow), e.Action))
@@ -2067,7 +2067,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleted(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleted(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleted(e)
             If (Not (Me.Vencimientos_DocRowDeletedEvent) Is Nothing) Then
                 RaiseEvent Vencimientos_DocRowDeleted(Me, New Vencimientos_DocRowChangeEvent(CType(e.Row,Vencimientos_DocRow), e.Action))
@@ -2076,7 +2076,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleting(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleting(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleting(e)
             If (Not (Me.Vencimientos_DocRowDeletingEvent) Is Nothing) Then
                 RaiseEvent Vencimientos_DocRowDeleting(Me, New Vencimientos_DocRowChangeEvent(CType(e.Row,Vencimientos_DocRow), e.Action))
@@ -2085,13 +2085,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub RemoveVencimientos_DocRow(ByVal row As Vencimientos_DocRow)
+        Public Sub RemoveVencimientos_DocRow(row As Vencimientos_DocRow)
             Me.Rows.Remove(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Shared Function GetTypedTableSchema(ByVal xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
+        Public Shared Function GetTypedTableSchema(xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
             Dim type As Global.System.Xml.Schema.XmlSchemaComplexType = New Global.System.Xml.Schema.XmlSchemaComplexType()
             Dim sequence As Global.System.Xml.Schema.XmlSchemaSequence = New Global.System.Xml.Schema.XmlSchemaSequence()
             Dim ds As Ds_Matriz_Documentos = New Ds_Matriz_Documentos()
@@ -2186,7 +2186,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal table As Global.System.Data.DataTable)
+        Friend Sub New(table As Global.System.Data.DataTable)
             MyBase.New
             Me.TableName = table.TableName
             If (table.CaseSensitive <> table.DataSet.CaseSensitive) Then
@@ -2204,7 +2204,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Sub New(ByVal info As Global.System.Runtime.Serialization.SerializationInfo, ByVal context As Global.System.Runtime.Serialization.StreamingContext)
+        Protected Sub New(info As Global.System.Runtime.Serialization.SerializationInfo, context As Global.System.Runtime.Serialization.StreamingContext)
             MyBase.New(info, context)
             Me.InitVars
         End Sub
@@ -2260,7 +2260,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Default ReadOnly Property Item(ByVal index As Integer) As Impuestos_DocRow
+        Public Default ReadOnly Property Item(index As Integer) As Impuestos_DocRow
             Get
                 Return CType(Me.Rows(index),Impuestos_DocRow)
             End Get
@@ -2280,13 +2280,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Sub AddImpuestos_DocRow(ByVal row As Impuestos_DocRow)
+        Public Overloads Sub AddImpuestos_DocRow(row As Impuestos_DocRow)
             Me.Rows.Add(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Function AddImpuestos_DocRow(ByVal Id As Integer, ByVal Koimli As String, ByVal Poimli As Double, ByVal Vaimli As Double, ByVal Lilg As String) As Impuestos_DocRow
+        Public Overloads Function AddImpuestos_DocRow(Id As Integer, Koimli As String, Poimli As Double, Vaimli As Double, Lilg As String) As Impuestos_DocRow
             Dim rowImpuestos_DocRow As Impuestos_DocRow = CType(Me.NewRow,Impuestos_DocRow)
             Dim columnValuesArray() As Object = New Object() {Id, Koimli, Poimli, Vaimli, Lilg}
             rowImpuestos_DocRow.ItemArray = columnValuesArray
@@ -2341,7 +2341,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Function NewRowFromBuilder(ByVal builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
+        Protected Overrides Function NewRowFromBuilder(builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
             Return New Impuestos_DocRow(builder)
         End Function
         
@@ -2353,7 +2353,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanged(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanged(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanged(e)
             If (Not (Me.Impuestos_DocRowChangedEvent) Is Nothing) Then
                 RaiseEvent Impuestos_DocRowChanged(Me, New Impuestos_DocRowChangeEvent(CType(e.Row,Impuestos_DocRow), e.Action))
@@ -2362,7 +2362,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanging(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanging(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanging(e)
             If (Not (Me.Impuestos_DocRowChangingEvent) Is Nothing) Then
                 RaiseEvent Impuestos_DocRowChanging(Me, New Impuestos_DocRowChangeEvent(CType(e.Row,Impuestos_DocRow), e.Action))
@@ -2371,7 +2371,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleted(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleted(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleted(e)
             If (Not (Me.Impuestos_DocRowDeletedEvent) Is Nothing) Then
                 RaiseEvent Impuestos_DocRowDeleted(Me, New Impuestos_DocRowChangeEvent(CType(e.Row,Impuestos_DocRow), e.Action))
@@ -2380,7 +2380,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleting(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleting(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleting(e)
             If (Not (Me.Impuestos_DocRowDeletingEvent) Is Nothing) Then
                 RaiseEvent Impuestos_DocRowDeleting(Me, New Impuestos_DocRowChangeEvent(CType(e.Row,Impuestos_DocRow), e.Action))
@@ -2389,13 +2389,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub RemoveImpuestos_DocRow(ByVal row As Impuestos_DocRow)
+        Public Sub RemoveImpuestos_DocRow(row As Impuestos_DocRow)
             Me.Rows.Remove(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Shared Function GetTypedTableSchema(ByVal xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
+        Public Shared Function GetTypedTableSchema(xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
             Dim type As Global.System.Xml.Schema.XmlSchemaComplexType = New Global.System.Xml.Schema.XmlSchemaComplexType()
             Dim sequence As Global.System.Xml.Schema.XmlSchemaSequence = New Global.System.Xml.Schema.XmlSchemaSequence()
             Dim ds As Ds_Matriz_Documentos = New Ds_Matriz_Documentos()
@@ -2614,7 +2614,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal table As Global.System.Data.DataTable)
+        Friend Sub New(table As Global.System.Data.DataTable)
             MyBase.New
             Me.TableName = table.TableName
             If (table.CaseSensitive <> table.DataSet.CaseSensitive) Then
@@ -2632,7 +2632,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Sub New(ByVal info As Global.System.Runtime.Serialization.SerializationInfo, ByVal context As Global.System.Runtime.Serialization.StreamingContext)
+        Protected Sub New(info As Global.System.Runtime.Serialization.SerializationInfo, context As Global.System.Runtime.Serialization.StreamingContext)
             MyBase.New(info, context)
             Me.InitVars
         End Sub
@@ -3184,7 +3184,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Default ReadOnly Property Item(ByVal index As Integer) As Encabezado_DocRow
+        Public Default ReadOnly Property Item(index As Integer) As Encabezado_DocRow
             Get
                 Return CType(Me.Rows(index),Encabezado_DocRow)
             End Get
@@ -3204,80 +3204,80 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Sub AddEncabezado_DocRow(ByVal row As Encabezado_DocRow)
+        Public Overloads Sub AddEncabezado_DocRow(row As Encabezado_DocRow)
             Me.Rows.Add(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
         Public Overloads Function AddEncabezado_DocRow( _
-                    ByVal Id_DocEnc As Integer,  _
-                    ByVal Post_Venta As Boolean,  _
-                    ByVal Tipo_Documento As String,  _
-                    ByVal Modalidad As String,  _
-                    ByVal Empresa As String,  _
-                    ByVal Sucursal As String,  _
-                    ByVal TipoDoc As String,  _
-                    ByVal NroDocumento As String,  _
-                    ByVal CodEntidad As String,  _
-                    ByVal CodSucEntidad As String,  _
-                    ByVal Nombre_Entidad As String,  _
-                    ByVal FechaEmision As Date,  _
-                    ByVal Fecha_1er_Vencimiento As Date,  _
-                    ByVal FechaUltVencimiento As Date,  _
-                    ByVal FechaRecepcion As Date,  _
-                    ByVal FechaMaxRecepcion As Date,  _
-                    ByVal Cuotas As Integer,  _
-                    ByVal Dias_1er_Vencimiento As Integer,  _
-                    ByVal Dias_Vencimiento As Integer,  _
-                    ByVal ListaPrecios As String,  _
-                    ByVal CodEntidadFisica As String,  _
-                    ByVal CodSucEntidadFisica As String,  _
-                    ByVal Nombre_Entidad_Fisica As String,  _
-                    ByVal Contacto_Ent As String,  _
-                    ByVal CodFuncionario As String,  _
-                    ByVal NomFuncionario As String,  _
-                    ByVal Centro_Costo As String,  _
-                    ByVal Moneda_Doc As String,  _
-                    ByVal Valor_Dolar As Double,  _
-                    ByVal TotalNetoDoc As Double,  _
-                    ByVal TotalIvaDoc As Double,  _
-                    ByVal TotalIlaDoc As Double,  _
-                    ByVal TotalBrutoDoc As Double,  _
-                    ByVal Valor_Abonado As Double,  _
-                    ByVal CantTotal As String,  _
-                    ByVal CantDesp As String,  _
-                    ByVal DocEn_Neto_Bruto As String,  _
-                    ByVal Es_ValeTransitorio As Byte,  _
-                    ByVal Es_Electronico As Boolean,  _
-                    ByVal TipoMoneda As String,  _
-                    ByVal Vizado As Boolean,  _
-                    ByVal TotalDsctoReal_Porc As Double,  _
-                    ByVal CodUsuario_Permiso_Dscto As String,  _
-                    ByVal Idmaeedo_Origen As Integer,  _
-                    ByVal Fun_Auto_Deuda_Ven As String,  _
-                    ByVal Total_costo As Double,  _
-                    ByVal Total_Porc_Margen As Double,  _
-                    ByVal Total_Valor_Margen As Double,  _
-                    ByVal Total_Porc_Dscto As Double,  _
-                    ByVal Total_Sub_Total_Neto As Double,  _
-                    ByVal Id_DocEnc_Padre As String,  _
-                    ByVal Bloquea_Doc As String,  _
-                    ByVal Fun_Auto_Stock_Ins As String,  _
-                    ByVal Fun_Auto_Cupo_Exe As String,  _
-                    ByVal SubTido As String,  _
-                    ByVal Fun_Auto_Fecha_Des As String,  _
-                    ByVal Stand_by As Boolean,  _
-                    ByVal Fun_Auto_Sol_Compra As String,  _
-                    ByVal Tasadorig_Doc As Double,  _
-                    ByVal Reserva_NroOCC As Boolean,  _
-                    ByVal Reserva_Idmaeedo As Integer,  _
-                    ByVal Bodega_Destino As String,  _
-                    ByVal Libro As String,  _
-                    ByVal Fecha_Tributaria As Date,  _
-                    ByVal TotalKilos As Double,  _
-                    ByVal MinKgDesp As Double,  _
-                    ByVal MinNetoDesp As Double) As Encabezado_DocRow
+                    Id_DocEnc As Integer,  _
+                    Post_Venta As Boolean,  _
+                    Tipo_Documento As String,  _
+                    Modalidad As String,  _
+                    Empresa As String,  _
+                    Sucursal As String,  _
+                    TipoDoc As String,  _
+                    NroDocumento As String,  _
+                    CodEntidad As String,  _
+                    CodSucEntidad As String,  _
+                    Nombre_Entidad As String,  _
+                    FechaEmision As Date,  _
+                    Fecha_1er_Vencimiento As Date,  _
+                    FechaUltVencimiento As Date,  _
+                    FechaRecepcion As Date,  _
+                    FechaMaxRecepcion As Date,  _
+                    Cuotas As Integer,  _
+                    Dias_1er_Vencimiento As Integer,  _
+                    Dias_Vencimiento As Integer,  _
+                    ListaPrecios As String,  _
+                    CodEntidadFisica As String,  _
+                    CodSucEntidadFisica As String,  _
+                    Nombre_Entidad_Fisica As String,  _
+                    Contacto_Ent As String,  _
+                    CodFuncionario As String,  _
+                    NomFuncionario As String,  _
+                    Centro_Costo As String,  _
+                    Moneda_Doc As String,  _
+                    Valor_Dolar As Double,  _
+                    TotalNetoDoc As Double,  _
+                    TotalIvaDoc As Double,  _
+                    TotalIlaDoc As Double,  _
+                    TotalBrutoDoc As Double,  _
+                    Valor_Abonado As Double,  _
+                    CantTotal As String,  _
+                    CantDesp As String,  _
+                    DocEn_Neto_Bruto As String,  _
+                    Es_ValeTransitorio As Byte,  _
+                    Es_Electronico As Boolean,  _
+                    TipoMoneda As String,  _
+                    Vizado As Boolean,  _
+                    TotalDsctoReal_Porc As Double,  _
+                    CodUsuario_Permiso_Dscto As String,  _
+                    Idmaeedo_Origen As Integer,  _
+                    Fun_Auto_Deuda_Ven As String,  _
+                    Total_costo As Double,  _
+                    Total_Porc_Margen As Double,  _
+                    Total_Valor_Margen As Double,  _
+                    Total_Porc_Dscto As Double,  _
+                    Total_Sub_Total_Neto As Double,  _
+                    Id_DocEnc_Padre As String,  _
+                    Bloquea_Doc As String,  _
+                    Fun_Auto_Stock_Ins As String,  _
+                    Fun_Auto_Cupo_Exe As String,  _
+                    SubTido As String,  _
+                    Fun_Auto_Fecha_Des As String,  _
+                    Stand_by As Boolean,  _
+                    Fun_Auto_Sol_Compra As String,  _
+                    Tasadorig_Doc As Double,  _
+                    Reserva_NroOCC As Boolean,  _
+                    Reserva_Idmaeedo As Integer,  _
+                    Bodega_Destino As String,  _
+                    Libro As String,  _
+                    Fecha_Tributaria As Date,  _
+                    TotalKilos As Double,  _
+                    MinKgDesp As Double,  _
+                    MinNetoDesp As Double) As Encabezado_DocRow
             Dim rowEncabezado_DocRow As Encabezado_DocRow = CType(Me.NewRow,Encabezado_DocRow)
             Dim columnValuesArray() As Object = New Object() {Id_DocEnc, Post_Venta, Tipo_Documento, Modalidad, Empresa, Sucursal, TipoDoc, NroDocumento, CodEntidad, CodSucEntidad, Nombre_Entidad, FechaEmision, Fecha_1er_Vencimiento, FechaUltVencimiento, FechaRecepcion, FechaMaxRecepcion, Cuotas, Dias_1er_Vencimiento, Dias_Vencimiento, ListaPrecios, CodEntidadFisica, CodSucEntidadFisica, Nombre_Entidad_Fisica, Contacto_Ent, CodFuncionario, NomFuncionario, Centro_Costo, Moneda_Doc, Valor_Dolar, TotalNetoDoc, TotalIvaDoc, TotalIlaDoc, TotalBrutoDoc, Valor_Abonado, CantTotal, CantDesp, DocEn_Neto_Bruto, Es_ValeTransitorio, Es_Electronico, TipoMoneda, Vizado, TotalDsctoReal_Porc, CodUsuario_Permiso_Dscto, Idmaeedo_Origen, Fun_Auto_Deuda_Ven, Total_costo, Total_Porc_Margen, Total_Valor_Margen, Total_Porc_Dscto, Total_Sub_Total_Neto, Id_DocEnc_Padre, Bloquea_Doc, Fun_Auto_Stock_Ins, Fun_Auto_Cupo_Exe, SubTido, Fun_Auto_Fecha_Des, Stand_by, Fun_Auto_Sol_Compra, Tasadorig_Doc, Reserva_NroOCC, Reserva_Idmaeedo, Bodega_Destino, Libro, Fecha_Tributaria, TotalKilos, MinKgDesp, MinNetoDesp}
             rowEncabezado_DocRow.ItemArray = columnValuesArray
@@ -3524,7 +3524,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Function NewRowFromBuilder(ByVal builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
+        Protected Overrides Function NewRowFromBuilder(builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
             Return New Encabezado_DocRow(builder)
         End Function
         
@@ -3536,7 +3536,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanged(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanged(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanged(e)
             If (Not (Me.Encabezado_DocRowChangedEvent) Is Nothing) Then
                 RaiseEvent Encabezado_DocRowChanged(Me, New Encabezado_DocRowChangeEvent(CType(e.Row,Encabezado_DocRow), e.Action))
@@ -3545,7 +3545,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanging(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanging(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanging(e)
             If (Not (Me.Encabezado_DocRowChangingEvent) Is Nothing) Then
                 RaiseEvent Encabezado_DocRowChanging(Me, New Encabezado_DocRowChangeEvent(CType(e.Row,Encabezado_DocRow), e.Action))
@@ -3554,7 +3554,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleted(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleted(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleted(e)
             If (Not (Me.Encabezado_DocRowDeletedEvent) Is Nothing) Then
                 RaiseEvent Encabezado_DocRowDeleted(Me, New Encabezado_DocRowChangeEvent(CType(e.Row,Encabezado_DocRow), e.Action))
@@ -3563,7 +3563,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleting(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleting(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleting(e)
             If (Not (Me.Encabezado_DocRowDeletingEvent) Is Nothing) Then
                 RaiseEvent Encabezado_DocRowDeleting(Me, New Encabezado_DocRowChangeEvent(CType(e.Row,Encabezado_DocRow), e.Action))
@@ -3572,13 +3572,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub RemoveEncabezado_DocRow(ByVal row As Encabezado_DocRow)
+        Public Sub RemoveEncabezado_DocRow(row As Encabezado_DocRow)
             Me.Rows.Remove(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Shared Function GetTypedTableSchema(ByVal xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
+        Public Shared Function GetTypedTableSchema(xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
             Dim type As Global.System.Xml.Schema.XmlSchemaComplexType = New Global.System.Xml.Schema.XmlSchemaComplexType()
             Dim sequence As Global.System.Xml.Schema.XmlSchemaSequence = New Global.System.Xml.Schema.XmlSchemaSequence()
             Dim ds As Ds_Matriz_Documentos = New Ds_Matriz_Documentos()
@@ -3911,7 +3911,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal table As Global.System.Data.DataTable)
+        Friend Sub New(table As Global.System.Data.DataTable)
             MyBase.New
             Me.TableName = table.TableName
             If (table.CaseSensitive <> table.DataSet.CaseSensitive) Then
@@ -3929,7 +3929,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Sub New(ByVal info As Global.System.Runtime.Serialization.SerializationInfo, ByVal context As Global.System.Runtime.Serialization.StreamingContext)
+        Protected Sub New(info As Global.System.Runtime.Serialization.SerializationInfo, context As Global.System.Runtime.Serialization.StreamingContext)
             MyBase.New(info, context)
             Me.InitVars
         End Sub
@@ -4937,7 +4937,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Default ReadOnly Property Item(ByVal index As Integer) As Detalle_DocRow
+        Public Default ReadOnly Property Item(index As Integer) As Detalle_DocRow
             Get
                 Return CType(Me.Rows(index),Detalle_DocRow)
             End Get
@@ -4957,136 +4957,136 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Sub AddDetalle_DocRow(ByVal row As Detalle_DocRow)
+        Public Overloads Sub AddDetalle_DocRow(row As Detalle_DocRow)
             Me.Rows.Add(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
         Public Overloads Function AddDetalle_DocRow( _
-                    ByVal Id_DocDet As Integer,  _
-                    ByVal Id_Det As Integer,  _
-                    ByVal Empresa As String,  _
-                    ByVal Sucursal As String,  _
-                    ByVal Bodega As String,  _
-                    ByVal CodFuncionario As String,  _
-                    ByVal UnTrans As Integer,  _
-                    ByVal Lincondest As Boolean,  _
-                    ByVal Codigo As String,  _
-                    ByVal CodigoProv As String,  _
-                    ByVal UdTrans As String,  _
-                    ByVal Cantidad As Double,  _
-                    ByVal TipoValor As String,  _
-                    ByVal Precio As Double,  _
-                    ByVal DescuentoPorc As Double,  _
-                    ByVal DescuentoValor As Double,  _
-                    ByVal DescuentoValor_Anterior As Double,  _
-                    ByVal RecargoValor As Double,  _
-                    ByVal Descripcion As String,  _
-                    ByVal Descripcion_Ori As String,  _
-                    ByVal PrecioNetoUd As Double,  _
-                    ByVal PrecioNetoUdLista As Double,  _
-                    ByVal PrecioBrutoUd As Double,  _
-                    ByVal PrecioBrutoUdLista As Double,  _
-                    ByVal Rtu As Double,  _
-                    ByVal Ud01PR As String,  _
-                    ByVal CantUd1 As Double,  _
-                    ByVal CodVendedor As String,  _
-                    ByVal Prct As Integer,  _
-                    ByVal Tipr As String,  _
-                    ByVal Tict As String,  _
-                    ByVal DsctoNeto As Double,  _
-                    ByVal DsctoBruto As Double,  _
-                    ByVal CDespUd1 As Double,  _
-                    ByVal Ud02PR As String,  _
-                    ByVal CantUd2 As Double,  _
-                    ByVal CDespUd2 As Double,  _
-                    ByVal ValVtaDescMax As Boolean,  _
-                    ByVal ValVtaStockInf As Boolean,  _
-                    ByVal CodLista As String,  _
-                    ByVal Melt As String,  _
-                    ByVal PrecioListaUd1 As Double,  _
-                    ByVal PrecioListaUd2 As Double,  _
-                    ByVal DescMaximo As Double,  _
-                    ByVal NroDscto As Integer,  _
-                    ByVal NroImpuestos As Integer,  _
-                    ByVal PorIva As Double,  _
-                    ByVal PorIla As Double,  _
-                    ByVal ValIvaLinea As Double,  _
-                    ByVal ValIlaLinea As Double,  _
-                    ByVal ValSubNetoLinea As Double,  _
-                    ByVal ValNetoLinea As Double,  _
-                    ByVal ValBrutoLinea As Double,  _
-                    ByVal PmLinea As Double,  _
-                    ByVal PmSucLinea As Double,  _
-                    ByVal PmIFRS As Double,  _
-                    ByVal PrecioNetoRealUd1 As Double,  _
-                    ByVal PrecioNetoRealUd2 As Double,  _
-                    ByVal Idmaeedo_Dori As String,  _
-                    ByVal Idmaeddo_Dori As String,  _
-                    ByVal CantUd1_Dori As Double,  _
-                    ByVal CantUd2_Dori As Double,  _
-                    ByVal Estado As String,  _
-                    ByVal Emprepa As String,  _
-                    ByVal Tidopa As String,  _
-                    ByVal NudoPa As String,  _
-                    ByVal Endopa As String,  _
-                    ByVal Nulidopa As String,  _
-                    ByVal FechaEmision As Date,  _
-                    ByVal FechaRecepcion As Date,  _
-                    ByVal SubTotal As Double,  _
-                    ByVal StockBodega As Double,  _
-                    ByVal UbicacionBod As String,  _
-                    ByVal DsctoRealPorc As Double,  _
-                    ByVal DsctoRealValor As Double,  _
-                    ByVal DsctoGlobalSuperado As Boolean,  _
-                    ByVal Tiene_Dscto As Boolean,  _
-                    ByVal CantidadCalculo As Double,  _
-                    ByVal Operacion As String,  _
-                    ByVal Potencia As Double,  _
-                    ByVal PrecioCalculo As Double,  _
-                    ByVal OCCGenerada As Boolean,  _
-                    ByVal Bloqueapr As String,  _
-                    ByVal Observa As String,  _
-                    ByVal CodFunAutoriza As String,  _
-                    ByVal CodPermiso As String,  _
-                    ByVal Nuevo_Producto As Byte,  _
-                    ByVal Solicitado_bodega As Boolean,  _
-                    ByVal Moneda As String,  _
-                    ByVal Tipo_Moneda As String,  _
-                    ByVal Tipo_Cambio As Double,  _
-                    ByVal Ecuacion As String,  _
-                    ByVal Stock_desde_WMS As Boolean,  _
-                    ByVal Total_Costo As Double,  _
-                    ByVal Margen_Valor As Double,  _
-                    ByVal Margen_Porc As Double,  _
-                    ByVal Visado_Dscto As Boolean,  _
-                    ByVal Visado_Stock As Boolean,  _
-                    ByVal Crear_CPr As Boolean,  _
-                    ByVal Id_CPr As Integer,  _
-                    ByVal Proyecto As String,  _
-                    ByVal Centro_Costo As String,  _
-                    ByVal Consolidar_Stock As Boolean,  _
-                    ByVal No_Aplica_Redondeo As Boolean,  _
-                    ByVal Id_Oferta As String,  _
-                    ByVal Es_Padre_Oferta As Boolean,  _
-                    ByVal Oferta As String,  _
-                    ByVal Padre_Oferta As String,  _
-                    ByVal Aplica_Oferta As Boolean,  _
-                    ByVal Hijo_Oferta As Integer,  _
-                    ByVal Cantidad_Oferta As Double,  _
-                    ByVal Porcdesc_Oferta As Double,  _
-                    ByVal Tasadorig As Double,  _
-                    ByVal FunValida_Compra As String,  _
-                    ByVal Recargo_Campo As String,  _
-                    ByVal Recargo_Valor As Double,  _
-                    ByVal Recargo_Distribuido As Boolean,  _
-                    ByVal TieneOccPdte As Boolean,  _
-                    ByVal PrecioListaUd1_Prov As Double,  _
-                    ByVal PrecioListaUd2_Prov As Double,  _
-                    ByVal Pesoubic As Double,  _
-                    ByVal SumaKilos As Double,  _
-                    ByVal CostoLista As Double) As Detalle_DocRow
+                    Id_DocDet As Integer,  _
+                    Id_Det As Integer,  _
+                    Empresa As String,  _
+                    Sucursal As String,  _
+                    Bodega As String,  _
+                    CodFuncionario As String,  _
+                    UnTrans As Integer,  _
+                    Lincondest As Boolean,  _
+                    Codigo As String,  _
+                    CodigoProv As String,  _
+                    UdTrans As String,  _
+                    Cantidad As Double,  _
+                    TipoValor As String,  _
+                    Precio As Double,  _
+                    DescuentoPorc As Double,  _
+                    DescuentoValor As Double,  _
+                    DescuentoValor_Anterior As Double,  _
+                    RecargoValor As Double,  _
+                    Descripcion As String,  _
+                    Descripcion_Ori As String,  _
+                    PrecioNetoUd As Double,  _
+                    PrecioNetoUdLista As Double,  _
+                    PrecioBrutoUd As Double,  _
+                    PrecioBrutoUdLista As Double,  _
+                    Rtu As Double,  _
+                    Ud01PR As String,  _
+                    CantUd1 As Double,  _
+                    CodVendedor As String,  _
+                    Prct As Integer,  _
+                    Tipr As String,  _
+                    Tict As String,  _
+                    DsctoNeto As Double,  _
+                    DsctoBruto As Double,  _
+                    CDespUd1 As Double,  _
+                    Ud02PR As String,  _
+                    CantUd2 As Double,  _
+                    CDespUd2 As Double,  _
+                    ValVtaDescMax As Boolean,  _
+                    ValVtaStockInf As Boolean,  _
+                    CodLista As String,  _
+                    Melt As String,  _
+                    PrecioListaUd1 As Double,  _
+                    PrecioListaUd2 As Double,  _
+                    DescMaximo As Double,  _
+                    NroDscto As Integer,  _
+                    NroImpuestos As Integer,  _
+                    PorIva As Double,  _
+                    PorIla As Double,  _
+                    ValIvaLinea As Double,  _
+                    ValIlaLinea As Double,  _
+                    ValSubNetoLinea As Double,  _
+                    ValNetoLinea As Double,  _
+                    ValBrutoLinea As Double,  _
+                    PmLinea As Double,  _
+                    PmSucLinea As Double,  _
+                    PmIFRS As Double,  _
+                    PrecioNetoRealUd1 As Double,  _
+                    PrecioNetoRealUd2 As Double,  _
+                    Idmaeedo_Dori As String,  _
+                    Idmaeddo_Dori As String,  _
+                    CantUd1_Dori As Double,  _
+                    CantUd2_Dori As Double,  _
+                    Estado As String,  _
+                    Emprepa As String,  _
+                    Tidopa As String,  _
+                    NudoPa As String,  _
+                    Endopa As String,  _
+                    Nulidopa As String,  _
+                    FechaEmision As Date,  _
+                    FechaRecepcion As Date,  _
+                    SubTotal As Double,  _
+                    StockBodega As Double,  _
+                    UbicacionBod As String,  _
+                    DsctoRealPorc As Double,  _
+                    DsctoRealValor As Double,  _
+                    DsctoGlobalSuperado As Boolean,  _
+                    Tiene_Dscto As Boolean,  _
+                    CantidadCalculo As Double,  _
+                    Operacion As String,  _
+                    Potencia As Double,  _
+                    PrecioCalculo As Double,  _
+                    OCCGenerada As Boolean,  _
+                    Bloqueapr As String,  _
+                    Observa As String,  _
+                    CodFunAutoriza As String,  _
+                    CodPermiso As String,  _
+                    Nuevo_Producto As Byte,  _
+                    Solicitado_bodega As Boolean,  _
+                    Moneda As String,  _
+                    Tipo_Moneda As String,  _
+                    Tipo_Cambio As Double,  _
+                    Ecuacion As String,  _
+                    Stock_desde_WMS As Boolean,  _
+                    Total_Costo As Double,  _
+                    Margen_Valor As Double,  _
+                    Margen_Porc As Double,  _
+                    Visado_Dscto As Boolean,  _
+                    Visado_Stock As Boolean,  _
+                    Crear_CPr As Boolean,  _
+                    Id_CPr As Integer,  _
+                    Proyecto As String,  _
+                    Centro_Costo As String,  _
+                    Consolidar_Stock As Boolean,  _
+                    No_Aplica_Redondeo As Boolean,  _
+                    Id_Oferta As String,  _
+                    Es_Padre_Oferta As Boolean,  _
+                    Oferta As String,  _
+                    Padre_Oferta As String,  _
+                    Aplica_Oferta As Boolean,  _
+                    Hijo_Oferta As Integer,  _
+                    Cantidad_Oferta As Double,  _
+                    Porcdesc_Oferta As Double,  _
+                    Tasadorig As Double,  _
+                    FunValida_Compra As String,  _
+                    Recargo_Campo As String,  _
+                    Recargo_Valor As Double,  _
+                    Recargo_Distribuido As Boolean,  _
+                    TieneOccPdte As Boolean,  _
+                    PrecioListaUd1_Prov As Double,  _
+                    PrecioListaUd2_Prov As Double,  _
+                    Pesoubic As Double,  _
+                    SumaKilos As Double,  _
+                    CostoLista As Double) As Detalle_DocRow
             Dim rowDetalle_DocRow As Detalle_DocRow = CType(Me.NewRow,Detalle_DocRow)
             Dim columnValuesArray() As Object = New Object() {Nothing, Id_DocDet, Id_Det, Empresa, Sucursal, Bodega, CodFuncionario, UnTrans, Lincondest, Codigo, CodigoProv, UdTrans, Cantidad, TipoValor, Precio, DescuentoPorc, DescuentoValor, DescuentoValor_Anterior, RecargoValor, Descripcion, Descripcion_Ori, PrecioNetoUd, PrecioNetoUdLista, PrecioBrutoUd, PrecioBrutoUdLista, Rtu, Ud01PR, CantUd1, CodVendedor, Prct, Tipr, Tict, DsctoNeto, DsctoBruto, CDespUd1, Ud02PR, CantUd2, CDespUd2, ValVtaDescMax, ValVtaStockInf, CodLista, Melt, PrecioListaUd1, PrecioListaUd2, DescMaximo, NroDscto, NroImpuestos, PorIva, PorIla, ValIvaLinea, ValIlaLinea, ValSubNetoLinea, ValNetoLinea, ValBrutoLinea, PmLinea, PmSucLinea, PmIFRS, PrecioNetoRealUd1, PrecioNetoRealUd2, Idmaeedo_Dori, Idmaeddo_Dori, CantUd1_Dori, CantUd2_Dori, Estado, Emprepa, Tidopa, NudoPa, Endopa, Nulidopa, FechaEmision, FechaRecepcion, SubTotal, StockBodega, UbicacionBod, DsctoRealPorc, DsctoRealValor, DsctoGlobalSuperado, Tiene_Dscto, CantidadCalculo, Operacion, Potencia, PrecioCalculo, OCCGenerada, Bloqueapr, Observa, CodFunAutoriza, CodPermiso, Nuevo_Producto, Solicitado_bodega, Moneda, Tipo_Moneda, Tipo_Cambio, Ecuacion, Stock_desde_WMS, Total_Costo, Margen_Valor, Margen_Porc, Visado_Dscto, Visado_Stock, Crear_CPr, Id_CPr, Proyecto, Centro_Costo, Consolidar_Stock, No_Aplica_Redondeo, Id_Oferta, Es_Padre_Oferta, Oferta, Padre_Oferta, Aplica_Oferta, Hijo_Oferta, Cantidad_Oferta, Porcdesc_Oferta, Tasadorig, FunValida_Compra, Recargo_Campo, Recargo_Valor, Recargo_Distribuido, TieneOccPdte, PrecioListaUd1_Prov, PrecioListaUd2_Prov, Pesoubic, SumaKilos, CostoLista}
             rowDetalle_DocRow.ItemArray = columnValuesArray
@@ -5524,7 +5524,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Function NewRowFromBuilder(ByVal builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
+        Protected Overrides Function NewRowFromBuilder(builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
             Return New Detalle_DocRow(builder)
         End Function
         
@@ -5536,7 +5536,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanged(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanged(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanged(e)
             If (Not (Me.Detalle_DocRowChangedEvent) Is Nothing) Then
                 RaiseEvent Detalle_DocRowChanged(Me, New Detalle_DocRowChangeEvent(CType(e.Row,Detalle_DocRow), e.Action))
@@ -5545,7 +5545,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanging(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanging(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanging(e)
             If (Not (Me.Detalle_DocRowChangingEvent) Is Nothing) Then
                 RaiseEvent Detalle_DocRowChanging(Me, New Detalle_DocRowChangeEvent(CType(e.Row,Detalle_DocRow), e.Action))
@@ -5554,7 +5554,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleted(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleted(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleted(e)
             If (Not (Me.Detalle_DocRowDeletedEvent) Is Nothing) Then
                 RaiseEvent Detalle_DocRowDeleted(Me, New Detalle_DocRowChangeEvent(CType(e.Row,Detalle_DocRow), e.Action))
@@ -5563,7 +5563,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleting(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleting(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleting(e)
             If (Not (Me.Detalle_DocRowDeletingEvent) Is Nothing) Then
                 RaiseEvent Detalle_DocRowDeleting(Me, New Detalle_DocRowChangeEvent(CType(e.Row,Detalle_DocRow), e.Action))
@@ -5572,13 +5572,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub RemoveDetalle_DocRow(ByVal row As Detalle_DocRow)
+        Public Sub RemoveDetalle_DocRow(row As Detalle_DocRow)
             Me.Rows.Remove(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Shared Function GetTypedTableSchema(ByVal xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
+        Public Shared Function GetTypedTableSchema(xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
             Dim type As Global.System.Xml.Schema.XmlSchemaComplexType = New Global.System.Xml.Schema.XmlSchemaComplexType()
             Dim sequence As Global.System.Xml.Schema.XmlSchemaSequence = New Global.System.Xml.Schema.XmlSchemaSequence()
             Dim ds As Ds_Matriz_Documentos = New Ds_Matriz_Documentos()
@@ -5679,7 +5679,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal table As Global.System.Data.DataTable)
+        Friend Sub New(table As Global.System.Data.DataTable)
             MyBase.New
             Me.TableName = table.TableName
             If (table.CaseSensitive <> table.DataSet.CaseSensitive) Then
@@ -5697,7 +5697,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Sub New(ByVal info As Global.System.Runtime.Serialization.SerializationInfo, ByVal context As Global.System.Runtime.Serialization.StreamingContext)
+        Protected Sub New(info As Global.System.Runtime.Serialization.SerializationInfo, context As Global.System.Runtime.Serialization.StreamingContext)
             MyBase.New(info, context)
             Me.InitVars
         End Sub
@@ -5777,7 +5777,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Default ReadOnly Property Item(ByVal index As Integer) As Tbl_WmsRow
+        Public Default ReadOnly Property Item(index As Integer) As Tbl_WmsRow
             Get
                 Return CType(Me.Rows(index),Tbl_WmsRow)
             End Get
@@ -5797,13 +5797,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Sub AddTbl_WmsRow(ByVal row As Tbl_WmsRow)
+        Public Overloads Sub AddTbl_WmsRow(row As Tbl_WmsRow)
             Me.Rows.Add(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Function AddTbl_WmsRow(ByVal Id As Integer, ByVal Id_Wms As Integer, ByVal Empresa As String, ByVal Sucursal As String, ByVal Bodega As String, ByVal Codigo As String, ByVal NroSerie_01 As String, ByVal NroSerie_02 As String) As Tbl_WmsRow
+        Public Overloads Function AddTbl_WmsRow(Id As Integer, Id_Wms As Integer, Empresa As String, Sucursal As String, Bodega As String, Codigo As String, NroSerie_01 As String, NroSerie_02 As String) As Tbl_WmsRow
             Dim rowTbl_WmsRow As Tbl_WmsRow = CType(Me.NewRow,Tbl_WmsRow)
             Dim columnValuesArray() As Object = New Object() {Id, Id_Wms, Empresa, Sucursal, Bodega, Codigo, NroSerie_01, NroSerie_02}
             rowTbl_WmsRow.ItemArray = columnValuesArray
@@ -5867,7 +5867,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Function NewRowFromBuilder(ByVal builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
+        Protected Overrides Function NewRowFromBuilder(builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
             Return New Tbl_WmsRow(builder)
         End Function
         
@@ -5879,7 +5879,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanged(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanged(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanged(e)
             If (Not (Me.Tbl_WmsRowChangedEvent) Is Nothing) Then
                 RaiseEvent Tbl_WmsRowChanged(Me, New Tbl_WmsRowChangeEvent(CType(e.Row,Tbl_WmsRow), e.Action))
@@ -5888,7 +5888,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanging(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanging(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanging(e)
             If (Not (Me.Tbl_WmsRowChangingEvent) Is Nothing) Then
                 RaiseEvent Tbl_WmsRowChanging(Me, New Tbl_WmsRowChangeEvent(CType(e.Row,Tbl_WmsRow), e.Action))
@@ -5897,7 +5897,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleted(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleted(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleted(e)
             If (Not (Me.Tbl_WmsRowDeletedEvent) Is Nothing) Then
                 RaiseEvent Tbl_WmsRowDeleted(Me, New Tbl_WmsRowChangeEvent(CType(e.Row,Tbl_WmsRow), e.Action))
@@ -5906,7 +5906,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleting(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleting(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleting(e)
             If (Not (Me.Tbl_WmsRowDeletingEvent) Is Nothing) Then
                 RaiseEvent Tbl_WmsRowDeleting(Me, New Tbl_WmsRowChangeEvent(CType(e.Row,Tbl_WmsRow), e.Action))
@@ -5915,13 +5915,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub RemoveTbl_WmsRow(ByVal row As Tbl_WmsRow)
+        Public Sub RemoveTbl_WmsRow(row As Tbl_WmsRow)
             Me.Rows.Remove(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Shared Function GetTypedTableSchema(ByVal xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
+        Public Shared Function GetTypedTableSchema(xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
             Dim type As Global.System.Xml.Schema.XmlSchemaComplexType = New Global.System.Xml.Schema.XmlSchemaComplexType()
             Dim sequence As Global.System.Xml.Schema.XmlSchemaSequence = New Global.System.Xml.Schema.XmlSchemaSequence()
             Dim ds As Ds_Matriz_Documentos = New Ds_Matriz_Documentos()
@@ -6050,7 +6050,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal table As Global.System.Data.DataTable)
+        Friend Sub New(table As Global.System.Data.DataTable)
             MyBase.New
             Me.TableName = table.TableName
             If (table.CaseSensitive <> table.DataSet.CaseSensitive) Then
@@ -6068,7 +6068,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Sub New(ByVal info As Global.System.Runtime.Serialization.SerializationInfo, ByVal context As Global.System.Runtime.Serialization.StreamingContext)
+        Protected Sub New(info As Global.System.Runtime.Serialization.SerializationInfo, context As Global.System.Runtime.Serialization.StreamingContext)
             MyBase.New(info, context)
             Me.InitVars
         End Sub
@@ -6260,7 +6260,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Default ReadOnly Property Item(ByVal index As Integer) As Permisos_Necesarios_DocRow
+        Public Default ReadOnly Property Item(index As Integer) As Permisos_Necesarios_DocRow
             Get
                 Return CType(Me.Rows(index),Permisos_Necesarios_DocRow)
             End Get
@@ -6280,35 +6280,35 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Sub AddPermisos_Necesarios_DocRow(ByVal row As Permisos_Necesarios_DocRow)
+        Public Overloads Sub AddPermisos_Necesarios_DocRow(row As Permisos_Necesarios_DocRow)
             Me.Rows.Add(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
         Public Overloads Function AddPermisos_Necesarios_DocRow( _
-                    ByVal Documento_Autorizado As Boolean,  _
-                    ByVal Tiene_X_01_Stock As Boolean,  _
-                    ByVal Autorizado_Permiso_X_01_Stock As Boolean,  _
-                    ByVal Remoto_X_01 As Boolean,  _
-                    ByVal Tiene_X_02_Descuentos As Boolean,  _
-                    ByVal Autorizado_Permiso_X_02_Descuentos As Boolean,  _
-                    ByVal Remoto_X_02 As Boolean,  _
-                    ByVal Tiene_X_03_Morosidad As Boolean,  _
-                    ByVal Autorizado_Permiso_X_03_Morosidad As Boolean,  _
-                    ByVal Remoto_X_03 As Boolean,  _
-                    ByVal Tiene_X_04_Cupo_Excedido As Boolean,  _
-                    ByVal Autorizado_Permiso_X_04_Cupo_Excedido As Boolean,  _
-                    ByVal Remoto_X_04 As Boolean,  _
-                    ByVal Tiene_X_05_Fecha_Despacho As String,  _
-                    ByVal Autorizado_Permiso_X_05_Fecha_Despacho As Boolean,  _
-                    ByVal Remoto_X_05 As Boolean,  _
-                    ByVal Tiene_X_06_Solicitud_Compra As String,  _
-                    ByVal Autorizado_Permiso_X_06_Solicitud_Compra As Boolean,  _
-                    ByVal Remoto_X_06 As Boolean,  _
-                    ByVal Tiene_X_07_NCV_Dias_Cumplidos As String,  _
-                    ByVal Autorizado_Permiso_X_07_NCV_Dias_Cumplidos As String,  _
-                    ByVal Remoto_X_07 As String) As Permisos_Necesarios_DocRow
+                    Documento_Autorizado As Boolean,  _
+                    Tiene_X_01_Stock As Boolean,  _
+                    Autorizado_Permiso_X_01_Stock As Boolean,  _
+                    Remoto_X_01 As Boolean,  _
+                    Tiene_X_02_Descuentos As Boolean,  _
+                    Autorizado_Permiso_X_02_Descuentos As Boolean,  _
+                    Remoto_X_02 As Boolean,  _
+                    Tiene_X_03_Morosidad As Boolean,  _
+                    Autorizado_Permiso_X_03_Morosidad As Boolean,  _
+                    Remoto_X_03 As Boolean,  _
+                    Tiene_X_04_Cupo_Excedido As Boolean,  _
+                    Autorizado_Permiso_X_04_Cupo_Excedido As Boolean,  _
+                    Remoto_X_04 As Boolean,  _
+                    Tiene_X_05_Fecha_Despacho As String,  _
+                    Autorizado_Permiso_X_05_Fecha_Despacho As Boolean,  _
+                    Remoto_X_05 As Boolean,  _
+                    Tiene_X_06_Solicitud_Compra As String,  _
+                    Autorizado_Permiso_X_06_Solicitud_Compra As Boolean,  _
+                    Remoto_X_06 As Boolean,  _
+                    Tiene_X_07_NCV_Dias_Cumplidos As String,  _
+                    Autorizado_Permiso_X_07_NCV_Dias_Cumplidos As String,  _
+                    Remoto_X_07 As String) As Permisos_Necesarios_DocRow
             Dim rowPermisos_Necesarios_DocRow As Permisos_Necesarios_DocRow = CType(Me.NewRow,Permisos_Necesarios_DocRow)
             Dim columnValuesArray() As Object = New Object() {Documento_Autorizado, Tiene_X_01_Stock, Autorizado_Permiso_X_01_Stock, Remoto_X_01, Tiene_X_02_Descuentos, Autorizado_Permiso_X_02_Descuentos, Remoto_X_02, Tiene_X_03_Morosidad, Autorizado_Permiso_X_03_Morosidad, Remoto_X_03, Tiene_X_04_Cupo_Excedido, Autorizado_Permiso_X_04_Cupo_Excedido, Remoto_X_04, Tiene_X_05_Fecha_Despacho, Autorizado_Permiso_X_05_Fecha_Despacho, Remoto_X_05, Tiene_X_06_Solicitud_Compra, Autorizado_Permiso_X_06_Solicitud_Compra, Remoto_X_06, Tiene_X_07_NCV_Dias_Cumplidos, Autorizado_Permiso_X_07_NCV_Dias_Cumplidos, Remoto_X_07}
             rowPermisos_Necesarios_DocRow.ItemArray = columnValuesArray
@@ -6414,7 +6414,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Function NewRowFromBuilder(ByVal builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
+        Protected Overrides Function NewRowFromBuilder(builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
             Return New Permisos_Necesarios_DocRow(builder)
         End Function
         
@@ -6426,7 +6426,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanged(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanged(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanged(e)
             If (Not (Me.Permisos_Necesarios_DocRowChangedEvent) Is Nothing) Then
                 RaiseEvent Permisos_Necesarios_DocRowChanged(Me, New Permisos_Necesarios_DocRowChangeEvent(CType(e.Row,Permisos_Necesarios_DocRow), e.Action))
@@ -6435,7 +6435,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanging(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanging(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanging(e)
             If (Not (Me.Permisos_Necesarios_DocRowChangingEvent) Is Nothing) Then
                 RaiseEvent Permisos_Necesarios_DocRowChanging(Me, New Permisos_Necesarios_DocRowChangeEvent(CType(e.Row,Permisos_Necesarios_DocRow), e.Action))
@@ -6444,7 +6444,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleted(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleted(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleted(e)
             If (Not (Me.Permisos_Necesarios_DocRowDeletedEvent) Is Nothing) Then
                 RaiseEvent Permisos_Necesarios_DocRowDeleted(Me, New Permisos_Necesarios_DocRowChangeEvent(CType(e.Row,Permisos_Necesarios_DocRow), e.Action))
@@ -6453,7 +6453,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleting(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleting(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleting(e)
             If (Not (Me.Permisos_Necesarios_DocRowDeletingEvent) Is Nothing) Then
                 RaiseEvent Permisos_Necesarios_DocRowDeleting(Me, New Permisos_Necesarios_DocRowChangeEvent(CType(e.Row,Permisos_Necesarios_DocRow), e.Action))
@@ -6462,13 +6462,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub RemovePermisos_Necesarios_DocRow(ByVal row As Permisos_Necesarios_DocRow)
+        Public Sub RemovePermisos_Necesarios_DocRow(row As Permisos_Necesarios_DocRow)
             Me.Rows.Remove(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Shared Function GetTypedTableSchema(ByVal xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
+        Public Shared Function GetTypedTableSchema(xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
             Dim type As Global.System.Xml.Schema.XmlSchemaComplexType = New Global.System.Xml.Schema.XmlSchemaComplexType()
             Dim sequence As Global.System.Xml.Schema.XmlSchemaSequence = New Global.System.Xml.Schema.XmlSchemaSequence()
             Dim ds As Ds_Matriz_Documentos = New Ds_Matriz_Documentos()
@@ -6567,7 +6567,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal table As Global.System.Data.DataTable)
+        Friend Sub New(table As Global.System.Data.DataTable)
             MyBase.New
             Me.TableName = table.TableName
             If (table.CaseSensitive <> table.DataSet.CaseSensitive) Then
@@ -6585,7 +6585,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Sub New(ByVal info As Global.System.Runtime.Serialization.SerializationInfo, ByVal context As Global.System.Runtime.Serialization.StreamingContext)
+        Protected Sub New(info As Global.System.Runtime.Serialization.SerializationInfo, context As Global.System.Runtime.Serialization.StreamingContext)
             MyBase.New(info, context)
             Me.InitVars
         End Sub
@@ -6657,7 +6657,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Default ReadOnly Property Item(ByVal index As Integer) As Tbl_Lector_BarraRow
+        Public Default ReadOnly Property Item(index As Integer) As Tbl_Lector_BarraRow
             Get
                 Return CType(Me.Rows(index),Tbl_Lector_BarraRow)
             End Get
@@ -6677,13 +6677,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Sub AddTbl_Lector_BarraRow(ByVal row As Tbl_Lector_BarraRow)
+        Public Overloads Sub AddTbl_Lector_BarraRow(row As Tbl_Lector_BarraRow)
             Me.Rows.Add(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Function AddTbl_Lector_BarraRow(ByVal Codigo_Barras As String, ByVal Codigo As String, ByVal Descripcion As String, ByVal Cantidad As Double, ByVal Problema As String, ByVal Es_Correcto As Boolean, ByVal Cantidad_Documento As Double) As Tbl_Lector_BarraRow
+        Public Overloads Function AddTbl_Lector_BarraRow(Codigo_Barras As String, Codigo As String, Descripcion As String, Cantidad As Double, Problema As String, Es_Correcto As Boolean, Cantidad_Documento As Double) As Tbl_Lector_BarraRow
             Dim rowTbl_Lector_BarraRow As Tbl_Lector_BarraRow = CType(Me.NewRow,Tbl_Lector_BarraRow)
             Dim columnValuesArray() As Object = New Object() {Codigo_Barras, Codigo, Descripcion, Cantidad, Problema, Es_Correcto, Cantidad_Documento}
             rowTbl_Lector_BarraRow.ItemArray = columnValuesArray
@@ -6744,7 +6744,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Function NewRowFromBuilder(ByVal builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
+        Protected Overrides Function NewRowFromBuilder(builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
             Return New Tbl_Lector_BarraRow(builder)
         End Function
         
@@ -6756,7 +6756,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanged(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanged(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanged(e)
             If (Not (Me.Tbl_Lector_BarraRowChangedEvent) Is Nothing) Then
                 RaiseEvent Tbl_Lector_BarraRowChanged(Me, New Tbl_Lector_BarraRowChangeEvent(CType(e.Row,Tbl_Lector_BarraRow), e.Action))
@@ -6765,7 +6765,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanging(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanging(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanging(e)
             If (Not (Me.Tbl_Lector_BarraRowChangingEvent) Is Nothing) Then
                 RaiseEvent Tbl_Lector_BarraRowChanging(Me, New Tbl_Lector_BarraRowChangeEvent(CType(e.Row,Tbl_Lector_BarraRow), e.Action))
@@ -6774,7 +6774,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleted(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleted(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleted(e)
             If (Not (Me.Tbl_Lector_BarraRowDeletedEvent) Is Nothing) Then
                 RaiseEvent Tbl_Lector_BarraRowDeleted(Me, New Tbl_Lector_BarraRowChangeEvent(CType(e.Row,Tbl_Lector_BarraRow), e.Action))
@@ -6783,7 +6783,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleting(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleting(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleting(e)
             If (Not (Me.Tbl_Lector_BarraRowDeletingEvent) Is Nothing) Then
                 RaiseEvent Tbl_Lector_BarraRowDeleting(Me, New Tbl_Lector_BarraRowChangeEvent(CType(e.Row,Tbl_Lector_BarraRow), e.Action))
@@ -6792,13 +6792,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub RemoveTbl_Lector_BarraRow(ByVal row As Tbl_Lector_BarraRow)
+        Public Sub RemoveTbl_Lector_BarraRow(row As Tbl_Lector_BarraRow)
             Me.Rows.Remove(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Shared Function GetTypedTableSchema(ByVal xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
+        Public Shared Function GetTypedTableSchema(xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
             Dim type As Global.System.Xml.Schema.XmlSchemaComplexType = New Global.System.Xml.Schema.XmlSchemaComplexType()
             Dim sequence As Global.System.Xml.Schema.XmlSchemaSequence = New Global.System.Xml.Schema.XmlSchemaSequence()
             Dim ds As Ds_Matriz_Documentos = New Ds_Matriz_Documentos()
@@ -6891,7 +6891,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal table As Global.System.Data.DataTable)
+        Friend Sub New(table As Global.System.Data.DataTable)
             MyBase.New
             Me.TableName = table.TableName
             If (table.CaseSensitive <> table.DataSet.CaseSensitive) Then
@@ -6909,7 +6909,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Sub New(ByVal info As Global.System.Runtime.Serialization.SerializationInfo, ByVal context As Global.System.Runtime.Serialization.StreamingContext)
+        Protected Sub New(info As Global.System.Runtime.Serialization.SerializationInfo, context As Global.System.Runtime.Serialization.StreamingContext)
             MyBase.New(info, context)
             Me.InitVars
         End Sub
@@ -6957,7 +6957,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Default ReadOnly Property Item(ByVal index As Integer) As Tbl_EmpaqueRow
+        Public Default ReadOnly Property Item(index As Integer) As Tbl_EmpaqueRow
             Get
                 Return CType(Me.Rows(index),Tbl_EmpaqueRow)
             End Get
@@ -6977,13 +6977,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Sub AddTbl_EmpaqueRow(ByVal row As Tbl_EmpaqueRow)
+        Public Overloads Sub AddTbl_EmpaqueRow(row As Tbl_EmpaqueRow)
             Me.Rows.Add(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Function AddTbl_EmpaqueRow(ByVal Funcionario_Inicia As String, ByVal Fecha_Hora_Inicia As Date, ByVal Funcionario_Finaliza As String, ByVal Fecha_Hora_Finaliza As Date) As Tbl_EmpaqueRow
+        Public Overloads Function AddTbl_EmpaqueRow(Funcionario_Inicia As String, Fecha_Hora_Inicia As Date, Funcionario_Finaliza As String, Fecha_Hora_Finaliza As Date) As Tbl_EmpaqueRow
             Dim rowTbl_EmpaqueRow As Tbl_EmpaqueRow = CType(Me.NewRow,Tbl_EmpaqueRow)
             Dim columnValuesArray() As Object = New Object() {Funcionario_Inicia, Fecha_Hora_Inicia, Funcionario_Finaliza, Fecha_Hora_Finaliza}
             rowTbl_EmpaqueRow.ItemArray = columnValuesArray
@@ -7035,7 +7035,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Function NewRowFromBuilder(ByVal builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
+        Protected Overrides Function NewRowFromBuilder(builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
             Return New Tbl_EmpaqueRow(builder)
         End Function
         
@@ -7047,7 +7047,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanged(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanged(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanged(e)
             If (Not (Me.Tbl_EmpaqueRowChangedEvent) Is Nothing) Then
                 RaiseEvent Tbl_EmpaqueRowChanged(Me, New Tbl_EmpaqueRowChangeEvent(CType(e.Row,Tbl_EmpaqueRow), e.Action))
@@ -7056,7 +7056,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanging(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanging(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanging(e)
             If (Not (Me.Tbl_EmpaqueRowChangingEvent) Is Nothing) Then
                 RaiseEvent Tbl_EmpaqueRowChanging(Me, New Tbl_EmpaqueRowChangeEvent(CType(e.Row,Tbl_EmpaqueRow), e.Action))
@@ -7065,7 +7065,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleted(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleted(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleted(e)
             If (Not (Me.Tbl_EmpaqueRowDeletedEvent) Is Nothing) Then
                 RaiseEvent Tbl_EmpaqueRowDeleted(Me, New Tbl_EmpaqueRowChangeEvent(CType(e.Row,Tbl_EmpaqueRow), e.Action))
@@ -7074,7 +7074,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleting(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleting(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleting(e)
             If (Not (Me.Tbl_EmpaqueRowDeletingEvent) Is Nothing) Then
                 RaiseEvent Tbl_EmpaqueRowDeleting(Me, New Tbl_EmpaqueRowChangeEvent(CType(e.Row,Tbl_EmpaqueRow), e.Action))
@@ -7083,13 +7083,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub RemoveTbl_EmpaqueRow(ByVal row As Tbl_EmpaqueRow)
+        Public Sub RemoveTbl_EmpaqueRow(row As Tbl_EmpaqueRow)
             Me.Rows.Remove(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Shared Function GetTypedTableSchema(ByVal xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
+        Public Shared Function GetTypedTableSchema(xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
             Dim type As Global.System.Xml.Schema.XmlSchemaComplexType = New Global.System.Xml.Schema.XmlSchemaComplexType()
             Dim sequence As Global.System.Xml.Schema.XmlSchemaSequence = New Global.System.Xml.Schema.XmlSchemaSequence()
             Dim ds As Ds_Matriz_Documentos = New Ds_Matriz_Documentos()
@@ -7194,7 +7194,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal table As Global.System.Data.DataTable)
+        Friend Sub New(table As Global.System.Data.DataTable)
             MyBase.New
             Me.TableName = table.TableName
             If (table.CaseSensitive <> table.DataSet.CaseSensitive) Then
@@ -7212,7 +7212,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Sub New(ByVal info As Global.System.Runtime.Serialization.SerializationInfo, ByVal context As Global.System.Runtime.Serialization.StreamingContext)
+        Protected Sub New(info As Global.System.Runtime.Serialization.SerializationInfo, context As Global.System.Runtime.Serialization.StreamingContext)
             MyBase.New(info, context)
             Me.InitVars
         End Sub
@@ -7308,7 +7308,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Default ReadOnly Property Item(ByVal index As Integer) As Permisos_DocRow
+        Public Default ReadOnly Property Item(index As Integer) As Permisos_DocRow
             Get
                 Return CType(Me.Rows(index),Permisos_DocRow)
             End Get
@@ -7328,13 +7328,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Sub AddPermisos_DocRow(ByVal row As Permisos_DocRow)
+        Public Overloads Sub AddPermisos_DocRow(row As Permisos_DocRow)
             Me.Rows.Add(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Overloads Function AddPermisos_DocRow(ByVal CodPermiso As String, ByVal DescripcionPermiso As String, ByVal Necesita_Permiso As Boolean, ByVal Autorizado As Boolean, ByVal CodFuncionario_Autoriza As String, ByVal NomFuncionario_Autoriza As String, ByVal NroRemota As String, ByVal Permiso_Presencial As Boolean, ByVal Solicitado_Por_Cadena As Boolean, ByVal PermisoIndependiente As Boolean) As Permisos_DocRow
+        Public Overloads Function AddPermisos_DocRow(CodPermiso As String, DescripcionPermiso As String, Necesita_Permiso As Boolean, Autorizado As Boolean, CodFuncionario_Autoriza As String, NomFuncionario_Autoriza As String, NroRemota As String, Permiso_Presencial As Boolean, Solicitado_Por_Cadena As Boolean, PermisoIndependiente As Boolean) As Permisos_DocRow
             Dim rowPermisos_DocRow As Permisos_DocRow = CType(Me.NewRow,Permisos_DocRow)
             Dim columnValuesArray() As Object = New Object() {CodPermiso, DescripcionPermiso, Necesita_Permiso, Autorizado, CodFuncionario_Autoriza, NomFuncionario_Autoriza, NroRemota, Permiso_Presencial, Solicitado_Por_Cadena, PermisoIndependiente}
             rowPermisos_DocRow.ItemArray = columnValuesArray
@@ -7404,7 +7404,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Function NewRowFromBuilder(ByVal builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
+        Protected Overrides Function NewRowFromBuilder(builder As Global.System.Data.DataRowBuilder) As Global.System.Data.DataRow
             Return New Permisos_DocRow(builder)
         End Function
         
@@ -7416,7 +7416,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanged(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanged(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanged(e)
             If (Not (Me.Permisos_DocRowChangedEvent) Is Nothing) Then
                 RaiseEvent Permisos_DocRowChanged(Me, New Permisos_DocRowChangeEvent(CType(e.Row,Permisos_DocRow), e.Action))
@@ -7425,7 +7425,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowChanging(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowChanging(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowChanging(e)
             If (Not (Me.Permisos_DocRowChangingEvent) Is Nothing) Then
                 RaiseEvent Permisos_DocRowChanging(Me, New Permisos_DocRowChangeEvent(CType(e.Row,Permisos_DocRow), e.Action))
@@ -7434,7 +7434,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleted(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleted(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleted(e)
             If (Not (Me.Permisos_DocRowDeletedEvent) Is Nothing) Then
                 RaiseEvent Permisos_DocRowDeleted(Me, New Permisos_DocRowChangeEvent(CType(e.Row,Permisos_DocRow), e.Action))
@@ -7443,7 +7443,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Protected Overrides Sub OnRowDeleting(ByVal e As Global.System.Data.DataRowChangeEventArgs)
+        Protected Overrides Sub OnRowDeleting(e As Global.System.Data.DataRowChangeEventArgs)
             MyBase.OnRowDeleting(e)
             If (Not (Me.Permisos_DocRowDeletingEvent) Is Nothing) Then
                 RaiseEvent Permisos_DocRowDeleting(Me, New Permisos_DocRowChangeEvent(CType(e.Row,Permisos_DocRow), e.Action))
@@ -7452,13 +7452,13 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub RemovePermisos_DocRow(ByVal row As Permisos_DocRow)
+        Public Sub RemovePermisos_DocRow(row As Permisos_DocRow)
             Me.Rows.Remove(row)
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Shared Function GetTypedTableSchema(ByVal xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
+        Public Shared Function GetTypedTableSchema(xs As Global.System.Xml.Schema.XmlSchemaSet) As Global.System.Xml.Schema.XmlSchemaComplexType
             Dim type As Global.System.Xml.Schema.XmlSchemaComplexType = New Global.System.Xml.Schema.XmlSchemaComplexType()
             Dim sequence As Global.System.Xml.Schema.XmlSchemaSequence = New Global.System.Xml.Schema.XmlSchemaSequence()
             Dim ds As Ds_Matriz_Documentos = New Ds_Matriz_Documentos()
@@ -7533,7 +7533,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal rb As Global.System.Data.DataRowBuilder)
+        Friend Sub New(rb As Global.System.Data.DataRowBuilder)
             MyBase.New(rb)
             Me.tableObservaciones_Doc = CType(Me.Table,Observaciones_DocDataTable)
         End Sub
@@ -8021,7 +8021,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal rb As Global.System.Data.DataRowBuilder)
+        Friend Sub New(rb As Global.System.Data.DataRowBuilder)
             MyBase.New(rb)
             Me.tableDescuentos_Doc = CType(Me.Table,Descuentos_DocDataTable)
         End Sub
@@ -8156,7 +8156,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal rb As Global.System.Data.DataRowBuilder)
+        Friend Sub New(rb As Global.System.Data.DataRowBuilder)
             MyBase.New(rb)
             Me.tableVencimientos_Doc = CType(Me.Table,Vencimientos_DocDataTable)
         End Sub
@@ -8390,7 +8390,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal rb As Global.System.Data.DataRowBuilder)
+        Friend Sub New(rb As Global.System.Data.DataRowBuilder)
             MyBase.New(rb)
             Me.tableImpuestos_Doc = CType(Me.Table,Impuestos_DocDataTable)
         End Sub
@@ -8541,7 +8541,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal rb As Global.System.Data.DataRowBuilder)
+        Friend Sub New(rb As Global.System.Data.DataRowBuilder)
             MyBase.New(rb)
             Me.tableEncabezado_Doc = CType(Me.Table,Encabezado_DocDataTable)
         End Sub
@@ -10389,7 +10389,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal rb As Global.System.Data.DataRowBuilder)
+        Friend Sub New(rb As Global.System.Data.DataRowBuilder)
             MyBase.New(rb)
             Me.tableDetalle_Doc = CType(Me.Table,Detalle_DocDataTable)
         End Sub
@@ -13662,7 +13662,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal rb As Global.System.Data.DataRowBuilder)
+        Friend Sub New(rb As Global.System.Data.DataRowBuilder)
             MyBase.New(rb)
             Me.tableTbl_Wms = CType(Me.Table,Tbl_WmsDataTable)
         End Sub
@@ -13894,7 +13894,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal rb As Global.System.Data.DataRowBuilder)
+        Friend Sub New(rb As Global.System.Data.DataRowBuilder)
             MyBase.New(rb)
             Me.tablePermisos_Necesarios_Doc = CType(Me.Table,Permisos_Necesarios_DocDataTable)
         End Sub
@@ -14526,7 +14526,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal rb As Global.System.Data.DataRowBuilder)
+        Friend Sub New(rb As Global.System.Data.DataRowBuilder)
             MyBase.New(rb)
             Me.tableTbl_Lector_Barra = CType(Me.Table,Tbl_Lector_BarraDataTable)
         End Sub
@@ -14732,7 +14732,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal rb As Global.System.Data.DataRowBuilder)
+        Friend Sub New(rb As Global.System.Data.DataRowBuilder)
             MyBase.New(rb)
             Me.tableTbl_Empaque = CType(Me.Table,Tbl_EmpaqueDataTable)
         End Sub
@@ -14858,7 +14858,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Friend Sub New(ByVal rb As Global.System.Data.DataRowBuilder)
+        Friend Sub New(rb As Global.System.Data.DataRowBuilder)
             MyBase.New(rb)
             Me.tablePermisos_Doc = CType(Me.Table,Permisos_DocDataTable)
         End Sub
@@ -15153,7 +15153,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub New(ByVal row As Observaciones_DocRow, ByVal action As Global.System.Data.DataRowAction)
+        Public Sub New(row As Observaciones_DocRow, action As Global.System.Data.DataRowAction)
             MyBase.New
             Me.eventRow = row
             Me.eventAction = action
@@ -15189,7 +15189,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub New(ByVal row As Descuentos_DocRow, ByVal action As Global.System.Data.DataRowAction)
+        Public Sub New(row As Descuentos_DocRow, action As Global.System.Data.DataRowAction)
             MyBase.New
             Me.eventRow = row
             Me.eventAction = action
@@ -15225,7 +15225,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub New(ByVal row As Vencimientos_DocRow, ByVal action As Global.System.Data.DataRowAction)
+        Public Sub New(row As Vencimientos_DocRow, action As Global.System.Data.DataRowAction)
             MyBase.New
             Me.eventRow = row
             Me.eventAction = action
@@ -15261,7 +15261,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub New(ByVal row As Impuestos_DocRow, ByVal action As Global.System.Data.DataRowAction)
+        Public Sub New(row As Impuestos_DocRow, action As Global.System.Data.DataRowAction)
             MyBase.New
             Me.eventRow = row
             Me.eventAction = action
@@ -15297,7 +15297,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub New(ByVal row As Encabezado_DocRow, ByVal action As Global.System.Data.DataRowAction)
+        Public Sub New(row As Encabezado_DocRow, action As Global.System.Data.DataRowAction)
             MyBase.New
             Me.eventRow = row
             Me.eventAction = action
@@ -15333,7 +15333,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub New(ByVal row As Detalle_DocRow, ByVal action As Global.System.Data.DataRowAction)
+        Public Sub New(row As Detalle_DocRow, action As Global.System.Data.DataRowAction)
             MyBase.New
             Me.eventRow = row
             Me.eventAction = action
@@ -15369,7 +15369,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub New(ByVal row As Tbl_WmsRow, ByVal action As Global.System.Data.DataRowAction)
+        Public Sub New(row As Tbl_WmsRow, action As Global.System.Data.DataRowAction)
             MyBase.New
             Me.eventRow = row
             Me.eventAction = action
@@ -15405,7 +15405,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub New(ByVal row As Permisos_Necesarios_DocRow, ByVal action As Global.System.Data.DataRowAction)
+        Public Sub New(row As Permisos_Necesarios_DocRow, action As Global.System.Data.DataRowAction)
             MyBase.New
             Me.eventRow = row
             Me.eventAction = action
@@ -15441,7 +15441,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub New(ByVal row As Tbl_Lector_BarraRow, ByVal action As Global.System.Data.DataRowAction)
+        Public Sub New(row As Tbl_Lector_BarraRow, action As Global.System.Data.DataRowAction)
             MyBase.New
             Me.eventRow = row
             Me.eventAction = action
@@ -15477,7 +15477,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub New(ByVal row As Tbl_EmpaqueRow, ByVal action As Global.System.Data.DataRowAction)
+        Public Sub New(row As Tbl_EmpaqueRow, action As Global.System.Data.DataRowAction)
             MyBase.New
             Me.eventRow = row
             Me.eventAction = action
@@ -15513,7 +15513,7 @@ Partial Public Class Ds_Matriz_Documentos
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")>  _
-        Public Sub New(ByVal row As Permisos_DocRow, ByVal action As Global.System.Data.DataRowAction)
+        Public Sub New(row As Permisos_DocRow, action As Global.System.Data.DataRowAction)
             MyBase.New
             Me.eventRow = row
             Me.eventAction = action

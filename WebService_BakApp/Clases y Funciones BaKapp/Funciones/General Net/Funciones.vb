@@ -23,7 +23,7 @@ Public Module Funciones
     Public _MTS_Lista_activo As Boolean
 
 
-    Public Function Hora_Grab_fx(ByVal _EsAjuste As Boolean, ByVal _Fecha As Date) As String
+    Public Function Hora_Grab_fx(_EsAjuste As Boolean, _Fecha As Date) As String
 
         Dim _HH_sistem As Date
 
@@ -45,10 +45,10 @@ Public Module Funciones
 
     End Function
 
-    Function Fx_Genera_Licencia_BakApp(ByVal _RutEmpresa As String, _
-                                        ByVal _FechaCaduca As Date, _
-                                        ByVal _CantLicencias As Integer, _
-                                        ByVal _Palabra_X As String) As String()
+    Function Fx_Genera_Licencia_BakApp(_RutEmpresa As String,
+                                        _FechaCaduca As Date,
+                                        _CantLicencias As Integer,
+                                        _Palabra_X As String) As String()
 
         Dim _Llave1, _Llave2, _Llave3, _Llave4 As String
 
@@ -68,7 +68,7 @@ Public Module Funciones
 
     End Function
 
-    Function numero_(ByVal Num As String, ByVal d As Integer) As String
+    Function numero_(Num As String, d As Integer) As String
         Dim i As Integer
         Dim nro As String
         nro = Len(RTrim$(Num))
@@ -80,8 +80,8 @@ Public Module Funciones
         Return RTrim$(Num)
     End Function
 
-    Function QuitaEspacios_ParaCodigos(ByVal s As String, _
-                           ByVal lon As Integer) As String
+    Function QuitaEspacios_ParaCodigos(s As String,
+                           lon As Integer) As String
 
         Dim arr(lon - 1) As Char '= s.ToCharArray
         arr = s.ToCharArray
@@ -117,7 +117,7 @@ Public Module Funciones
         ' Return corre
     End Function
 
-    Function Ruta_conexion(ByVal Ruta As String) As String
+    Function Ruta_conexion(Ruta As String) As String
         Try
 
             Dim texto As String
@@ -130,7 +130,7 @@ Public Module Funciones
         End Try
     End Function
 
-    Function LeeArchivo(ByVal Ruta As String) As String
+    Function LeeArchivo(Ruta As String) As String
         Dim texto As String
         Dim sr As New System.IO.StreamReader(Ruta)
         texto = sr.ReadToEnd()
@@ -138,7 +138,7 @@ Public Module Funciones
         Return texto
     End Function
 
-    Function Encripta_md5(ByVal TextoAEncriptar As String) As String
+    Function Encripta_md5(TextoAEncriptar As String) As String
         Dim vlo_MD5 As New MD5CryptoServiceProvider
         Dim vlby_Byte(), vlby_Hash() As Byte
         Dim vls_TextoEncriptado As String = ""
@@ -197,7 +197,7 @@ Public Module Funciones
     End Function
 
 
-    Function RutDigito(ByVal numero As String) As String
+    Function RutDigito(numero As String) As String
 
         Dim cuenta, Suma, resto, Digito As Integer
         Dim dig As Decimal
@@ -223,7 +223,7 @@ Public Module Funciones
 
     End Function
 
-    Function VerificaDigito(ByVal RUT As String) As Boolean
+    Function VerificaDigito(RUT As String) As Boolean
         Try
 
             Dim Rt(1) As String
@@ -246,7 +246,7 @@ Public Module Funciones
 
     End Function
 
-    Function NuloPorNro(Of T)(ByVal value As T, ByVal defaultValue As T) As T
+    Function NuloPorNro(Of T)(value As T, defaultValue As T) As T
 
         Dim obj1 As Object = value
         Dim obj2 As Object = defaultValue
@@ -279,21 +279,21 @@ Public Module Funciones
 
     End Function
 
-    Public Function Primerdiadelmes(ByVal fecha As Date) As Date
+    Public Function Primerdiadelmes(fecha As Date) As Date
         Dim rtn As New Date
         rtn = fecha 'Date.Now
         rtn = rtn.AddDays(-rtn.Day + 1)
         Return rtn
     End Function
 
-    Public Function ultimodiadelmes(ByVal fecha As Date) As Date
+    Public Function ultimodiadelmes(fecha As Date) As Date
         Dim rtn As New Date
         rtn = fecha.Date ' fecha 'Date.Now
         rtn = rtn.AddDays(-rtn.Day + 1).AddMonths(1).AddDays(-1)
         Return rtn
     End Function
 
-    Function es_numero(ByVal numero As String) As Boolean
+    Function es_numero(numero As String) As Boolean
 
         Dim w As Integer
         Dim lineax As String
@@ -337,8 +337,8 @@ Public Module Funciones
 
     End Function
 
-    Function SoloNumeros(ByVal Keyascii As Short, _
-                        Optional ByVal _Solo_Nros As Boolean = True) As Short
+    Function SoloNumeros(Keyascii As Short,
+                        Optional _Solo_Nros As Boolean = True) As Short
 
 
         Dim _Sd = System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyDecimalSeparator
@@ -372,7 +372,7 @@ Public Module Funciones
         End Select
     End Function
 
-    Function SoloNumerosSinPuntosNiComas(ByVal Keyascii As Short) As Short
+    Function SoloNumerosSinPuntosNiComas(Keyascii As Short) As Short
         If InStr("1234567890", Chr(Keyascii)) = 0 Then
             SoloNumerosSinPuntosNiComas = 0
         Else
@@ -386,7 +386,7 @@ Public Module Funciones
         End Select
     End Function
 
-    Function SoloLetrasNumeros(ByVal Keyascii As Short) As Short
+    Function SoloLetrasNumeros(Keyascii As Short) As Short
         If InStr("abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ1234567890,.-", Chr(Keyascii)) = 0 Then
             SoloLetrasNumeros = 0
         Else
@@ -394,9 +394,9 @@ Public Module Funciones
         End If
     End Function
 
-    Function CrearArchivoTxt(ByVal Ruta As String, _
-                             ByVal NombreArchivo As String, _
-                             ByVal Cuerpo As String)
+    Function CrearArchivoTxt(Ruta As String,
+                             NombreArchivo As String,
+                             Cuerpo As String)
         Try
 
             Dim RutaArchivo As String = Ruta & NombreArchivo
@@ -416,10 +416,10 @@ Public Module Funciones
 
     End Function
 
-    Public Function _Global_Fx_Cambio_en_la_Grilla(ByVal _Tbl_Grilla As DataTable, _
-                                                   Optional ByVal _Rev_Insertas As Boolean = True, _
-                                                   Optional ByVal _Rev_Eliminadas As Boolean = True, _
-                                                   Optional ByVal _Rev_Modificada As Boolean = True) As Boolean
+    Public Function _Global_Fx_Cambio_en_la_Grilla(_Tbl_Grilla As DataTable,
+                                                   Optional _Rev_Insertas As Boolean = True,
+                                                   Optional _Rev_Eliminadas As Boolean = True,
+                                                   Optional _Rev_Modificada As Boolean = True) As Boolean
 
         Dim _Modificado As Boolean
 
@@ -442,10 +442,10 @@ Public Module Funciones
 
     End Function
 
-    Public Sub Sb_AddToLog(ByVal Accion As String, _
-                           ByVal Descripcion As String, _
-                           ByVal TxtLog As Object, _
-                           Optional ByVal _Incluir_FechaHora As Boolean = True)
+    Public Sub Sb_AddToLog(Accion As String,
+                           Descripcion As String,
+                           TxtLog As Object,
+                           Optional _Incluir_FechaHora As Boolean = True)
         If _Incluir_FechaHora Then
             TxtLog.Text += DateTime.Now.ToString() & " - " & Accion & " (" & Descripcion & ")" & vbCrLf
         Else
@@ -457,8 +457,8 @@ Public Module Funciones
 
     End Sub
 
-    Function Generar_Filtro_IN_Arreglo(ByVal Arreglo() As String, _
-                                       ByVal EsNumero As Boolean)
+    Function Generar_Filtro_IN_Arreglo(Arreglo() As String,
+                                       EsNumero As Boolean)
 
         Dim Cadena As String = String.Empty
         Dim Separador As String = ""
@@ -493,9 +493,9 @@ Public Module Funciones
 
     End Function
 
-    Function Rellenar(ByVal Cadena As String, _
-                      ByVal CantCaracteres As Integer, _
-                      ByVal Relleno As String, Optional ByVal Derecha As Boolean = True) As String
+    Function Rellenar(Cadena As String,
+                      CantCaracteres As Integer,
+                      Relleno As String, Optional Derecha As Boolean = True) As String
         Dim i As Integer
         Dim nro As String
         nro = Len(Cadena)
@@ -515,9 +515,9 @@ Public Module Funciones
         Return Cadena
     End Function
 
-    Public Function De_Num_a_Tx_01(ByVal lNumero As Double, _
-                               Optional ByVal bEntero As Boolean = False, _
-                               Optional ByVal nDecimales As Integer = 2) As String
+    Public Function De_Num_a_Tx_01(lNumero As Double,
+                               Optional bEntero As Boolean = False,
+                               Optional nDecimales As Integer = 2) As String
         '-------------------------------------------------§§§----'
         ' FUNCION PARA CONVERTIR UN NUMERO EN TEXTO
         '-------------------------------------------------§§§----'
@@ -587,9 +587,9 @@ fin:
     '‘ FUNCION PARA CONVERTIR UN TEXTO EN NUMERO DECIMAL
     '‘———————————————— -§§§— - ’
 
-    Public Function De_Txt_a_Num_01(ByVal sTexto As String, _
-                                       Optional ByVal nDecimales As Integer = 3, _
-                                       Optional ByVal sP_Formato_Decimal As String = "") As Double
+    Public Function De_Txt_a_Num_01(sTexto As String,
+                                       Optional nDecimales As Integer = 3,
+                                       Optional sP_Formato_Decimal As String = "") As Double
         '-------------------------------------------------§§§----'
         ' FUNCION PARA CONVERTIR UN TEXTO EN NUMERO DECIMAL
         '-------------------------------------------------§§§----'
@@ -733,7 +733,7 @@ Error_Numero:
         ''
     End Function
 
-    Function llena_tabla_sola(ByVal Arreglo(,) As String)
+    Function llena_tabla_sola(Arreglo(,) As String)
 
         Dim dt As New DataTable
         dt.Columns.Add("Padre")
@@ -754,9 +754,9 @@ Error_Numero:
         Return dt
     End Function
 
-    Function Cuentadias(ByVal FechaInicio As Date, _
-                    ByVal FechaFin As Date, _
-                    ByVal Diadelasemana As FirstDayOfWeek) As Integer
+    Function Cuentadias(FechaInicio As Date,
+                    FechaFin As Date,
+                    Diadelasemana As FirstDayOfWeek) As Integer
 
         Dim n As Integer
         Dim Fechaini As Date = FechaInicio
@@ -772,7 +772,7 @@ Error_Numero:
 
     End Function
 
-    Function Fx_Crea_Tabla_Con_Filtro(ByVal dt As DataTable, ByVal filter As String, ByVal sort As String) As DataTable
+    Function Fx_Crea_Tabla_Con_Filtro(dt As DataTable, filter As String, sort As String) As DataTable
 
         Dim rows As DataRow()
 
@@ -794,7 +794,7 @@ Error_Numero:
 
     End Function
 
-    Private Function BuscarTextoGrilla(ByVal Texto As String, ByVal Busqueda As String) As Boolean
+    Private Function BuscarTextoGrilla(Texto As String, Busqueda As String) As Boolean
         Dim i As Integer
         i = InStr(1, Texto, Busqueda)
         If i > 0 Then
@@ -804,9 +804,9 @@ Error_Numero:
         End If
     End Function
 
-    Public Function Fx_Rellena_ceros(ByVal _NroDoc As String, _
-                                    ByVal _NroCaracateres As Integer, _
-                                    Optional ByVal _Suma_uno As Boolean = False) As String
+    Public Function Fx_Rellena_ceros(_NroDoc As String,
+                                    _NroCaracateres As Integer,
+                                    Optional _Suma_uno As Boolean = False) As String
 
         Dim _Contador = 1
         Dim _Tot_carac = Len(_NroDoc)
@@ -846,7 +846,7 @@ Error_Numero:
 
     End Function
 
-    Function _Dev_HoraGrab(ByVal Hora As String)
+    Function _Dev_HoraGrab(Hora As String)
 
         Dim _HH, _MM, _SS As Double
         Dim _Horagrab As Integer
@@ -861,7 +861,7 @@ Error_Numero:
 
     End Function
 
-    Function Fx_Dias_Habiles(ByVal _Fecha_inicial As Date, ByVal _Fecha_final As Date) As Integer
+    Function Fx_Dias_Habiles(_Fecha_inicial As Date, _Fecha_final As Date) As Integer
 
         Dim dias As Integer
         _Fecha_inicial = DateAdd(DateInterval.Day, 1, _Fecha_inicial) 'agrego un dia adicional para la cuenta ya veraz porque 
@@ -893,9 +893,9 @@ Error_Numero:
         Todos
     End Enum
 
-    Function Fx_Cuenta_Dias(ByVal _Fecha_inicial As Date, _
-                            ByVal _Fecha_final As Date, _
-                            ByVal _Dias_a_contar As Opcion_Dias) As Integer
+    Function Fx_Cuenta_Dias(_Fecha_inicial As Date,
+                            _Fecha_final As Date,
+                            _Dias_a_contar As Opcion_Dias) As Integer
 
         Dim dias As Integer
         ' _Fecha_inicial = DateAdd(DateInterval.Day, 1, _Fecha_inicial) 'agrego un dia adicional para la cuenta ya veraz porque 
@@ -928,7 +928,7 @@ Error_Numero:
 
     End Function
 
-    Function Fx_Validar_Email(ByVal email As String) As Boolean
+    Function Fx_Validar_Email(email As String) As Boolean
 
         If email = String.Empty Then Return False
         ' Compruebo si el formato de la dirección es correcto.
@@ -938,7 +938,7 @@ Error_Numero:
 
     End Function
 
-    Function Fx_Validar_Sitio_Web(ByVal _Sitio As String) As String 'As Boolean
+    Function Fx_Validar_Sitio_Web(_Sitio As String) As String 'As Boolean
 
         Dim Peticion As System.Net.WebRequest
         Dim Respuesta As System.Net.HttpWebResponse
@@ -962,7 +962,7 @@ Error_Numero:
 
     End Function
 
-    Function Fx_Validar_Impresora(ByVal _Impresora As String) As Boolean
+    Function Fx_Validar_Impresora(_Impresora As String) As Boolean
 
         Dim pd As New PrintDocument
 
@@ -1292,12 +1292,12 @@ Error_Numero:
 
     End Function
 
-    Function Generar_Filtro_IN(ByVal Tabla As DataTable, _
-                               ByVal _CodChk As String, _
-                               ByVal _CodCampo As String, _
-                               ByVal _EsNumero As Boolean, _
-                               ByVal _TieneChk As Boolean, _
-                               Optional ByVal _Separador As String = "''")
+    Function Generar_Filtro_IN(Tabla As DataTable,
+                               _CodChk As String,
+                               _CodCampo As String,
+                               _EsNumero As Boolean,
+                               _TieneChk As Boolean,
+                               Optional _Separador As String = "''")
 
         Dim Cadena As String = String.Empty
         Dim Separador As String = ""
@@ -1349,7 +1349,7 @@ Error_Numero:
     End Function
 
 
-    Function Fx_TraeClaveRD(ByVal Texto As String) As String
+    Function Fx_TraeClaveRD(Texto As String) As String
 
         Dim valorAscii As Integer
         Dim PassEncriptado, Letra As String
