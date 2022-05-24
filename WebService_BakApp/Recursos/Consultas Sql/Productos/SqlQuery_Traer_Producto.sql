@@ -40,7 +40,6 @@ Select  Cast(0 As Int) As 'Id_DocEnc',
 		'' As 'Moneda',
 		'' As 'Tipo_Moneda',
 		Cast(0 As Float) As 'Tipo_Cambio'
-		--,Cast('' As Varchar(1)) As 'Error'
 
 From MAEPR Mp
 		Left Join MAEST Ms On Ms.EMPRESA = @Empresa And Ms.KOSU = @Sucursal And Ms.KOBO = @Bodega And Ms.KOPR = Mp.KOPR

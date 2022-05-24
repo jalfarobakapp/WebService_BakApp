@@ -350,6 +350,13 @@ Public Class Ws_BakApp
 
         Try
 
+            Consulta_sql = "Select Top 1 * From TABCODAL Where KOPRAL = '" & Codigo & "' And KOEN = ''"
+            Dim _RowTablcodal As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            If Not IsNothing(_RowTablcodal) Then
+                Codigo = _RowTablcodal.Item("KOPR")
+            End If
+
             Consulta_sql = My.Resources.Recursos_Sql.SqlQuery_Traer_Producto
             Consulta_sql = Replace(Consulta_sql, "#Codigo#", Codigo)
             Consulta_sql = Replace(Consulta_sql, "#Empresa#", Empresa)
@@ -440,7 +447,7 @@ Public Class Ws_BakApp
 
         Catch ex As Exception
 
-            Consulta_sql = "Select '" & Replace(ex.Message, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            Consulta_sql = "Select 'Error_" & Replace(ex.Message, "'", "''") & "' As Codigo,'" & _Version & "' As Version"
             _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
 
         End Try
@@ -593,20 +600,6 @@ Public Class Ws_BakApp
                                      _UnTrans As Integer,
                                      _Tidopa As String)
 
-        'Dim _Cantidad As Double
-
-        'For Each _Row As DataRow In _TblDetalle.Rows
-
-        '    Dim _Cod = _Row.Item("Codigo")
-        '    Dim _Suc = _Row.Item("Sucursal")
-        '    Dim _Bod = _Row.Item("Bodega")
-        '    Dim _I = _Row.Item("Id")
-
-        '    If _Cod = _Codigo And _Suc = _Sucursal And _Bod = _Bodega Then
-        '        _Cantidad += _Row.Item("Cantidad")
-        '    End If
-
-        'Next
         _Sql = New Class_SQL
 
         Dim _Stock_Disponible As Double
@@ -622,7 +615,7 @@ Public Class Ws_BakApp
 
         If _Tido = "NVV" Or _Tido = "RES" Or _Tido = "PRO" Or _Tido = "NVI" Then
 
-            _Revisar_Stock_Disponible = Not (String.IsNullOrEmpty(_Campo_Formula_Stock))
+            _Revisar_Stock_Disponible = True
 
         End If
 
@@ -642,12 +635,7 @@ Public Class Ws_BakApp
             _Stock_Disponible = 1 + _Cantidad
         End If
 
-        'If _Revision_Remota Then
-        '    _Stock_Disponible += _Cantidad
-        'End If
-
         Dim _Stock As Double
-        'Dim _Stock_Suficiente As Boolean
 
         _Stock = _Sql.Fx_Trae_Dato("MAEST", "STFI" & _UnTrans, "EMPRESA = '" & _Empresa &
                                    "' AND KOSU = '" & _Sucursal &
@@ -669,119 +657,6 @@ Public Class Ws_BakApp
         Context.Response.Flush()
 
         Context.Response.End()
-
-        Return
-
-        'If _Tipr <> "SSN" Then
-
-        '    Dim _Cantidad_Resul As Double = _Stock_Disponible - _Cantidad
-
-        '    If _Stock_Disponible <= 0 Then
-        '        _Stock_Suficiente = False
-        '    Else
-        '        If _Stock_Disponible - _Cantidad >= 0 Then
-        '            _Stock_Suficiente = True
-        '        End If
-        '    End If
-
-        '    'If Not _Stock_Suficiente Then
-
-        '    '    Dim _CodFunAutoriza_Stock As String = _TblEncabezado.Rows(0).Item("Fun_Auto_Stock_Ins")
-
-        '    '    'Código permiso vender sin stock "Bkp00015"
-
-        '    '    If _Mostrar_Alerta Then
-
-        '    '        'If _Ofrecer_Bodegas Then
-
-        '    '        '    Dim _Vnta_Ofrecer_Otras_Bod_Stock_Insuficiente As Boolean = _Global_Row_Configuracion_Estacion.Item("Vnta_Ofrecer_Otras_Bod_Stock_Insuficiente")
-
-        '    '        '    If _Vnta_Ofrecer_Otras_Bod_Stock_Insuficiente Then
-
-        '    '        '        Consulta_sql = "Select Distinct EMPRESA+KOSU+KOBO As Cod,* From TABBO
-        '    '        '                        Where EMPRESA+KOSU+KOBO
-        '    '        '                        In (Select SUBSTRING(CodPermiso, 3, 10)
-        '    '        '                            From " & _Global_BaseBk & "ZW_PermisosVsUsuarios
-        '    '        '                                Where CodUsuario = '" & FUNCIONARIO & "' And 
-        '    '        '                                CodPermiso In (Select CodPermiso From " & _Global_BaseBk & "ZW_Permisos Where CodFamilia = 'Bodega')) 
-        '    '        '                                Or (EMPRESA = '" & ModEmpresa & "' And KOSU = '" & ModSucursal & "' And KOBO = '" & ModBodega & "')"
-
-        '    '        '        Dim _Tbl_Bodegas As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
-
-        '    '        '        Dim _Filtro As String = Generar_Filtro_IN(_Tbl_Bodegas, "", "Cod", False, False, "'")
-
-        '    '        '        _Filtro = "KOPR = '" & _Codigo & "' And EMPRESA+KOSU+KOBO In " & _Filtro
-
-        '    '        '        Dim _Stock_Consolidado As Double = _Sql.Fx_Trae_Dato("MAEST", "Sum(STFI1)", _Filtro)
-
-        '    '        '        If _Stock_Consolidado > 0 Then
-
-        '    '        '            Dim _Row_Bodega As DataRow
-
-        '    '        '            If Fx_Tiene_Permiso(Me, "Bkp00045") Then
-
-        '    '        '                If Fr_Alerta_Stock.Visible Then
-        '    '        '                    Fr_Alerta_Stock.Close()
-        '    '        '                End If
-
-        '    '        '                _Cantidad = NuloPorNro(_Fila.Cells("Cantidad").Value, 0)
-
-        '    '        '                Dim _Es_Venta As Boolean = (_Tipo_Documento = csGlobales.Mod_Enum_Listados_Globales.Enum_Tipo_Documento.Venta)
-
-        '    '        '                Dim Fm As New Frm_Formulario_Cantidad_Stock_X_Bodega(_Codigo, _Cantidad, _Sucursal, _Es_Venta, _Tido)
-        '    '        '                Fm.ShowDialog(Me)
-        '    '        '                _Row_Bodega = Fm.Row_Bodega
-        '    '        '                Fm.Dispose()
-
-        '    '        '                If Not (_Row_Bodega Is Nothing) Then
-
-        '    '        '                    _Fila.Cells("Sucursal").Value = _Row_Bodega.Item("KOSU")
-        '    '        '                    _Fila.Cells("Bodega").Value = _Row_Bodega.Item("KOBO")
-        '    '        '                    Sb_Revisar_Stock_Fila(_Fila,,,, True, False)
-        '    '        '                    Exit Sub
-
-        '    '        '                Else
-
-        '    '        '                    _Fila.Cells("Cantidad").Value = 0
-        '    '        '                    Return
-
-        '    '        '                End If
-
-        '    '        '            End If
-
-        '    '        '        End If
-
-        '    '        '    End If
-
-        '    '        'End If
-
-        '    '        If CBool(_Cantidad) Then
-
-        '    '            If Fx_Tiene_Permiso(Me, "Bkp00015", _CodFunAutoriza_Stock, False) Then
-
-        '    '                MessageBoxEx.Show(Me, "¡Producto con Stock insuficiente!" & Environment.NewLine &
-        '    '                              "Stock en Bodega  " & _Bodega & ": " & _Stock & Environment.NewLine &
-        '    '                              "Cantidad vendida : " & _Cantidad & Environment.NewLine &
-        '    '                              "Diferencia: " & _Stock - _Cantidad & " " & _UdTrans,
-        '    '                              "Stock insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, Me.TopMost)
-
-        '    '            Else
-
-        '    '                MessageBoxEx.Show(Me, "¡Producto con Stock insuficiente!" & Environment.NewLine &
-        '    '                                  "Stock en Bodega  " & _Bodega & ": " & _Stock & Environment.NewLine &
-        '    '                                  "Cantidad vendida : " & _Cantidad & Environment.NewLine &
-        '    '                                  "Diferencia: " & _Stock - _Cantidad & " " & _UdTrans & Environment.NewLine & Environment.NewLine &
-        '    '                                  "¡No permite hacer ventas sin autorización!",
-        '    '                                  "Stock insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button1, Me.TopMost)
-        '    '            End If
-
-        '    '        End If
-
-        '    '    End If
-
-        '    'End If
-
-        'End If
 
     End Sub
 
@@ -1904,6 +1779,85 @@ Public Class Ws_BakApp
         Context.Response.Flush()
 
         Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    Public Sub Sb_RevisarStockEnDetalle(_Tido As String, _DestalleJs As String, _Global_BaseBk As String)
+
+        _Sql = New Class_SQL
+        Dim _Ds2 As DataSet
+
+        Dim _Error As String = String.Empty
+        Dim _Stock_Insuficiente As Boolean = False
+
+        Try
+
+            'Dim _Ruta = "D:\JsonB4Android\"
+
+            'Fx_Grabar_JsonArchivo(_EncabezadoJs, _Ruta, "EncabezadoJs")
+            'Fx_Grabar_JsonArchivo(_DestalleJs, _Ruta, "DestalleJs")
+            'Fx_Grabar_JsonArchivo(_DescuentosJs, _Ruta, "DescuentosJs")
+            'Fx_Grabar_JsonArchivo(_ObservacionesJs, _Ruta, "ObservacionesJs")
+
+            'Throw New System.Exception("Archivo New creados...")
+
+            'Return
+
+            Dim _Ds_Matriz_Documentos As New Ds_Matriz_Documentos
+
+            _Ds_Matriz_Documentos.Clear()
+            _Ds_Matriz_Documentos = New Ds_Matriz_Documentos
+
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _DestalleJs, "Detalle_Doc")
+
+            Dim _Tbl_Detalle As DataTable = _Ds_Matriz_Documentos.Tables("Detalle_Doc")
+
+            For Each _Fila As DataRow In _Tbl_Detalle.Rows
+
+                Dim _Empresa As String = _Fila.Item("Empresa")
+                Dim _Sucursal As String = _Fila.Item("Sucursal")
+                Dim _Bodega As String = _Fila.Item("Bodega")
+                Dim _Codigo As String = _Fila.Item("Codigo")
+                'Dim _Tidopa As String = _Fila.Item("")
+                Dim _UnTrans As Integer = _Fila.Item("UnTrans")
+                Dim _Cantidad As Double = _Fila.Item("Cantidad")
+
+                Dim _Stock_Disponible = Fx_Stock_Disponible(_Tido, _Empresa, _Sucursal, _Bodega, _Codigo, _UnTrans, "STFI" & _UnTrans)
+
+                'If _Tidopa = "NVV" And _Tido <> "NVV" Then
+
+                '    If _Campo_Formula_Stock.Contains("-C") Then
+                '        _Stock_Disponible += _Cantidad
+                '    End If
+
+                'End If
+
+                If _Stock_Disponible - _Cantidad < 0 Then
+                    _Stock_Insuficiente = True
+                    Exit For
+                End If
+
+            Next
+
+        Catch ex As Exception
+            _Error = ex.Message
+        End Try
+
+        Consulta_sql = "Select Cast(" & Convert.ToInt32(_Stock_Insuficiente) & " As Bit) As Stock_Insuficiente," &
+                       "'" & Replace(_Error, "'", "''") & "' As Error,'" & _Version & "' As Version"
+        _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds2, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+
 
     End Sub
 
