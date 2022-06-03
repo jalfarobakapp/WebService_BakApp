@@ -71,9 +71,7 @@
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
-    <Reference Include="System.Web.Extensions">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Mobile" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
@@ -111,6 +109,7 @@
     <Content Include="Clases y Funciones BaKapp\Clases\DataSet\Ds_Matriz_Documentos.xss">
       <DependentUpon>Ds_Matriz_Documentos.xsd</DependentUpon>
     </Content>
+    <Content Include="Recursos\Consultas Sql\Documentos\Revisar Socumentos VS Lista de Precios.sql" />
     <Content Include="Recursos\Consultas Sql\Entidades\SqlQuery_Datos_Entidad.sql" />
     <Content Include="Recursos\Consultas Sql\Productos\SqlQuery_Traer_Producto.sql" />
     <Content Include="Service1.svc" />
@@ -160,6 +159,7 @@
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>

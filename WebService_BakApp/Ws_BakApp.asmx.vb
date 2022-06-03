@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports System.IO
 Imports System.Web.Script.Serialization
 Imports System.Web.Script.Services
 Imports System.Web.Services
@@ -877,20 +878,78 @@ Public Class Ws_BakApp
         _Sql = New Class_SQL
         Dim Consulta_sql As String
 
-        Dim _Ruta = "D:\JsonB4Android\"
+        Dim _Ruta As String = String.Empty ' = "D:\JsonB4Android\"
+        _Ruta = System.Configuration.ConfigurationManager.AppSettings("Ruta_Tmp").ToString
 
-        Fx_Grabar_JsonArchivo(_Json, _Ruta, _NombreTabla)
-        Dim _Existe As Boolean = Fx_Grabar_JsonArchivo(_Json, _Ruta, _NombreTabla)
+        Dim _Existe_Ruta As Boolean = True
+        Dim _Existe_Archivo As Boolean
 
-        Dim _Ds As New DataSet
+        If String.IsNullOrEmpty(_Ruta) Then
+            _Ruta = "Falta la consiguración de la carpeta de archivos temporales en [Web.config]" & vbCrLf &
+                    "<appSettings>   <add key=""Ruta_Tmp"" value=""C:\JsonB4Android""/>   </appSettings>"
+            _Existe_Ruta = False
+        Else
+            If Not Directory.Exists(_Ruta) Then
+                _Ruta = "No existe el directorio: [" & _Ruta & "] en el servidor"
+                _Existe_Ruta = False
+            End If
+        End If
 
-        If Not _Existe Then
-            Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'' As Error"
+        If _Existe_Ruta Then
+            'Fx_Grabar_JsonArchivo(_Json, _Ruta, _NombreTabla)
+            _Existe_Archivo = Fx_Grabar_JsonArchivo(_Json, _Ruta, _NombreTabla)
+        End If
+
+        Dim _Ds As DataSet
+        Dim _Error As String = _Ruta
+
+        If Not _Existe_Archivo Then
+            Consulta_sql = "Select Cast(0 as Bit) As Respuesta,'" & _Error & "' As Error"
             _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
         Else
-            Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'Archivo creado:" & _Ruta & "' As Error"
+            Consulta_sql = "Select Cast(1 as Bit) As Respuesta,'Archivo creado:" & _Error & "' As Error"
             _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
         End If
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    Public Sub Sb_RevCarpetaTmp()
+
+        _Sql = New Class_SQL
+        Dim Consulta_sql As String
+
+        Dim _Ruta As String = String.Empty ' = "D:\JsonB4Android\"
+        _Ruta = System.Configuration.ConfigurationManager.AppSettings("Ruta_Tmp").ToString
+
+        Dim _Existe_Ruta As Boolean = True
+
+        If String.IsNullOrEmpty(_Ruta) Then
+            _Ruta = "Falta la configuración de la carpeta de archivos temporales en [Web.config]" & vbCrLf &
+                    "<appSettings>" & vbCrLf & "<add key=""Ruta_Tmp"" value=""""/>" & vbCrLf & "</appSettings>"
+            _Existe_Ruta = False
+        Else
+            If Not Directory.Exists(_Ruta) Then
+                _Ruta = "No existe el directorio de la carpete para archivos temporales en el servidor, revise el archivo [Web.config]" & vbCrLf &
+                        "<appSettings>" & vbCrLf & "<add key=""Ruta_Tmp"" value=""" & _Ruta & """/>" & vbCrLf & "</appSettings>"
+                _Existe_Ruta = False
+            End If
+        End If
+
+        Dim _Ds As DataSet
+        Dim _Error As String = _Ruta
+
+        Consulta_sql = "Select Cast(" & Convert.ToInt32(_Existe_Ruta) & " as Bit) As ExisteRuta,'" & _Error & "' As Error,'" & _Version & "' As Version"
+        _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
 
         Dim js As New JavaScriptSerializer
 
@@ -992,7 +1051,11 @@ Public Class Ws_BakApp
     Public Sub Sb_EditarDocumentoJsonBakapp(_OldIdmaeedo As Integer,
                                             _Cod_Func_Eliminador As String,
                                             _Global_BaseBk As String,
-                                            _EncabezadoJs As String, _DestalleJs As String, _DescuentosJs As String, _ObservacionesJs As String)
+                                            _EncabezadoJs As String,
+                                            _DestalleJs As String,
+                                            _DescuentosJs As String,
+                                            _ObservacionesJs As String,
+                                            _Cambiar_NroDocumento As Boolean)
 
         _Sql = New Class_SQL
         Dim _Ds2 As DataSet
@@ -1001,6 +1064,7 @@ Public Class Ws_BakApp
         Dim _NewIdmaeedo As Integer
         Dim _Tido As String
         Dim _Nudo As String
+        Dim _Old_Nudo As String
 
         Dim _Row_OldMaeedo As DataRow
 
@@ -1009,6 +1073,7 @@ Public Class Ws_BakApp
 
         _Tido = _Row_OldMaeedo.Item("TIDO")
         _Nudo = _Row_OldMaeedo.Item("NUDO")
+        _Old_Nudo = _Nudo
 
         Try
 
@@ -1033,12 +1098,16 @@ Public Class Ws_BakApp
             Dim _Modalidad As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Modalidad")
             Dim _Empresa As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Empresa")
 
-            _Tido = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
-            _Nudo = Traer_Numero_Documento2(_Tido, _Empresa, _Modalidad)
+            If _Cambiar_NroDocumento Then
+                '_Tido = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
+                _Nudo = Traer_Numero_Documento2(_Tido, _Empresa, _Modalidad)
+            End If
 
             _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("NroDocumento") = _Nudo
 
             _NewIdmaeedo = _New_Doc.Fx_Crear_Documento2(_Tido, _Nudo, False, False, _Ds_Matriz_Documentos)
+
+            If Not _Cambiar_NroDocumento Then _Nudo = _Old_Nudo
 
             _Error = _New_Doc.Error
 
@@ -1285,7 +1354,7 @@ Public Class Ws_BakApp
         Dim _Json2 = Mid(_Json, 2, _Json.Length - 1)
         _Json2 = Mid(_Json2, 1, _Json2.Length - 1)
 
-        Dim RutaArchivo As String = _Ruta & _NombreTabla & ".json"
+        Dim RutaArchivo As String = _Ruta & "\" & _NombreTabla & ".json"
         Dim Cuerpo = _Json
 
         Dim oSW As New System.IO.StreamWriter(RutaArchivo)
@@ -1479,7 +1548,8 @@ Public Class Ws_BakApp
 
             If IsNothing(_Row_Funcionario) Then
                 Throw New System.Exception("Falta la configuración del correo del funcionario" & vbCrLf &
-                                           "Revise el Emial en Zw_Usuarios Vs la conf. en Zw_Correos_Cuentas")
+                                           "Revise el Email en Zw_Usuarios Vs la conf. en Zw_Correos_Cuentas" & vbCrLf &
+                                           "Avise de esta situación al administrador del sistema")
             End If
 
             Consulta_sql = "Select * From " & _Global_BaseBk & "Zw_Configuracion_Formatos_X_Modalidad" & vbCrLf &
@@ -1487,7 +1557,8 @@ Public Class Ws_BakApp
             _Row_ConfModDocumento = _Sql.Fx_Get_DataRow(Consulta_sql)
 
             If IsNothing(_Row_ConfModDocumento) Then
-                Throw New System.Exception("Falta la configuración de la modalidad (" & _Modalidad & ")")
+                Throw New System.Exception("Falta la configuración de la modalidad (" & _Modalidad & ")" & vbCrLf &
+                                           "Avise de esta situación al administrador del sistema")
             End If
 
             _Enviar_Correo = _Row_ConfModDocumento.Item("Enviar_Correo")
@@ -1498,7 +1569,8 @@ Public Class Ws_BakApp
             _Row_Correo = _Sql.Fx_Get_DataRow(Consulta_sql)
 
             If IsNothing(_Row_Correo) Then
-                Throw New System.Exception("Falta el correo para el documento " & _Tido & " en la configuración de la modalidad (" & _Modalidad & ")")
+                Throw New System.Exception("Falta el correo para el documento " & _Tido & " en la configuración de la modalidad (" & _Modalidad & ")" & vbCrLf &
+                                           "Avise de esta situación al administrador del sistema")
             End If
 
             _Nombre_Correo = _Row_Correo.Item("Nombre_Correo")
@@ -1858,6 +1930,121 @@ Public Class Ws_BakApp
         Context.Response.End()
 
 
+
+    End Sub
+
+    <WebMethod(True)>
+    Public Sub Sb_RevisarDocVsListaPrecio(_Idmaeedo As Integer, _Vnta_Dias_Venci_Coti As Integer)
+
+        _Sql = New Class_SQL
+        Dim Consulta_sql As String
+        Dim _Ds2 As DataSet
+
+        Dim _Error = String.Empty
+        Dim _Respuesta = String.Empty
+        Dim _RowMaeedo_Origen As DataRow
+        Dim _Permitir = True
+        Dim _HayDifPrecios = False
+        Dim _Permiso = "Pbk00010"
+
+        Try
+
+            Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _Idmaeedo
+            _RowMaeedo_Origen = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            If IsNothing(_RowMaeedo_Origen) Then
+                Throw New System.Exception("No se pudo encontrar el documento ID: " & _Idmaeedo)
+            End If
+
+            Consulta_sql = My.Resources.Recursos_Sql.Revisar_Socumentos_VS_Lista_de_Precios
+            Consulta_sql = Replace(Consulta_sql, "#Idmaeedo#", _Idmaeedo)
+
+            Dim _Row_Diferencia As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            Dim _Diferencia As Double = _Row_Diferencia.Item("Diferencia")
+            Dim _Total_New As Double = _Row_Diferencia.Item("New_VABRLI")
+            Dim _Total_Old As Double = _Row_Diferencia.Item("VABRLI")
+
+            Dim _FechaDoc As Date = _RowMaeedo_Origen.Item("FEEMDO")
+            Dim _Dias_Coti As Integer = DateDiff(DateInterval.Day, _FechaDoc, Now.Date)
+            Dim _Vencida As Boolean
+
+            Dim _Dias_Venci_Coti As Integer = _Vnta_Dias_Venci_Coti '_Global_Row_Configuracion_General.Item("Vnta_Dias_Venci_Coti")
+
+            If _Dias_Venci_Coti > 0 Then
+                If _Dias_Venci_Coti < _Dias_Coti Then
+                    _Vencida = True
+                End If
+            End If
+
+            If _Vencida Then
+
+                If _Diferencia < 101 And _Diferencia > -101 Then
+                    _Diferencia = 0
+                End If
+
+                If CBool(_Diferencia) Then
+
+                    _HayDifPrecios = True
+
+                    If _Diferencia > 0 Then
+
+                        _Respuesta = "El documento de origen tiene más de " & _Dias_Venci_Coti & " días." &
+                                     vbCrLf &
+                                     "Total Original: " & FormatCurrency(_Total_Old, 0) & vbCrLf &
+                                     "Total Actual: " & FormatCurrency(_Total_New, 0) & vbCrLf &
+                                     "Diferencia: " & FormatCurrency(_Diferencia, 0)
+                        _Permitir = False
+
+                        '(SI) Mantiene los precios originales del documento (requiere permiso)" & vbCrLf &
+                        '(NO) Mantiene los precios actuales de la lista de precios"
+
+                        'Requiere el permiso TienePermiso("Pbk00010")
+
+                    Else
+
+                        _Respuesta = "El documento de origen tiene más de " & _Dias_Venci_Coti & " días." &
+                                      vbCrLf &
+                                      "Total Original: " & FormatCurrency(_Total_Old, 0) & vbCrLf &
+                                      "Total Actual: " & FormatCurrency(_Total_New, 0) & vbCrLf &
+                                      "Diferencia: " & FormatCurrency(_Diferencia, 0)
+
+                        _Permitir = True
+
+                    End If
+
+                End If
+
+            End If
+
+            'Throw New System.Exception(_Error)
+
+        Catch ex As Exception
+            _Error = ex.Message
+        End Try
+
+        If Not String.IsNullOrEmpty(_Error) Then
+            _Permitir = False
+            _HayDifPrecios = False
+            _Respuesta = String.Empty
+        End If
+
+        Consulta_sql = "Select " &
+                       "Cast(" & Convert.ToInt32(_Permitir) & " as Bit) As Permitir," &
+                       "Cast(" & Convert.ToInt32(_HayDifPrecios) & " as Bit) As HayDifPrecios," &
+                       "'" & Replace(_Error, "'", "''") & "' As Error," &
+                       "'" & _Permiso & "' As Permiso," &
+                       "'" & _Respuesta & "' As Respuesta,'" & _Version & "' As Version"
+        _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds2, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
 
     End Sub
 

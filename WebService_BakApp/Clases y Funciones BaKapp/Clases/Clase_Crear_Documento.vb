@@ -2435,7 +2435,7 @@ Public Class Clase_Crear_Documento
 
             With Tbl_Observaciones
 
-                _Obdo = .Rows(0).Item("Observaciones")
+                _Obdo = .Rows(0).Item("Observaciones").ToString.ToUpper
                 _Cpdo = .Rows(0).Item("Forma_pago")
                 _Ocdo = .Rows(0).Item("Orden_compra")
 

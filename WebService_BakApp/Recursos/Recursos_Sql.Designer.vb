@@ -65,6 +65,22 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Busca una cadena traducida similar a Declare @Idmaeedo Int = #Idmaeedo#
+        '''
+        '''
+        '''Select TIDO,NUDO,KOPRCT,NOKOPR,KOLTPR,Case UDTRPR When 1 Then CAPRCO1 Else CAPRCO2 End As CANTIDAD,PPPRNELT,
+        '''       (Select Top 1 Case UDTRPR When 1 Then PP01UD Else PP02UD End From TABPRE Where KOLT = SUBSTRING(KOLTPR,6,3) And KOPR = KOPRCT) As PRECIO_ACT,
+        '''	   Cast(0 As Float) As Diferencia,(Select Top 1 POIVPR From MAEPR Where KOPR = KOPRCT) As POIVPR,PODTGLLI,VADTNELI,VADTBRLI,VANELI,VAIVLI,VABRLI,
+        '''	   Cast(0 As Float) As New_VANELI,
+        '''	   Cast(0 As Float) As New [resto de la cadena truncado]&quot;;.
+        '''</summary>
+        Friend Shared ReadOnly Property Revisar_Socumentos_VS_Lista_de_Precios() As String
+            Get
+                Return ResourceManager.GetString("Revisar_Socumentos_VS_Lista_de_Precios", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Busca una cadena traducida similar a 
         '''Declare @CodEntidad Char(10) = &apos;#CodEntidad#&apos;,
         '''        @SucEntidad Char(10) = &apos;#SucEntidad#&apos;
@@ -87,13 +103,19 @@ Namespace My.Resources
         '''		@Empresa As char(2),
         '''		@Sucursal As varchar(3),
         '''        @Bodega As varchar(3),
-        '''		@Lista As Varchar(3)
+        '''		@Lista As Varchar(3),
+        '''		@UnTrans As Int
         '''
-        '''Select @Codigo = &apos;#Codigo#&apos;,@Empresa = &apos;#Empresa#&apos;,@Sucursal = &apos;#Sucursal#&apos;,@Bodega = &apos;#Bodega#&apos;,@Lista = &apos;#Lista#&apos;
+        '''Select @Codigo = &apos;#Codigo#&apos;,@Empresa = &apos;#Empresa#&apos;,@Sucursal = &apos;#Sucursal#&apos;,@Bodega = &apos;#Bodega#&apos;,@Lista = &apos;#Lista#&apos;,@UnTrans = #UnTrans#
         '''
-        '''Select Mp.KOPR,Mp.KOPRRA,Mp.KOPRTE,NOKOPR,Mp.RLUD,Mp.UD01PR,Mp.UD02PR,Mp.STFI1 As STFI1_Cons,Mp.STFI2 As STFI2_Cons,Mp.POIVPR,Mp.LISCOSTO,Mp.TIPR,
-        '''Tp.PP01UD,Tp.PPUL02,Tp.MG01UD,Tp.MG02UD,Tp.DTMA01UD,Tp.DTMA02UD,
-        '''Rtrim(Ltrim(Isnull(Tp.ECUACION,&apos;&apos;))) [resto de la cadena truncado]&quot;;.
+        '''Select  Cast(0 As Int) As &apos;Id_DocEnc&apos;,
+        '''		@Empresa As &apos;Empresa&apos;,
+        '''		@Sucursal As &apos;Sucursal&apos;,
+        '''		@Bodega As &apos;Bodega&apos;,
+        '''		Mp.KOPR As &apos;Codigo&apos;,
+        '''		NOKOPR As &apos;Descripcion&apos;,
+        '''		@UnTrans as &apos;UnTrans&apos;,
+        '''	    Case @Un [resto de la cadena truncado]&quot;;.
         '''</summary>
         Friend Shared ReadOnly Property SqlQuery_Traer_Producto() As String
             Get
