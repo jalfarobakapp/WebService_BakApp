@@ -356,7 +356,13 @@ Public Class Ws_BakApp
 
             If Not IsNothing(_RowTablcodal) Then
                 Codigo = _RowTablcodal.Item("KOPR")
+            Else
+                Dim _Kopr = _Sql.Fx_Trae_Dato("MAEPR", "KOPR", "KOPRTE = '" & Codigo & "'")
+                If Not String.IsNullOrEmpty(_Kopr) Then
+                    Codigo = _Kopr
+                End If
             End If
+
 
             Consulta_sql = My.Resources.Recursos_Sql.SqlQuery_Traer_Producto
             Consulta_sql = Replace(Consulta_sql, "#Codigo#", Codigo)
@@ -395,9 +401,9 @@ Public Class Ws_BakApp
             Dim _Ecuacion As String
 
             If UnTrans = 1 Then
-                _Ecuacion = _RowPrecios.Item("ECUACION")
+                _Ecuacion = NuloPorNro(_RowPrecios.Item("ECUACION"), "")
             Else
-                _Ecuacion = _RowPrecios.Item("ECUACION2")
+                _Ecuacion = NuloPorNro(_RowPrecios.Item("ECUACION2"), "")
             End If
 
             Dim _DescMaximo = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "DTMA0" & UnTrans & "UD", "EDTMA0" & UnTrans & "UD", Nothing, True, Koen)
@@ -1313,21 +1319,31 @@ Public Class Ws_BakApp
         Consulta_sql = "Select Top 1 KOFU,CLAVE,ESTADO,DESCUENTO,USUARIO,FECHA " & vbCrLf &
                        "From [@POSWI_USER_ADMIN]" & vbCrLf &
                        "Where KOFU = '" & _Kofu & "' And CLAVE = '" & _Clave & "' And CAST(FECHA AS DATE) = CAST(Getdate() AS DATE)"
+
+        Consulta_sql = "Select ID,CLAVE,FECHA,DESCUENTO,KOFU,ESTADO,DIR_IP" & vbCrLf &
+                       "From [@POSWI_DESCUENTO_CABECERA]" & vbCrLf &
+                       "Where KOFU = '" & _Kofu & "' And CLAVE = '" & _Clave & "' And CAST(FECHA AS DATE) = CAST(Getdate() AS DATE)"
+
         Dim _Row_Permiso As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
 
         If Not IsNothing(_Row_Permiso) Then
 
+            Dim _Id As Integer = _Row_Permiso.Item("ID")
             Dim _Estado As Integer = _Row_Permiso.Item("ESTADO")
 
             Consulta_sql = "Select Cast(1 As Bit) As Existe,Cast(" & _Estado & " As Bit) As Otorgado," & _Row_Permiso.Item("DESCUENTO") & " As Descuento"
             _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
 
             If _Eliminar Then
-                Consulta_sql = "Delete [@POSWI_USER_ADMIN]" & vbCrLf &
-                               "Where KOFU = '" & _Kofu & "' And CLAVE = '" & _Clave & "' And CAST(FECHA AS DATE) = CAST(Getdate() AS DATE)"
+                'Consulta_sql = "Delete [@POSWI_USER_ADMIN]" & vbCrLf &
+                '               "Where KOFU = '" & _Kofu & "' And CLAVE = '" & _Clave & "' And CAST(FECHA AS DATE) = CAST(Getdate() AS DATE)"
+                Consulta_sql = "Delete [@POSWI_DESCUENTO_CABECERA]" & vbCrLf &
+                               "Where ID = " & _Id
             Else
-                Consulta_sql = "Update [@POSWI_USER_ADMIN] Set ESTADO = 1" & vbCrLf &
-                               "Where KOFU = '" & _Kofu & "' And ESTADO = 0 And CLAVE = '" & _Clave & "' And CAST(FECHA AS DATE) = CAST(Getdate() AS DATE)"
+                'Consulta_sql = "Update [@POSWI_USER_ADMIN] Set ESTADO = 1" & vbCrLf &
+                '               "Where KOFU = '" & _Kofu & "' And ESTADO = 0 And CLAVE = '" & _Clave & "' And CAST(FECHA AS DATE) = CAST(Getdate() AS DATE)"
+                Consulta_sql = "Update [@POSWI_DESCUENTO_CABECERA] Set ESTADO = 1" & vbCrLf &
+                               "Where ID = " & _Id
             End If
             _Sql.Fx_Ej_consulta_IDU(Consulta_sql)
 
