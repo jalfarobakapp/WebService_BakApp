@@ -608,6 +608,7 @@ Public Class Ws_BakApp
                                      _Tidopa As String)
 
         _Sql = New Class_SQL
+        Dim Consulta_sql As String
 
         Dim _Stock_Disponible As Double
         Dim _Revisar_Stock_Disponible As Boolean = True
@@ -652,7 +653,7 @@ Public Class Ws_BakApp
 
         _Sql = New Class_SQL
 
-        Consulta_sql = "Select " & _Stock_Disponible & " As Stock_Disponible," & _Stock & " As Stock_Fisico"
+        Consulta_sql = "Select " & De_Num_a_Tx_01(_Stock_Disponible, False, 5) & " As Stock_Disponible," & De_Num_a_Tx_01(_Stock, False, 5) & " As Stock_Fisico"
         Dim _Ds As DataSet
         _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
 
