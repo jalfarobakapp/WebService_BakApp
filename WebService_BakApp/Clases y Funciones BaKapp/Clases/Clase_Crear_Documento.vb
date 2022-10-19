@@ -230,7 +230,6 @@ Public Class Clase_Crear_Documento
                 _Sudo = .Item("Sucursal")
                 _Kofudo = .Item("CodFuncionario")
 
-
                 _Endo = .Item("CodEntidad")
                 _Suendo = .Item("CodSucEntidad")
 
@@ -250,7 +249,6 @@ Public Class Clase_Crear_Documento
                 Dim _Vaimdo_2 = .Item("TotalIlaDoc")
                 Dim _Vabrdo_2 = .Item("TotalBrutoDoc")
 
-
                 _Vanedo = De_Num_a_Tx_01(.Item("TotalNetoDoc"), False, 5)
                 _Vaivdo = De_Num_a_Tx_01(.Item("TotalIvaDoc"), False, 5)
                 _Vaimdo = De_Num_a_Tx_01(.Item("TotalIlaDoc"), False, 5)
@@ -261,9 +259,7 @@ Public Class Clase_Crear_Documento
 
                 _Feer = Format(.Item("FechaRecepcion"), "yyyyMMdd")
                 _Feerli = Format(.Item("FechaRecepcion"), "yyyyMMdd")
-
                 '------------------------------------------------------------------------------------------------------------
-
 
             End With
 
@@ -1094,6 +1090,9 @@ Public Class Clase_Crear_Documento
 
                     If _Cambiar_NroDocumento And Not _Reserva_NroOCC Then
                         Numero_de_documento = Traer_Numero_Documento2(_Tido, _Empresa, _Modalidad, .Item("NroDocumento"))
+                        If Numero_de_documento = "_Error" Then
+                            Numero_de_documento = String.Empty
+                        End If
                     Else
                         Numero_de_documento = .Item("NroDocumento")
                     End If

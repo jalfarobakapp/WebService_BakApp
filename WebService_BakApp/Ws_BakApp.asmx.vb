@@ -1017,6 +1017,11 @@ Public Class Ws_BakApp
             _Tido = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
             _Nudo = Traer_Numero_Documento2(_Tido, _Empresa, _Modalidad)
 
+            If _Nudo = "_Error" Then
+                Throw New System.Exception("Problemas al obtener la numeración del documento." & vbCrLf &
+                         "Informe esta situación al administrador del sistema.")
+            End If
+
             _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("NroDocumento") = _Nudo
 
             _Idmaeedo = _New_Doc.Fx_Crear_Documento2(_Tido, _Nudo, False, False, _Ds_Matriz_Documentos)
@@ -1038,6 +1043,7 @@ Public Class Ws_BakApp
 
             Consulta_sql = "Select " & _Idmaeedo & " As Idmaeedo,'" & _Tido & "' As Tido,'" & _Nudo & "' As 'Nudo',Cast(1 as Bit) As Respuesta,'" & _Version & "' As Version"
             _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+
         Else
             Consulta_sql = "Select 0 As Idmaeedo,Cast(1 as Bit) As Respuesta,'" & Replace(_Error, "'", "''") & "' As Error,'" & _Version & "' As Version"
             _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)

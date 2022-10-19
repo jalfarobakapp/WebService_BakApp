@@ -1275,7 +1275,6 @@ Error_Numero:
 
         End If
 
-
         Return _NrNumeroDoco
 
     End Function
