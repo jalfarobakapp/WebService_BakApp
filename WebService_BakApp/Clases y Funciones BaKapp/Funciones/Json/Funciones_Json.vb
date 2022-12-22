@@ -2,7 +2,7 @@
 
 Module Funciones_Json
 
-    Public Function Fx_de_Json_a_Datatable(ByVal _Json As String) As DataTable
+    Public Function Fx_de_Json_a_Datatable(_Json As String) As DataTable
 
         _Json = Replace(_Json, """", "'")
 

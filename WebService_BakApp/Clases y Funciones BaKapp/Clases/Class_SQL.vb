@@ -18,8 +18,8 @@ Public Class Class_SQL
         '_SQL_String_conexion = SQL_String_conexion
     End Sub
 
-    Function Fx_Ej_consulta_IDU(ByVal ConsultaSql As String, _
-                                Optional ByVal MostrarError As Boolean = True) As Boolean
+    Function Fx_Ej_consulta_IDU(ConsultaSql As String, _
+                                Optional MostrarError As Boolean = True) As Boolean
         Try
             'Abrimos la conexión con la base de datos
 
@@ -51,7 +51,7 @@ Public Class Class_SQL
 
     End Function
 
-    Function Fx_Get_Tablas(ByVal _Consulta_sql As String) As DataTable
+    Function Fx_Get_Tablas(_Consulta_sql As String) As DataTable
 
         Dim _Tbl As New DataTable
         _Error = String.Empty
@@ -77,7 +77,7 @@ Public Class Class_SQL
 
     End Function
 
-    Function Fx_Get_DataRow(ByVal _Consulta_sql As String) As DataRow
+    Function Fx_Get_DataRow(_Consulta_sql As String) As DataRow
 
         Try
             _Error = String.Empty
@@ -95,9 +95,9 @@ Public Class Class_SQL
 
     End Function
 
-    Function Fx_Get_DataSet(ByVal _Consulta_sql As String, _
-                            ByVal _Ds As DataSet, _
-                            ByVal _Nombre_Tabla As String) As DataSet
+    Function Fx_Get_DataSet(_Consulta_sql As String, _
+                            _Ds As DataSet, _
+                            _Nombre_Tabla As String) As DataSet
 
         Dim _Tbl As New DataTable
 
@@ -122,7 +122,7 @@ Public Class Class_SQL
 
     End Function
 
-    Function Fx_Get_DataSet(ByVal Consulta_sql As String) As DataSet
+    Function Fx_Get_DataSet(Consulta_sql As String) As DataSet
 
         Try
             _Error = String.Empty
@@ -148,11 +148,11 @@ Public Class Class_SQL
 
     End Function
 
-    Function Fx_Extrae_Archivo_desde_BD(ByVal _Tabla As String, _
-                                        ByVal _Campo As String, _
-                                        ByVal _Condicion As String, _
-                                        ByVal _Nom_Archivo As String, _
-                                        ByVal _Dir_Temp As String) As Boolean
+    Function Fx_Extrae_Archivo_desde_BD(_Tabla As String, _
+                                        _Campo As String, _
+                                        _Condicion As String, _
+                                        _Nom_Archivo As String, _
+                                        _Dir_Temp As String) As Boolean
 
         Dim data As Byte() = Nothing
 
@@ -226,7 +226,7 @@ Public Class Class_SQL
     End Function
 
     'System.Windows.Forms.Application.DoEvents()
-    Sub Sb_Abrir_Conexion(ByVal _Cn As SqlConnection)
+    Sub Sb_Abrir_Conexion(_Cn As SqlConnection)
 
         Try
             _Error = String.Empty
@@ -245,7 +245,7 @@ Public Class Class_SQL
 
     End Sub
 
-    Sub Sb_Cerrar_Conexion(ByVal _Cn As SqlConnection)
+    Sub Sb_Cerrar_Conexion(_Cn As SqlConnection)
         '_Error = String.Empty
         Try
             If _Cn.State = ConnectionState.Open Then
@@ -257,7 +257,7 @@ Public Class Class_SQL
         End Try
     End Sub
 
-    Function Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(ByVal Consulta_sql As String) As Boolean
+    Function Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(Consulta_sql As String) As Boolean
 
         Dim myTrans As SqlClient.SqlTransaction
         Dim Comando As SqlClient.SqlCommand
@@ -301,12 +301,12 @@ Public Class Class_SQL
 
     End Function
 
-    Function Fx_Trae_Dato(ByVal _Tabla As String, _
-                         ByVal _Campo As String, _
-                         Optional ByVal _Condicion As String = "", _
-                         Optional ByVal _DevNumero As Boolean = False, _
-                         Optional ByVal _MostrarError As Boolean = True, _
-                         Optional ByVal _Dato_Default As String = "") As String
+    Function Fx_Trae_Dato(_Tabla As String, _
+                         _Campo As String, _
+                         Optional _Condicion As String = "", _
+                         Optional _DevNumero As Boolean = False, _
+                         Optional _MostrarError As Boolean = True, _
+                         Optional _Dato_Default As String = "") As String
         Try
 
             Dim _Valor
@@ -363,8 +363,8 @@ Public Class Class_SQL
 
     End Function
 
-    Function Fx_Cuenta_Registros(ByVal _Tabla As String, _
-                                 Optional ByVal _Condicion As String = "") As Double
+    Function Fx_Cuenta_Registros(_Tabla As String, _
+                                 Optional _Condicion As String = "") As Double
 
         If Not String.IsNullOrEmpty(_Condicion) Then
             _Condicion = vbCrLf & "And " & _Condicion
@@ -386,7 +386,7 @@ Public Class Class_SQL
 
     End Function
 
-    Function Fx_SqlDataReader(ByVal Consulta_sql As String) As SqlDataReader
+    Function Fx_SqlDataReader(Consulta_sql As String) As SqlDataReader
 
         Sb_Abrir_Conexion(_Cn)
         Dim _Comando As SqlClient.SqlCommand
@@ -398,7 +398,7 @@ Public Class Class_SQL
 
     End Function
 
-    Sub Sb_Eliminar_Tabla_De_Paso(ByVal _Tabla_Paso As String)
+    Sub Sb_Eliminar_Tabla_De_Paso(_Tabla_Paso As String)
 
         Dim _ConsultaSql As String = "BEGIN TRY" & vbCrLf & _
                                      "DROP TABLE " & _Tabla_Paso & vbCrLf & _
@@ -419,6 +419,52 @@ Public Class Class_SQL
         End If
 
         Return _Error
+
+    End Function
+
+    Function Fx_Existe_Tabla(_Tabla As String) As Boolean
+
+        Dim _ConsultaSql As String
+
+        If _Tabla.Contains(_Global_BaseBk) Then
+
+            _Tabla = Replace(_Tabla, _Global_BaseBk, "")
+            _ConsultaSql = "USE " & Replace(_Global_BaseBk, ".dbo.", "") & "
+                            SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" & _Tabla & "'"
+
+        Else
+
+            _ConsultaSql = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" & _Tabla & "'"
+
+        End If
+
+        Dim _Tbl As DataTable = Fx_Get_Tablas(_ConsultaSql)
+
+        Return _Tbl.Rows.Count
+
+    End Function
+
+    Function Fx_Exite_Campo(_Tabla As String, _Campo As String) As Boolean
+
+        Dim _ConsultaSql As String
+
+        If _Tabla.Contains(_Global_BaseBk) Then
+
+            _Tabla = Replace(_Tabla, _Global_BaseBk, "")
+            _ConsultaSql = "USE " & Replace(_Global_BaseBk, ".dbo.", "") & "
+                            SELECT * FROM INFORMATION_SCHEMA.COLUMNS" & vbCrLf &
+                            "WHERE COLUMN_NAME = '" & _Campo & "' AND TABLE_NAME = '" & _Tabla & "'"
+
+        Else
+
+            _ConsultaSql = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS" & vbCrLf &
+                                   "WHERE COLUMN_NAME = '" & _Campo & "' AND TABLE_NAME = '" & _Tabla & "'"
+
+        End If
+
+        Dim _Tbl As DataTable = Fx_Get_Tablas(_ConsultaSql)
+
+        Return CBool(_Tbl.Rows.Count)
 
     End Function
 

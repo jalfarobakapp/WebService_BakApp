@@ -71,9 +71,7 @@
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
-    <Reference Include="System.Web.Extensions">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Mobile" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
@@ -105,6 +103,13 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Clases y Funciones BaKapp\Clases\DataSet\Ds_Matriz_Documentos.xsc">
+      <DependentUpon>Ds_Matriz_Documentos.xsd</DependentUpon>
+    </Content>
+    <Content Include="Clases y Funciones BaKapp\Clases\DataSet\Ds_Matriz_Documentos.xss">
+      <DependentUpon>Ds_Matriz_Documentos.xsd</DependentUpon>
+    </Content>
+    <Content Include="Recursos\Consultas Sql\Documentos\Revisar Socumentos VS Lista de Precios.sql" />
     <Content Include="Recursos\Consultas Sql\Entidades\SqlQuery_Datos_Entidad.sql" />
     <Content Include="Recursos\Consultas Sql\Productos\SqlQuery_Traer_Producto.sql" />
     <Content Include="Service1.svc" />
@@ -114,6 +119,16 @@
   <ItemGroup>
     <Compile Include="Clases y Funciones BaKapp\Clases\Clase_Crear_Documento.vb" />
     <Compile Include="Clases y Funciones BaKapp\Clases\Class_Llave_Equipo.vb" />
+    <Compile Include="Clases y Funciones BaKapp\Clases\Cl_Enviar_Impresion_Diablito.vb" />
+    <Compile Include="Clases y Funciones BaKapp\Clases\DataSet\Ds_Matriz_Documentos.Designer.vb">
+      <DependentUpon>Ds_Matriz_Documentos.xsd</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Clases y Funciones BaKapp\Clases\DataSet\Ds_Matriz_Documentos.vb">
+      <SubType>code</SubType>
+      <DependentUpon>Ds_Matriz_Documentos.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Clases y Funciones BaKapp\Clases\Eliminar Anular Documento\Clase_EliminarAnular_Documento.vb" />
     <Compile Include="Clases y Funciones BaKapp\Clases\Class_Conectar_Base_BakApp.vb" />
     <Compile Include="Clases y Funciones BaKapp\Clases\Class_SQL.vb" />
@@ -144,6 +159,7 @@
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -184,12 +200,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Clases y Funciones BaKapp\Clases\DataSet\Ds_Matriz_Documentos.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>Ds_Matriz_Documentos.Designer.vb</LastGenOutput>
+    </None>
     <None Include="Clases y Funciones BaKapp\Clases\Eliminar Anular Documento\Recursos Sql\Revisar_sutentatorio.sql" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </None>
-    <None Include="My Project\PublishProfiles\FolderProfile.pubxml" />
     <None Include="My Project\PublishProfiles\Ws_Bakapp4AI.pubxml" />
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

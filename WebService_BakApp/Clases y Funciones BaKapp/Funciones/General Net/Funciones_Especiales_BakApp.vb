@@ -9,7 +9,7 @@ Public Module Funciones_Especiales_BakApp
 
     Dim Consulta_sql As String
 
-    Function Fx_Cambiar_Numeracion_Modalidad(ByVal _Tido As String,
+    Function Fx_Cambiar_Numeracion_Modalidad(_Tido As String,
                                              _Empresa As String,
                                              _Modalidad As String) As Boolean
 
@@ -118,10 +118,10 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function Fx_Genera_Licencia_BakApp(ByVal _RutEmpresa As String,
-                                        ByVal _FechaCaduca As Date,
-                                        ByVal _CantLicencias As Integer,
-                                        ByVal _Palabra_X As String) As String()
+    Function Fx_Genera_Licencia_BakApp(_RutEmpresa As String,
+                                        _FechaCaduca As Date,
+                                        _CantLicencias As Integer,
+                                        _Palabra_X As String) As String()
 
         Dim _Llave1, _Llave2, _Llave3, _Llave4 As String
 
@@ -141,7 +141,7 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Private Function Encripta_md5(ByVal TextoAEncriptar As String) As String
+    Private Function Encripta_md5(TextoAEncriptar As String) As String
         Dim vlo_MD5 As New MD5CryptoServiceProvider
         Dim vlby_Byte(), vlby_Hash() As Byte
         Dim vls_TextoEncriptado As String = ""
@@ -161,8 +161,8 @@ Public Module Funciones_Especiales_BakApp
         Return vls_TextoEncriptado
     End Function
 
-    Public Function Fx_Tipo_Grab_Modalidad(ByVal _TipoDoc As String,
-                                           ByVal _NrNumeroDoco As String) As String
+    Public Function Fx_Tipo_Grab_Modalidad(_TipoDoc As String,
+                                           _NrNumeroDoco As String) As String
 
 
         Dim Continua As Boolean = True
@@ -177,7 +177,7 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function _Dev_HoraGrab(ByVal Hora As String)
+    Function _Dev_HoraGrab(Hora As String)
 
         Dim _HH, _MM, _SS As Double
         Dim _Horagrab As Integer
@@ -212,8 +212,8 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function Fx_Trae_Permiso_Bk(ByVal _CodUsuario As String,
-                                ByVal _CodPremiso As String) As DataTable
+    Function Fx_Trae_Permiso_Bk(_CodUsuario As String,
+                                _CodPremiso As String) As DataTable
 
         Dim _Sql As New Class_SQL()
 
@@ -228,7 +228,7 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function Fx_Traer_Datos_Entidad(ByVal _CodEntidad As String, ByVal _SucEntidad As String) As DataSet
+    Function Fx_Traer_Datos_Entidad(_CodEntidad As String, _SucEntidad As String) As DataSet
 
         Dim _Sql As New Class_SQL()
 
@@ -254,7 +254,7 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function TraeClaveRD(ByVal Texto As String) As String
+    Function TraeClaveRD(Texto As String) As String
 
         Dim valorAscii As Integer
         Dim PassEncriptado, Letra As String
@@ -287,13 +287,13 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function Fx_Stock_Disponible(ByVal _Tido As String,
-                                 ByVal _Empresa As String,
-                                 ByVal _Sucursal As String,
-                                 ByVal _Bodega As String,
-                                 ByVal _Codigo As String,
-                                 ByVal _Ud As Integer,
-                                 ByVal _Campo As String) As Double
+    Function Fx_Stock_Disponible(_Tido As String,
+                                 _Empresa As String,
+                                 _Sucursal As String,
+                                 _Bodega As String,
+                                 _Codigo As String,
+                                 _Ud As Integer,
+                                 _Campo As String) As Double
 
 
         Dim _Sql As New Class_SQL()
@@ -358,7 +358,7 @@ Public Module Funciones_Especiales_BakApp
 
         Consulta_sql = "Select " & _Campo_Formula_Stock & " As Stock_Disponible" & vbCrLf &
                        "From MAEST" & vbCrLf &
-                       "Left Join " & _Global_BaseBk & "Zw_Prod_Stock On EMPRESA = Empresa And KOSU = Sucursal And KOBO = Bodega And KOPR = Codigo" & vbCrLf &
+                       "Left Join " & Global_BaseBk & "Zw_Prod_Stock On EMPRESA = Empresa And KOSU = Sucursal And KOBO = Bodega And KOPR = Codigo" & vbCrLf &
                        "Where" & vbCrLf &
                        "EMPRESA = '" & _Empresa & "' And KOSU = '" & _Sucursal & "'" & Space(1) &
                        "And KOBO = '" & _Bodega & "' And KOPR = '" & _Codigo & "'"
@@ -371,10 +371,10 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Public Function Fx_Suma_cantidades(ByVal CAMPO As String,
-                                       ByVal TABLA As String,
-                                       Optional ByVal condicion As String = "",
-                                       Optional ByVal Decimales As Integer = 0) As Double
+    Public Function Fx_Suma_cantidades(CAMPO As String,
+                                       TABLA As String,
+                                       Optional condicion As String = "",
+                                       Optional Decimales As Integer = 0) As Double
 
         Dim _Sql As New Class_SQL()
 
@@ -406,8 +406,8 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function Fx_Solo_Enteros(ByVal _Cantidad As Double,
-                             ByVal _Divisible As String) As Boolean
+    Function Fx_Solo_Enteros(_Cantidad As Double,
+                             _Divisible As String) As Boolean
 
         Dim _Sql As New Class_SQL()
 
@@ -440,8 +440,8 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function Fx_Precio_Formula(ByVal _CPrecio As _Campo_Precio,
-                           ByVal _RowPrecio As DataRow)
+    Function Fx_Precio_Formula(_CPrecio As _Campo_Precio,
+                           _RowPrecio As DataRow)
 
         Dim _Sql As New Class_SQL()
 
@@ -886,6 +886,10 @@ Public Module Funciones_Especiales_BakApp
 
         Sb_Buscar_Valor_En_Dimensiones(_Empresa, _Fx1, _Codigo, _Koen)
 
+        If String.IsNullOrEmpty(_Fx1.ToString.Trim) Then
+            _Fx1 = 0
+        End If
+
         Dim _Precio As Double
 
         Consulta_sql = "Select " & _Fx1 & " As Valor"
@@ -901,7 +905,7 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function Fx_Redondeo_Random(ByVal _Redondeo As String) As Redondeo
+    Function Fx_Redondeo_Random(_Redondeo As String) As Redondeo
 
         Select Case _Redondeo
             Case 1
@@ -949,7 +953,7 @@ Public Module Funciones_Especiales_BakApp
         Redondear_al_entero_superior
     End Enum
 
-    Function Fx_Redondear_Precio(ByVal _Precio As Double, ByVal _Redondedo As Redondeo) As Double
+    Function Fx_Redondear_Precio(_Precio As Double, _Redondedo As Redondeo) As Double
 
         Dim _Valor As String = De_Num_a_Tx_01(_Precio, False, 5)
 
@@ -1250,7 +1254,7 @@ Public Module Modulo_Precios_Costos
 
     End Function
 
-    Function Fx_Redondeo_Random(ByVal _Redondeo As String) As Redondeo
+    Function Fx_Redondeo_Random(_Redondeo As String) As Redondeo
 
         Select Case _Redondeo
             Case 1
@@ -1298,7 +1302,7 @@ Public Module Modulo_Precios_Costos
         Redondear_al_entero_superior
     End Enum
 
-    Function Fx_Redondear_Precio(ByVal _Precio As Double, ByVal _Redondedo As Redondeo) As Double
+    Function Fx_Redondear_Precio(_Precio As Double, _Redondedo As Redondeo) As Double
 
         Dim _Valor As String = De_Num_a_Tx_01(_Precio, False, 5)
 
@@ -1399,9 +1403,9 @@ Public Module Modulo_Precios_Costos
 
     End Function
 
-    Function Fx_Formato_Numerico(ByVal _Valor As String,
-                                 ByVal _Formato As String,
-                                 ByVal _Es_Descuento As Boolean) As String
+    Function Fx_Formato_Numerico(_Valor As String,
+                                 _Formato As String,
+                                 _Es_Descuento As Boolean) As String
 
         Dim _Cant_Caracteres As Integer = Len(_Formato)
         Dim _Moneda As Boolean
@@ -1548,6 +1552,109 @@ Public Module Colores_Bakapp
         End Select
 
         Return _Color
+
+    End Function
+
+    Function Fx_Revisar_Expiracion_Folio_SII(_Empresa As String, _Tido As String, _Folio As String) As Boolean
+
+        Dim _Sql As New Class_SQL()
+
+        If _Tido = "GDP" Or _Tido = "GDD" Or _Tido = "GTI" Then
+            _Tido = "GDV"
+        End If
+
+        Dim _Td = Fx_Tipo_DTE_VS_TIDO(_Tido)
+
+        Consulta_sql = "Select Top 1 * From FFOLIOS With ( NOLOCK )" & vbCrLf &
+                       "Where Cast(RNG_D AS INT)<=" & Val(_Folio) & "  And Cast(RNG_H AS INT)>=" & Val(_Folio) &
+                       " And TD='" & _Td & "' And EMPRESA='" & _Empresa & "' "
+
+        Dim _Row_Folios As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+        If IsNothing(_Row_Folios) Then
+
+            'If Not IsNothing(_Formulario) Then
+
+            '    'MessageBoxEx.Show(_Formulario, "el folio del documento electrónico no está  autorizado por el SII: " & _Folio & vbCrLf & vbCrLf &
+            '    '                  "INFORME ESTA SITUACION AL ADMINISTRADOR DEL SISTEMA POR FAVOR", "Validación Modalidad: " & Modalidad,
+            '    '                  MessageBoxButtons.OK, MessageBoxIcon.Stop)
+
+            'End If
+
+        Else
+
+            'Dim _Hasta = _Row_Folios.Item("RNG_H")
+            'Dim _Folios_Restantes = _Hasta - CInt(_Folio)
+
+            Dim _Fa As DateTime = FormatDateTime(CDate(_Row_Folios.Item("FA")), DateFormat.ShortDate)
+            Dim _Fecha_Servisor As DateTime = FormatDateTime(FechaDelServidor(), DateFormat.ShortDate)
+
+            Dim _Meses As Integer = 6
+
+            If _Sql.Fx_Existe_Tabla("FDTECONF") Then
+
+                Try
+                    _Meses = _Sql.Fx_Trae_Dato("FDTECONF", "VALOR", "CAMPO = 'sii.meses.expiran.folios' And ACTIVO=1 And EMPRESA = '" & _Empresa & "'")
+                Catch ex As Exception
+                    If _Tido = "BLV" Then
+                        _Meses = 24
+                    ElseIf _Tido = "GDV" Then
+                        _Meses = 12
+                    End If
+                End Try
+
+            End If
+
+            Dim _Meses_Dif As Double = DateDiff(DateInterval.Month, _Fa, _Fecha_Servisor)
+            Dim _Dias_Dif As Integer = DateDiff(DateInterval.Day, _Fa, _Fecha_Servisor)
+
+            _Meses_Dif = Math.Round(_Dias_Dif / 31, 2)
+
+            If _Meses_Dif > _Meses Then
+
+                'If Not IsNothing(_Formulario) Then
+
+                '    MessageBoxEx.Show(_Formulario, "Este folio " & _Folio & " tiene mas de (" & _Meses & ") meses desde su fecha de creación" & vbCrLf &
+                '              "en el SII y su configuración indica que podría estar vencido." & vbCrLf &
+                '              "Si usted insite en el envío, este documento podria ser rechazado." & vbCrLf & vbCrLf &
+                '              "INFORME ESTA SITUACION AL ADMINISTRADOR DEL SISTEMA POR FAVOR", "Validación Modalidad: " & Modalidad, MessageBoxButtons.OK, MessageBoxIcon.Stop)
+
+                'End If
+
+            Else
+
+                Return True
+
+            End If
+
+        End If
+
+    End Function
+
+    Function Fx_Tipo_DTE_VS_TIDO(_Tido As String) As Integer
+
+        Select Case _Tido
+            Case "FCV"
+                Return 33
+            Case "BLV", "BSV"
+                Return 39
+            Case "GDV", "GDP", "GTI", "GDD"
+                Return 52
+            Case "NCV"
+                Return 61
+            Case "OCC"
+                Return 801
+            Case Else
+                Return 0
+        End Select
+
+        'Return "FACTURA" 33
+        'Return "FACTURA EXENTA" 34
+        'Return "GUIA DE DESPACHO" 52
+        'Return "FACTURA DE COMPRA" 46
+        'Return "NOTA DE DEBITO" 56
+        'Return "NOTA DE CREDITO" 61
+        'Return "ORDEN DE COMPRA" 801
 
     End Function
 
