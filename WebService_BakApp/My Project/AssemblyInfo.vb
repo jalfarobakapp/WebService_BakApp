@@ -13,9 +13,9 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyCompany("")> 
 <Assembly: AssemblyProduct("WebService_BakApp")>
 <Assembly: AssemblyCopyright("Copyright ©  2022")>
-<Assembly: AssemblyTrademark("")> 
+<Assembly: AssemblyTrademark("")>
 
-<Assembly: ComVisible(False)>
+<Assembly: ComVisible(True)>
 
 'El siguiente GUID sirve como identificador de la biblioteca de tipos si este proyecto se expone a COM
 <Assembly: Guid("7bad437d-dfae-4114-a1d9-1ad1347b99d2")>

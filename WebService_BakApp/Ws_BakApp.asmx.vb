@@ -4,6 +4,7 @@ Imports System.Web.Script.Serialization
 Imports System.Web.Script.Services
 Imports System.Web.Services
 Imports Newtonsoft.Json
+Imports WebService_BakApp.Documento
 
 ' Para permitir que se llame a este servicio web desde un script, usando ASP.NET AJAX, quite la marca de comentario de la siguiente línea.
 ' <System.Web.Script.Services.ScriptService()> _
@@ -1061,6 +1062,124 @@ Public Class Ws_BakApp
     End Sub
 
     <WebMethod(True)>
+    Public Sub Sb_CreaDocumentoJsonBakapp2(_EncabezadoJs As String,
+                                           _DestalleJs As String,
+                                           _DescuentosJs As String,
+                                           _ObservacionesJs As String,
+                                           _DespachoSimpleJs As String)
+
+        _Sql = New Class_SQL
+        Dim _Ds2 As DataSet
+
+        Dim _Error As String
+        Dim _Idmaeedo As Integer
+        Dim _Tido As String
+        Dim _Nudo As String
+
+        Dim _Ds As DataSet
+        Dim _Row_DespachoSimple As DataRow
+
+
+        Try
+
+            'Dim _Ruta = "D:\JsonB4Android\"
+
+            'Fx_Grabar_JsonArchivo(_EncabezadoJs, _Ruta, "EncabezadoJs")
+            'Fx_Grabar_JsonArchivo(_DestalleJs, _Ruta, "DestalleJs")
+            'Fx_Grabar_JsonArchivo(_DescuentosJs, _Ruta, "DescuentosJs")
+            'Fx_Grabar_JsonArchivo(_ObservacionesJs, _Ruta, "ObservacionesJs")
+            'Fx_Grabar_JsonArchivo(_DespachoSimpleJs, _Ruta, "DespachoSimpleJs")
+
+            'Throw New System.Exception("Archivo New creados...")
+
+            'Return
+
+            Dim _Ds_Matriz_Documentos As New Ds_Matriz_Documentos
+
+            _Ds_Matriz_Documentos.Clear()
+            _Ds_Matriz_Documentos = New Ds_Matriz_Documentos
+
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _EncabezadoJs, "Encabezado_Doc")
+
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Post_Venta") = False
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Tipo_Documento") = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
+
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _DestalleJs, "Detalle_Doc")
+            If Not String.IsNullOrEmpty(_DescuentosJs) Then Fx_LlenarDatos(_Ds_Matriz_Documentos, _DescuentosJs, "Descuentos_Doc")
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _ObservacionesJs, "Observaciones_Doc")
+
+            Dim _Json = _DespachoSimpleJs
+
+            _Json = Mid(_Json, 2, _Json.Length - 1)
+            _Json = Mid(_Json, 1, _Json.Length - 1)
+
+            _Ds = JsonConvert.DeserializeObject(Of DataSet)(_Json)
+            _Row_DespachoSimple = _Ds.Tables(0).Rows(0)
+
+            Dim _Funcionario As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("CodFuncionario")
+            _Global_BaseBk = "BAKAPP_VH.dbo."
+            Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
+
+            Dim _Modalidad As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Modalidad")
+            Dim _Empresa As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Empresa")
+
+            _Tido = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
+            _Nudo = Traer_Numero_Documento2(_Tido, _Empresa, _Modalidad)
+
+            If _Nudo = "_Error" Then
+                Throw New System.Exception("Problemas al obtener la numeración del documento." & vbCrLf &
+                         "Informe esta situación al administrador del sistema.")
+            End If
+
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("NroDocumento") = _Nudo
+
+            _Idmaeedo = _New_Doc.Fx_Crear_Documento2(_Tido, _Nudo, False, False, _Ds_Matriz_Documentos)
+
+            _Error = _New_Doc.Error
+
+        Catch ex As Exception
+            _Error = ex.Message
+        End Try
+
+        If CBool(_Idmaeedo) Then
+
+            Dim _CodTipoDespacho As Integer = _Row_DespachoSimple.Item("CodTipoDespacho")
+            Dim _TipoDespacho As String = _Row_DespachoSimple.Item("TipoDespacho")
+            Dim _TipoPagoDesp As String = _Row_DespachoSimple.Item("TipoPagoDesp")
+            Dim _DireccionDesp As String = _Row_DespachoSimple.Item("DireccionDesp")
+            Dim _TransporteDesp As String = _Row_DespachoSimple.Item("TransporteDesp")
+            Dim _ObservacionesDesp As String = _Row_DespachoSimple.Item("ObservacionesDesp")
+
+            Consulta_sql = "Insert Into " & _Global_BaseBk & "Zw_Despacho_Simple (Idmaeedo,CodTipoDespacho,TipoDespacho,TipoPagoDesp,DireccionDesp,TransporteDesp,ObservacionesDesp) Values " &
+                           "(" & _Idmaeedo & "," & _CodTipoDespacho & ",'" & _TipoDespacho & "','" & _TipoPagoDesp & "','" & _DireccionDesp & "','" & _TransporteDesp & "','" & _ObservacionesDesp & "')"
+            _Sql.Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(Consulta_sql)
+
+            Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _Idmaeedo
+            Dim _Row_Documento As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            _Tido = _Row_Documento.Item("TIDO")
+            _Nudo = _Row_Documento.Item("NUDO")
+
+            Consulta_sql = "Select " & _Idmaeedo & " As Idmaeedo,'" & _Tido & "' As Tido,'" & _Nudo & "' As 'Nudo',Cast(1 as Bit) As Respuesta,'" & _Version & "' As Version"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Else
+            Consulta_sql = "Select 0 As Idmaeedo,Cast(1 as Bit) As Respuesta,'" & Replace(_Error, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End If
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds2, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
     Public Sub Sb_EditarDocumentoJsonBakapp(_OldIdmaeedo As Integer,
                                             _Cod_Func_Eliminador As String,
                                             _Global_BaseBk As String,
@@ -1156,6 +1275,153 @@ Public Class Ws_BakApp
         End Try
 
         If CBool(_NewIdmaeedo) Then
+
+            Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _NewIdmaeedo
+            Dim _Row_Documento As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            _Tido = _Row_Documento.Item("TIDO")
+            _Nudo = _Row_Documento.Item("NUDO")
+
+            Consulta_sql = "Select " & _NewIdmaeedo & " As Idmaeedo,'" & _Tido & "' As Tido,'" & _Nudo & "' As 'Nudo',Cast(1 as Bit) As Respuesta,'" & _Version & "' As Version"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        Else
+            Consulta_sql = "Select 0 As Idmaeedo,Cast(1 as Bit) As Respuesta,'" & Replace(_Error, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End If
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds2, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    Public Sub Sb_EditarDocumentoJsonBakapp2(_OldIdmaeedo As Integer,
+                                            _Cod_Func_Eliminador As String,
+                                            _Global_BaseBk As String,
+                                            _EncabezadoJs As String,
+                                            _DestalleJs As String,
+                                            _DescuentosJs As String,
+                                            _ObservacionesJs As String,
+                                            _Cambiar_NroDocumento As Boolean,
+                                            _DespachoSimpleJs As String)
+
+        _Sql = New Class_SQL
+        Dim _Ds2 As DataSet
+
+        Dim _Error As String
+        Dim _NewIdmaeedo As Integer
+        Dim _Tido As String
+        Dim _Nudo As String
+        Dim _Old_Nudo As String
+
+        Dim _Row_OldMaeedo As DataRow
+
+        Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _OldIdmaeedo
+        _Row_OldMaeedo = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+        _Tido = _Row_OldMaeedo.Item("TIDO")
+        _Nudo = _Row_OldMaeedo.Item("NUDO")
+        _Old_Nudo = _Nudo
+
+        Dim _Ds As DataSet
+        Dim _Row_DespachoSimple As DataRow
+
+        Try
+
+            Dim _Ds_Matriz_Documentos As New Ds_Matriz_Documentos
+
+            _Ds_Matriz_Documentos.Clear()
+            _Ds_Matriz_Documentos = New Ds_Matriz_Documentos
+
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _EncabezadoJs, "Encabezado_Doc")
+
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Post_Venta") = False
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Tipo_Documento") = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
+
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _DestalleJs, "Detalle_Doc")
+            If Not String.IsNullOrEmpty(_DescuentosJs) Then Fx_LlenarDatos(_Ds_Matriz_Documentos, _DescuentosJs, "Descuentos_Doc")
+            Fx_LlenarDatos(_Ds_Matriz_Documentos, _ObservacionesJs, "Observaciones_Doc")
+
+            Dim _Funcionario As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("CodFuncionario")
+            '_Global_BaseBk = "BAKAPP_VH.dbo."
+            Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
+
+            Dim _Modalidad As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Modalidad")
+            Dim _Empresa As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Empresa")
+
+            If _Cambiar_NroDocumento Then
+                '_Tido = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
+                _Nudo = Traer_Numero_Documento2(_Tido, _Empresa, _Modalidad)
+            End If
+
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("NroDocumento") = _Nudo
+
+
+            Dim _Json = _DespachoSimpleJs
+
+            _Json = Mid(_Json, 2, _Json.Length - 1)
+            _Json = Mid(_Json, 1, _Json.Length - 1)
+
+            _Ds = JsonConvert.DeserializeObject(Of DataSet)(_Json)
+            _Row_DespachoSimple = _Ds.Tables(0).Rows(0)
+
+
+            _NewIdmaeedo = _New_Doc.Fx_Crear_Documento2(_Tido, _Nudo, False, False, _Ds_Matriz_Documentos)
+
+            If Not _Cambiar_NroDocumento Then _Nudo = _Old_Nudo
+
+            _Error = _New_Doc.Error
+
+            If CBool(_NewIdmaeedo) Then
+
+                Dim _Class_E As New Clase_EliminarAnular_Documento
+
+                Dim _Eliminado As Boolean = _Class_E.Fx_EliminarAnular_Doc(_OldIdmaeedo,
+                                                                           _Cod_Func_Eliminador,
+                                                                           Clase_EliminarAnular_Documento._Accion_EA.Modificar,
+                                                                           False)
+
+                If _Eliminado Then
+
+                    Consulta_sql = "Update MAEEDO Set NUDO = '" & _Nudo & "' Where IDMAEEDO = " & _NewIdmaeedo & vbCrLf &
+                                   "Update MAEDDO Set NUDO = '" & _Nudo & "' Where IDMAEEDO = " & _NewIdmaeedo
+                    _Sql.Fx_Ej_consulta_IDU(Consulta_sql)
+
+                Else
+
+                    _Class_E.Fx_EliminarAnular_Doc(_NewIdmaeedo,
+                                                   _Cod_Func_Eliminador,
+                                                   Clase_EliminarAnular_Documento._Accion_EA.Modificar,
+                                                   False)
+                    _NewIdmaeedo = 0
+
+                End If
+
+            End If
+
+        Catch ex As Exception
+            _Error = ex.Message
+        End Try
+
+        If CBool(_NewIdmaeedo) Then
+
+            Dim _CodTipoDespacho As Integer = _Row_DespachoSimple.Item("CodTipoDespacho")
+            Dim _TipoDespacho As String = _Row_DespachoSimple.Item("TipoDespacho")
+            Dim _TipoPagoDesp As String = _Row_DespachoSimple.Item("TipoPagoDesp")
+            Dim _DireccionDesp As String = _Row_DespachoSimple.Item("DireccionDesp")
+            Dim _TransporteDesp As String = _Row_DespachoSimple.Item("TransporteDesp")
+            Dim _ObservacionesDesp As String = _Row_DespachoSimple.Item("ObservacionesDesp")
+
+            Consulta_sql = "Delete " & _Global_BaseBk & "Zw_Despacho_Simple Where Idmaeedo = " & _OldIdmaeedo & vbCrLf &
+                           "Insert Into " & _Global_BaseBk & "Zw_Despacho_Simple (Idmaeedo,CodTipoDespacho,TipoDespacho,TipoPagoDesp,DireccionDesp,TransporteDesp,ObservacionesDesp) Values " &
+                           "(" & _NewIdmaeedo & "," & _CodTipoDespacho & ",'" & _TipoDespacho & "','" & _TipoPagoDesp & "','" & _DireccionDesp & "','" & _TransporteDesp & "','" & _ObservacionesDesp & "')"
+            _Sql.Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(Consulta_sql)
 
             Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _NewIdmaeedo
             Dim _Row_Documento As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
