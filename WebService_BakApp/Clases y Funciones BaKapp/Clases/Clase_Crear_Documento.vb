@@ -5,6 +5,12 @@ Public Class Clase_Crear_Documento
     Dim _Sql As New Class_SQL
     Dim _Error As String
 
+    Public Property NombreEquipo As String
+    Public Property TipoEstacion As String
+
+    ' Dim _NombreEquipo = _Global_Row_EstacionBk.Item("NombreEquipo")
+    'Dim _TipoEstacion = _Global_Row_EstacionBk.Item("TipoEstacion")
+
     Dim _Funcionario As String
 
 #Region "VARIABLES ENCABEZADO"
@@ -2529,6 +2535,23 @@ Public Class Clase_Crear_Documento
                     Comando.ExecuteNonQuery()
 
                 End If
+
+            End If
+
+            If _Sql.Fx_Existe_Tabla(_Global_BaseBk & "Zw_Docu_Ent") Then
+
+                Dim _NombreEquipo = NombreEquipo '_Global_Row_EstacionBk.Item("NombreEquipo")
+                Dim _TipoEstacion = TipoEstacion '.Item("TipoEstacion")
+                Dim _Modalidad As String = _Row_Encabezado.Item("Modalidad")
+
+                Consulta_sql = "Insert Into " & _Global_BaseBk & "Zw_Docu_Ent (Idmaeedo,NombreEquipo,TipoEstacion,Empresa,Modalidad,Tido,Nudo,FechaHoraGrab," &
+                               "HabilitadaFac,FunAutorizaFac) Values " &
+                               "(" & _Idmaeedo & ",'" & _NombreEquipo & "','" & _TipoEstacion & "','" & _Empresa & "','" & _Modalidad & "'" &
+                               ",'" & _Tido & "','" & _Nudo & "',Getdate(),0,'')"
+
+                Comando = New SqlClient.SqlCommand(Consulta_sql, cn2)
+                Comando.Transaction = myTrans
+                Comando.ExecuteNonQuery()
 
             End If
 

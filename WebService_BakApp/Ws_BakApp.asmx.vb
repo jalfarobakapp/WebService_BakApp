@@ -94,44 +94,44 @@ Public Class Ws_BakApp
         Return _Dato
     End Function
 
-    <WebMethod(True)>
-    Function Fx_Crear_Documento(_Global_BaseBk As String,
-                                _Funcionario As String,
-                                _Tido As String,
-                                _Nudo As String,
-                                _Es_ValeTransitorio As Boolean,
-                                _EsElectronico As Boolean,
-                                _Ds_Matriz_Documento As DataSet,
-                                _Es_Ajuste As Boolean) As String
+    '<WebMethod(True)>
+    'Function Fx_Crear_Documento(_Global_BaseBk As String,
+    '                            _Funcionario As String,
+    '                            _Tido As String,
+    '                            _Nudo As String,
+    '                            _Es_ValeTransitorio As Boolean,
+    '                            _EsElectronico As Boolean,
+    '                            _Ds_Matriz_Documento As DataSet,
+    '                            _Es_Ajuste As Boolean) As String
 
-        Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
+    '    Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
 
-        Dim _Idmaeedo As String
-        _Idmaeedo = _New_Doc.Fx_Crear_Documento(_Tido,
-                                                    _Nudo,
-                                                    _Es_ValeTransitorio,
-                                                    _EsElectronico,
-                                                    _Ds_Matriz_Documento,
-                                                    _Es_Ajuste)
+    '    Dim _Idmaeedo As String
+    '    _Idmaeedo = _New_Doc.Fx_Crear_Documento(_Tido,
+    '                                                _Nudo,
+    '                                                _Es_ValeTransitorio,
+    '                                                _EsElectronico,
+    '                                                _Ds_Matriz_Documento,
+    '                                                _Es_Ajuste)
 
-        Return _Idmaeedo
+    '    Return _Idmaeedo
 
-    End Function
+    'End Function
 
-    <WebMethod(True)>
-    Function Fx_Editar_Documento(_Global_BaseBk As String,
-                                _Idmaeedo_Dori As Integer,
-                                _Funcionario As String,
-                                _Ds_Matriz_Documento As DataSet) As Integer
+    '<WebMethod(True)>
+    'Function Fx_Editar_Documento(_Global_BaseBk As String,
+    '                            _Idmaeedo_Dori As Integer,
+    '                            _Funcionario As String,
+    '                            _Ds_Matriz_Documento As DataSet) As Integer
 
-        Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
+    '    Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
 
-        Dim _Idmaeedo As Integer
-        _Idmaeedo = _New_Doc.Fx_Editar_Documento(_Idmaeedo_Dori, _Funcionario, _Ds_Matriz_Documento)
+    '    Dim _Idmaeedo As Integer
+    '    _Idmaeedo = _New_Doc.Fx_Editar_Documento(_Idmaeedo_Dori, _Funcionario, _Ds_Matriz_Documento)
 
-        Return _Idmaeedo
+    '    Return _Idmaeedo
 
-    End Function
+    'End Function
 
     <WebMethod(True)>
     Function Fx_Cambiar_Numeracion_Modalidad(_Tido As String,
@@ -184,6 +184,39 @@ Public Class Ws_BakApp
     Function Fx_Conectado_Web_Service() As Boolean
         Return True
     End Function
+
+
+
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Version()
+
+        _Sql = New Class_SQL
+        Dim Consulta_sql As String
+
+        Dim _Ds As DataSet
+
+
+        Consulta_sql = "Select '" & _Version & "' As Version"
+        _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
+
+
+
+
+
 
     <WebMethod(True)>
     Function Fx_Login_Usuario_Soap(_Clave As String) As DataSet
@@ -971,7 +1004,11 @@ Public Class Ws_BakApp
     End Sub
 
     <WebMethod(True)>
-    Public Sub Sb_CreaDocumentoJsonBakapp(_EncabezadoJs As String, _DestalleJs As String, _DescuentosJs As String, _ObservacionesJs As String)
+    Public Sub Sb_CreaDocumentoJsonBakapp(_EncabezadoJs As String,
+                                          _DestalleJs As String,
+                                          _DescuentosJs As String,
+                                          _ObservacionesJs As String,
+                                          _Id_Estacion As Integer)
 
         _Sql = New Class_SQL
         Dim _Ds2 As DataSet
@@ -980,6 +1017,10 @@ Public Class Ws_BakApp
         Dim _Idmaeedo As Integer
         Dim _Tido As String
         Dim _Nudo As String
+
+        Dim _Row_EstacionBk As DataRow
+
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'").ToString.Trim & ".dbo."
 
         Try
 
@@ -993,6 +1034,9 @@ Public Class Ws_BakApp
             'Throw New System.Exception("Archivo New creados...")
 
             'Return
+
+            Consulta_sql = "Select * From " & _Global_BaseBk & "Zw_EstacionesBkp Where Id = " & _Id_Estacion
+            _Row_EstacionBk = _Sql.Fx_Get_DataRow(Consulta_sql)
 
             Dim _Ds_Matriz_Documentos As New Ds_Matriz_Documentos
 
@@ -1009,8 +1053,11 @@ Public Class Ws_BakApp
             Fx_LlenarDatos(_Ds_Matriz_Documentos, _ObservacionesJs, "Observaciones_Doc")
 
             Dim _Funcionario As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("CodFuncionario")
-            _Global_BaseBk = "BAKAPP_VH.dbo."
+            '_Global_BaseBk = "BAKAPP_VH.dbo."
             Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
+
+            _New_Doc.NombreEquipo = _Row_EstacionBk.Item("NombreEquipo")
+            _New_Doc.TipoEstacion = _Row_EstacionBk.Item("TipoEstacion")
 
             Dim _Modalidad As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Modalidad")
             Dim _Empresa As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Empresa")
@@ -1066,7 +1113,8 @@ Public Class Ws_BakApp
                                            _DestalleJs As String,
                                            _DescuentosJs As String,
                                            _ObservacionesJs As String,
-                                           _DespachoSimpleJs As String)
+                                           _DespachoSimpleJs As String,
+                                           _Id_Estacion As Integer)
 
         _Sql = New Class_SQL
         Dim _Ds2 As DataSet
@@ -1078,7 +1126,9 @@ Public Class Ws_BakApp
 
         Dim _Ds As DataSet
         Dim _Row_DespachoSimple As DataRow
+        Dim _Row_EstacionBk As DataRow
 
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'").ToString.Trim & ".dbo."
 
         Try
 
@@ -1093,6 +1143,9 @@ Public Class Ws_BakApp
             'Throw New System.Exception("Archivo New creados...")
 
             'Return
+
+            Consulta_sql = "Select * From " & _Global_BaseBk & "Zw_EstacionesBkp Where Id = " & _Id_Estacion
+            _Row_EstacionBk = _Sql.Fx_Get_DataRow(Consulta_sql)
 
             Dim _Ds_Matriz_Documentos As New Ds_Matriz_Documentos
 
@@ -1117,8 +1170,11 @@ Public Class Ws_BakApp
             _Row_DespachoSimple = _Ds.Tables(0).Rows(0)
 
             Dim _Funcionario As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("CodFuncionario")
-            _Global_BaseBk = "BAKAPP_VH.dbo."
+
             Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
+
+            _New_Doc.NombreEquipo = _Row_EstacionBk.Item("NombreEquipo")
+            _New_Doc.TipoEstacion = _Row_EstacionBk.Item("TipoEstacion")
 
             Dim _Modalidad As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Modalidad")
             Dim _Empresa As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Empresa")
@@ -1145,14 +1201,36 @@ Public Class Ws_BakApp
 
             Dim _CodTipoDespacho As Integer = _Row_DespachoSimple.Item("CodTipoDespacho")
             Dim _TipoDespacho As String = _Row_DespachoSimple.Item("TipoDespacho")
+
+            Dim _CodTipoPagoDesp As String = _Row_DespachoSimple.Item("CodTipoPagoDesp")
             Dim _TipoPagoDesp As String = _Row_DespachoSimple.Item("TipoPagoDesp")
+
             Dim _DireccionDesp As String = _Row_DespachoSimple.Item("DireccionDesp")
             Dim _TransporteDesp As String = _Row_DespachoSimple.Item("TransporteDesp")
             Dim _ObservacionesDesp As String = _Row_DespachoSimple.Item("ObservacionesDesp")
 
-            Consulta_sql = "Insert Into " & _Global_BaseBk & "Zw_Despacho_Simple (Idmaeedo,CodTipoDespacho,TipoDespacho,TipoPagoDesp,DireccionDesp,TransporteDesp,ObservacionesDesp) Values " &
-                           "(" & _Idmaeedo & "," & _CodTipoDespacho & ",'" & _TipoDespacho & "','" & _TipoPagoDesp & "','" & _DireccionDesp & "','" & _TransporteDesp & "','" & _ObservacionesDesp & "')"
-            _Sql.Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(Consulta_sql)
+            Dim _CodDocDestino As String = _Row_DespachoSimple.Item("CodDocDestino")
+            Dim _DocDestino As String = _Row_DespachoSimple.Item("DocDestino")
+
+            Consulta_sql = "Insert Into " & _Global_BaseBk & "Zw_Despacho_Simple (Idmaeedo,CodTipoDespacho,TipoDespacho,CodTipoPagoDesp,TipoPagoDesp," &
+                           "DireccionDesp,TransporteDesp,ObservacionesDesp,CodDocDestino,DocDestino) Values " &
+                           "(" & _Idmaeedo & "," & _CodTipoDespacho & ",'" & _TipoDespacho & "'," & _CodTipoPagoDesp & ",'" & _TipoPagoDesp &
+                           "','" & _DireccionDesp & "','" & _TransporteDesp & "','" & _ObservacionesDesp & "','" & _CodDocDestino & "','" & _DocDestino & "')"
+            If _Sql.Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(Consulta_sql) Then
+
+                If _Tido = "NVV" Then
+
+                    If _Sql.Fx_Existe_Tabla("@WMS_GATEWAY_ANEXO_PEDIDOS") Then
+
+                        Consulta_sql = "Insert Into [@WMS_GATEWAY_ANEXO_PEDIDOS] (IDMAEEDO,TIPO_DESPACHO,FORMA_PAGO,DOCUMENTO_DESTINO) Values " &
+                                   "(" & _Idmaeedo & "," & _CodTipoDespacho & ",'" & _CodTipoPagoDesp & "','" & _CodDocDestino & "')"
+                        _Sql.Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(Consulta_sql)
+
+                    End If
+
+                End If
+
+            End If
 
             Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _Idmaeedo
             Dim _Row_Documento As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
@@ -1187,7 +1265,8 @@ Public Class Ws_BakApp
                                             _DestalleJs As String,
                                             _DescuentosJs As String,
                                             _ObservacionesJs As String,
-                                            _Cambiar_NroDocumento As Boolean)
+                                            _Cambiar_NroDocumento As Boolean,
+                                            _Id_Estacion As Integer)
 
         _Sql = New Class_SQL
         Dim _Ds2 As DataSet
@@ -1199,6 +1278,7 @@ Public Class Ws_BakApp
         Dim _Old_Nudo As String
 
         Dim _Row_OldMaeedo As DataRow
+        Dim _Row_EstacionBk As DataRow
 
         Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _OldIdmaeedo
         _Row_OldMaeedo = _Sql.Fx_Get_DataRow(Consulta_sql)
@@ -1208,6 +1288,9 @@ Public Class Ws_BakApp
         _Old_Nudo = _Nudo
 
         Try
+
+            Consulta_sql = "Select * From " & _Global_BaseBk & "Zw_EstacionesBkp Where Id = " & _Id_Estacion
+            _Row_EstacionBk = _Sql.Fx_Get_DataRow(Consulta_sql)
 
             Dim _Ds_Matriz_Documentos As New Ds_Matriz_Documentos
 
@@ -1226,6 +1309,9 @@ Public Class Ws_BakApp
             Dim _Funcionario As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("CodFuncionario")
             '_Global_BaseBk = "BAKAPP_VH.dbo."
             Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
+
+            _New_Doc.NombreEquipo = _Row_EstacionBk.Item("NombreEquipo")
+            _New_Doc.TipoEstacion = _Row_EstacionBk.Item("TipoEstacion")
 
             Dim _Modalidad As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Modalidad")
             Dim _Empresa As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Empresa")
@@ -1309,7 +1395,8 @@ Public Class Ws_BakApp
                                             _DescuentosJs As String,
                                             _ObservacionesJs As String,
                                             _Cambiar_NroDocumento As Boolean,
-                                            _DespachoSimpleJs As String)
+                                            _DespachoSimpleJs As String,
+                                            _Id_Estacion As Integer)
 
         _Sql = New Class_SQL
         Dim _Ds2 As DataSet
@@ -1321,6 +1408,7 @@ Public Class Ws_BakApp
         Dim _Old_Nudo As String
 
         Dim _Row_OldMaeedo As DataRow
+        Dim _Row_EstacionBk As DataRow
 
         Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _OldIdmaeedo
         _Row_OldMaeedo = _Sql.Fx_Get_DataRow(Consulta_sql)
@@ -1331,6 +1419,10 @@ Public Class Ws_BakApp
 
         Dim _Ds As DataSet
         Dim _Row_DespachoSimple As DataRow
+
+        Consulta_sql = "Select * From " & _Global_BaseBk & "Zw_EstacionesBkp Where Id = " & _Id_Estacion
+        _Row_EstacionBk = _Sql.Fx_Get_DataRow(Consulta_sql)
+
 
         Try
 
@@ -1351,6 +1443,9 @@ Public Class Ws_BakApp
             Dim _Funcionario As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("CodFuncionario")
             '_Global_BaseBk = "BAKAPP_VH.dbo."
             Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
+
+            _New_Doc.NombreEquipo = _Row_EstacionBk.Item("NombreEquipo")
+            _New_Doc.TipoEstacion = _Row_EstacionBk.Item("TipoEstacion")
 
             Dim _Modalidad As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Modalidad")
             Dim _Empresa As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Empresa")
@@ -1413,15 +1508,37 @@ Public Class Ws_BakApp
 
             Dim _CodTipoDespacho As Integer = _Row_DespachoSimple.Item("CodTipoDespacho")
             Dim _TipoDespacho As String = _Row_DespachoSimple.Item("TipoDespacho")
+
+            Dim _CodTipoPagoDesp As String = _Row_DespachoSimple.Item("CodTipoPagoDesp")
             Dim _TipoPagoDesp As String = _Row_DespachoSimple.Item("TipoPagoDesp")
+
             Dim _DireccionDesp As String = _Row_DespachoSimple.Item("DireccionDesp")
             Dim _TransporteDesp As String = _Row_DespachoSimple.Item("TransporteDesp")
             Dim _ObservacionesDesp As String = _Row_DespachoSimple.Item("ObservacionesDesp")
 
+            Dim _CodDocDestino As String = _Row_DespachoSimple.Item("CodDocDestino")
+            Dim _DocDestino As String = _Row_DespachoSimple.Item("DocDestino")
+
             Consulta_sql = "Delete " & _Global_BaseBk & "Zw_Despacho_Simple Where Idmaeedo = " & _OldIdmaeedo & vbCrLf &
-                           "Insert Into " & _Global_BaseBk & "Zw_Despacho_Simple (Idmaeedo,CodTipoDespacho,TipoDespacho,TipoPagoDesp,DireccionDesp,TransporteDesp,ObservacionesDesp) Values " &
-                           "(" & _NewIdmaeedo & "," & _CodTipoDespacho & ",'" & _TipoDespacho & "','" & _TipoPagoDesp & "','" & _DireccionDesp & "','" & _TransporteDesp & "','" & _ObservacionesDesp & "')"
-            _Sql.Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(Consulta_sql)
+                           "Insert Into " & _Global_BaseBk & "Zw_Despacho_Simple (Idmaeedo,CodTipoDespacho,TipoDespacho,CodTipoPagoDesp,TipoPagoDesp," &
+                           "DireccionDesp,TransporteDesp,ObservacionesDesp,CodDocDestino,DocDestino) Values " &
+                           "(" & _NewIdmaeedo & "," & _CodTipoDespacho & ",'" & _TipoDespacho & "'," & _CodTipoPagoDesp & ",'" & _TipoPagoDesp &
+                           "','" & _DireccionDesp & "','" & _TransporteDesp & "','" & _ObservacionesDesp & "','" & _CodDocDestino & "','" & _DocDestino & "')"
+            If _Sql.Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(Consulta_sql) Then
+
+                If _Tido = "NVV" Then
+
+                    If _Sql.Fx_Existe_Tabla("@WMS_GATEWAY_ANEXO_PEDIDOS") Then
+
+                        Consulta_sql = "Insert Into [@WMS_GATEWAY_ANEXO_PEDIDOS] (IDMAEEDO,TIPO_DESPACHO,FORMA_PAGO,DOCUMENTO_DESTINO) Values " &
+                                   "(" & _NewIdmaeedo & "," & _CodTipoDespacho & ",'" & _CodTipoPagoDesp & "','" & _CodDocDestino & "')"
+                        _Sql.Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(Consulta_sql)
+
+                    End If
+
+                End If
+
+            End If
 
             Consulta_sql = "Select * From MAEEDO Where IDMAEEDO = " & _NewIdmaeedo
             Dim _Row_Documento As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
@@ -1458,6 +1575,8 @@ Public Class Ws_BakApp
         Dim _Tido As String
         Dim _Nudo As String
 
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'").ToString.Trim & ".dbo."
+
         Try
 
             Dim _Ds_Matriz_Documentos As New Ds_Matriz_Documentos
@@ -1475,7 +1594,7 @@ Public Class Ws_BakApp
             Fx_LlenarDatos(_Ds_Matriz_Documentos, _ObservacionesJs, "Observaciones_Doc")
 
             Dim _Funcionario As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("CodFuncionario")
-            _Global_BaseBk = "BAKAPP_VH.dbo."
+            '_Global_BaseBk = "BAKAPP_VH.dbo."
             Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
 
             Dim _Modalidad As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Modalidad")
@@ -1524,6 +1643,8 @@ Public Class Ws_BakApp
         Dim _Tido As String
         Dim _Nudo As String
 
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'").ToString.Trim & ".dbo."
+
         Try
 
             Dim _Ds_Matriz_Documentos As New Ds_Matriz_Documentos
@@ -1541,7 +1662,7 @@ Public Class Ws_BakApp
             Fx_LlenarDatos(_Ds_Matriz_Documentos, _ObservacionesJs, "Observaciones_Doc")
 
             Dim _Funcionario As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("CodFuncionario")
-            _Global_BaseBk = "BAKAPP_VH.dbo."
+            '_Global_BaseBk = "BAKAPP_VH.dbo."
             Dim _New_Doc As New Clase_Crear_Documento(_Global_BaseBk, _Funcionario)
 
             Dim _Modalidad As String = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Modalidad")
