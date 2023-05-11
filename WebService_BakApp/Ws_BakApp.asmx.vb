@@ -4,7 +4,6 @@ Imports System.Web.Script.Serialization
 Imports System.Web.Script.Services
 Imports System.Web.Services
 Imports Newtonsoft.Json
-Imports WebService_BakApp.Documento
 
 ' Para permitir que se llame a este servicio web desde un script, usando ASP.NET AJAX, quite la marca de comentario de la siguiente línea.
 ' <System.Web.Script.Services.ScriptService()> _
@@ -1743,6 +1742,52 @@ Public Class Ws_BakApp
 
         Else
             Consulta_sql = "Select Cast(0 As Bit) As Existe,Cast(0 As Bit) As Otorgado,0 As Descuento"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End If
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds2, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    Public Sub Sb_Usar_Clave_DocDespSimple_Poswii(_Clave As String, _Koen As String, _Eliminar As Boolean)
+
+        _Sql = New Class_SQL
+        Dim _Ds2 As DataSet
+
+        Consulta_sql = "Select * From [@WMS_GATEWAY_DOCUMENTOS_CLAVES]" & vbCrLf &
+                       "Where KOEN = '" & _Koen & "' And CLAVE = '" & _Clave & "' -- And ESTADO = 0"
+
+        Dim _Row_Permiso As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+        If Not IsNothing(_Row_Permiso) Then
+
+            Dim _Id As Integer = _Row_Permiso.Item("ID")
+            Dim _Estado As Integer = _Row_Permiso.Item("ESTADO")
+
+            Consulta_sql = "Select " & _Id & " As Id,Cast(1 As Bit) As Existe,Cast(" & _Estado & " As Bit) As Otorgado"
+            _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+            If Not CBool(_Estado) Then
+
+                If _Eliminar Then
+                    Consulta_sql = "Delete [@WMS_GATEWAY_DOCUMENTOS_CLAVES] Where ID = " & _Id
+                Else
+                    Consulta_sql = "Update [@WMS_GATEWAY_DOCUMENTOS_CLAVES] Set ESTADO = 1,FECHA_USO=GETDATE() Where ID = " & _Id
+                End If
+                _Sql.Fx_Ej_consulta_IDU(Consulta_sql)
+
+            End If
+
+        Else
+            Consulta_sql = "Select 0 As Id,Cast(0 As Bit) As Existe,Cast(0 As Bit) As Otorgado"
             _Ds2 = _Sql.Fx_Get_DataSet(Consulta_sql)
         End If
 
