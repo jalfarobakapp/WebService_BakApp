@@ -380,6 +380,8 @@ Public Class Ws_BakApp
         _Sql = New Class_SQL
         Dim Consulta_sql As String
 
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'").ToString.Trim & ".dbo."
+
         Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
 
         Try
@@ -484,6 +486,19 @@ Public Class Ws_BakApp
             _Ds.Tables(0).Rows(0).Item("PrecioBrutoUdLista") = _PrecioBrutoUdLista
 
             _Ds.Tables(0).Rows(0).Item("PorIla") = _PorIla
+
+            ' ESPECIAL SOLO PARA VILLAR HNOS.
+            If _Sql.Fx_Existe_Tabla("@WMS_GATEWAY_STOCK") Then
+
+                Dim _Stock As Double
+
+                If Sucursal = "01" And Bodega = "01" Then _Stock = _Sql.Fx_Trae_Dato("[@WMS_GATEWAY_STOCK]", "STOCK_ALAMEDA", "SKU = '" & Codigo & "'", True)
+                If Sucursal = "02" And Bodega = "02" Then _Stock = _Sql.Fx_Trae_Dato("[@WMS_GATEWAY_STOCK]", "STOCK_ENEA", "SKU = '" & Codigo & "'", True)
+
+                _Ds.Tables(0).Rows(0).Item("StockBodega") = _Stock
+
+            End If
+
 
         Catch ex As Exception
 
@@ -683,6 +698,15 @@ Public Class Ws_BakApp
                                    "' AND KOBO = '" & _Bodega &
                                    "' AND KOPR = '" & _Codigo & "'", True)
 
+        'CONFIGURACION ESPECIAL PARA VILLAR HERMANOS
+        If _Sql.Fx_Existe_Tabla("@WMS_GATEWAY_STOCK") Then
+
+            If _Sucursal = "01" And _Bodega = "01" Then _Stock = _Sql.Fx_Trae_Dato("[@WMS_GATEWAY_STOCK]", "STOCK_ALAMEDA", "SKU = '" & _Codigo & "'", True)
+            If _Sucursal = "02" And _Bodega = "02" Then _Stock = _Sql.Fx_Trae_Dato("[@WMS_GATEWAY_STOCK]", "STOCK_ENEA", "SKU = '" & _Codigo & "'", True)
+
+            _Stock_Disponible = _Stock
+
+        End If
 
         _Sql = New Class_SQL
 
