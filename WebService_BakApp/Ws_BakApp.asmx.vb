@@ -492,8 +492,8 @@ Public Class Ws_BakApp
 
                 Dim _Stock As Double
 
-                If Sucursal = "01" And Bodega = "01" Then _Stock = _Sql.Fx_Trae_Dato("[@WMS_GATEWAY_STOCK]", "STOCK_ALAMEDA", "SKU = '" & Codigo & "'", True)
-                If Sucursal = "02" And Bodega = "02" Then _Stock = _Sql.Fx_Trae_Dato("[@WMS_GATEWAY_STOCK]", "STOCK_ENEA", "SKU = '" & Codigo & "'", True)
+                If Sucursal.Trim = "01" And Bodega.Trim = "01" Then _Stock = _Sql.Fx_Trae_Dato("[@WMS_GATEWAY_STOCK]", "STOCK_ALAMEDA", "SKU = '" & Codigo & "'", True)
+                If Sucursal.Trim = "02" And Bodega.Trim = "02" Then _Stock = _Sql.Fx_Trae_Dato("[@WMS_GATEWAY_STOCK]", "STOCK_ENEA", "SKU = '" & Codigo & "'", True)
 
                 _Ds.Tables(0).Rows(0).Item("StockBodega") = _Stock
 
@@ -701,8 +701,8 @@ Public Class Ws_BakApp
         'CONFIGURACION ESPECIAL PARA VILLAR HERMANOS
         If _Sql.Fx_Existe_Tabla("@WMS_GATEWAY_STOCK") Then
 
-            If _Sucursal = "01" And _Bodega = "01" Then _Stock = _Sql.Fx_Trae_Dato("[@WMS_GATEWAY_STOCK]", "STOCK_ALAMEDA", "SKU = '" & _Codigo & "'", True)
-            If _Sucursal = "02" And _Bodega = "02" Then _Stock = _Sql.Fx_Trae_Dato("[@WMS_GATEWAY_STOCK]", "STOCK_ENEA", "SKU = '" & _Codigo & "'", True)
+            If _Sucursal.Trim = "01" And _Bodega.Trim = "01" Then _Stock = _Sql.Fx_Trae_Dato("[@WMS_GATEWAY_STOCK]", "STOCK_ALAMEDA", "SKU = '" & _Codigo & "'", True)
+            If _Sucursal.Trim = "02" And _Bodega.Trim = "02" Then _Stock = _Sql.Fx_Trae_Dato("[@WMS_GATEWAY_STOCK]", "STOCK_ENEA", "SKU = '" & _Codigo & "'", True)
 
             _Stock_Disponible = _Stock
 
