@@ -1155,7 +1155,7 @@ Public Class Ws_BakApp
 
         Try
 
-            'Dim _Ruta = "D:\JsonB4Android\"
+            Dim _Ruta = "D:\JsonB4Android\"
 
             'Fx_Grabar_JsonArchivo(_EncabezadoJs, _Ruta, "EncabezadoJs")
             'Fx_Grabar_JsonArchivo(_DestalleJs, _Ruta, "DestalleJs")
@@ -2088,7 +2088,7 @@ Public Class Ws_BakApp
                                 vbCrLf &
                                 "Values (" & _Id_Correo & ",'" & _Nombre_Correo & "','" & _CodFuncionario & "','" & _Asunto & "','" & _Para & "','" & _Cc &
                                 "'," & _Idmaeedo & ",'" & _Tido & "','" & _Nudo & "','" & _NombreFormato_Correo & "',1,'" & _CuerpoMensaje & "'," & _Fecha &
-                                "," & Convert.ToInt32(_Adjuntar_Documento) & ",'',1,0)"
+                                "," & Convert.ToInt32(_Adjuntar_Documento) & ",'',0,0)"
 
                 _Sql.Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(Consulta_sql)
 

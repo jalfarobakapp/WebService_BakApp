@@ -949,9 +949,35 @@ Public Class Clase_Crear_Documento
 
             ' ====================================================================================================================================
 
+            If _Tido = "NVV" Or _Tido = "BLV" Or _Tido = "FCV" Or _Tido = "GDV" Or _Tido = "GTI" Or _Tido = "GDP" Or _Tido = "NCV" Or _Tido = "GRI" Or _Tido = "GDI" Then
 
+                Consulta_sql = "Select * From MAEEDO Where TIDO = '" & _Tido & "' And NUDO = '" & _Nudo & "'"
+                Comando = New SqlCommand(Consulta_sql, cn2)
+                Comando.Transaction = myTrans
+                dfd1 = Comando.ExecuteReader()
+
+                Dim _IdmaeedoExiste As Integer
+                Dim _ExisteOtraNumeracion As Boolean
+
+                While dfd1.Read()
+
+                    _IdmaeedoExiste = dfd1("IDMAEEDO")
+                    If _Idmaeedo <> _IdmaeedoExiste Then
+                        _ExisteOtraNumeracion = True
+                    End If
+
+                End While
+                dfd1.Close()
+
+                If _ExisteOtraNumeracion Then
+                    Throw New System.Exception("Ya existe un documento con la misma numeración (" & _Tido & "-" & _Nudo & ")" & vbCrLf &
+                                           "Favor intentar nuevamente la grabación")
+                End If
+
+            End If
 
             If _Cambiar_Numeracion_Confiest Then
+
                 Consulta_sql = Fx_Cambiar_Numeracion_Modalidad(_Tido, _Nudo, _Modalidad, _Empresa)
 
                 If Not String.IsNullOrEmpty(Consulta_sql) Then
@@ -961,6 +987,7 @@ Public Class Clase_Crear_Documento
                     Comando.ExecuteNonQuery()
 
                 End If
+
             End If
 
             myTrans.Commit()
