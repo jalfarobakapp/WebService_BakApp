@@ -949,7 +949,8 @@ Public Class Clase_Crear_Documento
 
             ' ====================================================================================================================================
 
-            If _Tido = "NVV" Or _Tido = "BLV" Or _Tido = "FCV" Or _Tido = "GDV" Or _Tido = "GTI" Or _Tido = "GDP" Or _Tido = "NCV" Or _Tido = "GRI" Or _Tido = "GDI" Then
+            If _Tido = "COV" Or _Tido = "NVV" Or _Tido = "BLV" Or _Tido = "FCV" Or
+               _Tido = "GDV" Or _Tido = "GTI" Or _Tido = "GDP" Or _Tido = "NCV" Or _Tido = "GRI" Or _Tido = "GDI" Then
 
                 Consulta_sql = "Select * From MAEEDO Where TIDO = '" & _Tido & "' And NUDO = '" & _Nudo & "'"
                 Comando = New SqlCommand(Consulta_sql, cn2)
@@ -1246,7 +1247,7 @@ Public Class Clase_Crear_Documento
             myTrans = cn2.BeginTransaction()
 
 
-            Consulta_sql = "INSERT INTO MAEEDO ( EMPRESA,TIDO,NUDO,ENDO,SUENDO )" & vbCrLf &
+            Consulta_sql = "INSERT INTO MAEEDO (EMPRESA,TIDO,NUDO,ENDO,SUENDO )" & vbCrLf &
                            "VALUES ( '" & _Empresa & "','" & _Tido & "','" & _Nudo &
                            "','" & _Endo & "','" & _Suendo & "')"
 
@@ -2565,6 +2566,58 @@ Public Class Clase_Crear_Documento
 
             End If
 
+            If _Tido = "COV" Or _Tido = "NVV" Or _Tido = "BLV" Or _Tido = "FCV" Or
+               _Tido = "GDV" Or _Tido = "GTI" Or _Tido = "GDP" Or _Tido = "NCV" Or _Tido = "GRI" Or _Tido = "GDI" Then
+
+                Consulta_sql = "Select * From MAEEDO Where TIDO = '" & _Tido & "' And NUDO = '" & _Nudo & "'"
+                Comando = New SqlCommand(Consulta_sql, cn2)
+                Comando.Transaction = myTrans
+                dfd1 = Comando.ExecuteReader()
+
+                Dim _IdmaeedoExiste As Integer
+                Dim _ExisteOtraNumeracion As Boolean
+
+                While dfd1.Read()
+
+                    _IdmaeedoExiste = dfd1("IDMAEEDO")
+                    If _Idmaeedo <> _IdmaeedoExiste Then
+                        _ExisteOtraNumeracion = True
+                    End If
+
+                End While
+                dfd1.Close()
+
+                If _ExisteOtraNumeracion Then
+                    Throw New System.Exception("Ya existe un documento con la misma numeración (" & _Tido & "-" & _Nudo & ")" & vbCrLf &
+                                           "Favor intentar nuevamente la grabación")
+                End If
+
+                Consulta_sql = "Select * From MAEEDO Where TIDO = '" & _Tido & "' And KOFUDO = '" & _Kofudo & "'" &
+                               " And FEEMDO = '" & _Feemdo & "' And ENDO = '" & _Endo & "' And SUENDO = '" & _Suendo & "' And CAPRCO = " & _Caprco &
+                               " And VAIVDO = " & _Vaivdo & " And VANEDO = " & _Vanedo & " And VABRDO = " & _Vabrdo
+                Comando = New SqlCommand(Consulta_sql, cn2)
+                Comando.Transaction = myTrans
+                dfd1 = Comando.ExecuteReader()
+
+                While dfd1.Read()
+
+                    Dim _RevIdmaeedo = dfd1("IDMAEEDO")
+                    _Tido = dfd1("TIDO")
+                    _Nudo = dfd1("NUDO")
+                    If _Idmaeedo <> _RevIdmaeedo Then
+                        _ExisteOtraNumeracion = True
+                    End If
+
+                End While
+                dfd1.Close()
+
+                If _ExisteOtraNumeracion Then
+                    Throw New System.Exception("Ya existe un documento con los mismos valores, numeración (" & _Tido & "-" & _Nudo & ")" & vbCrLf &
+                                               "Informe de esta situación al administrador del sistema, puede que se este duplicando el documento")
+                End If
+
+            End If
+
             If _Sql.Fx_Existe_Tabla(_Global_BaseBk & "Zw_Docu_Ent") Then
 
                 Dim _NombreEquipo = NombreEquipo '_Global_Row_EstacionBk.Item("NombreEquipo")
@@ -2594,7 +2647,13 @@ Public Class Clase_Crear_Documento
 
         Catch ex As Exception
 
-            _Error = ex.Message & vbCrLf & ex.StackTrace & vbCrLf & Consulta_sql
+            If ex.Message.Contains("Ya existe un documento con la misma numeración") Or
+               ex.Message.Contains("Ya existe un documento con los mismos valores, numeración") Then
+                _Error = ex.Message
+            Else
+                _Error = ex.Message & vbCrLf & ex.StackTrace & vbCrLf & Consulta_sql
+            End If
+
 
             'Clipboard.SetText(_Erro_VB)
 
