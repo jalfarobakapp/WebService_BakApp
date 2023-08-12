@@ -2286,8 +2286,8 @@ Public Class Ws_BakApp
 
     <WebMethod(True)>
     Public Sub Sb_Actualizar_Observaciones_Documento(_Idmaeedo As Integer,
-                                                      _Observaciones As String,
-                                                      _Orden_De_Compra As String)
+                                                     _Observaciones As String,
+                                                     _Orden_De_Compra As String)
 
         _Sql = New Class_SQL
         Dim Consulta_sql As String
@@ -2526,6 +2526,49 @@ Public Class Ws_BakApp
         Context.Response.End()
 
     End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_FormatoModalidad(_Empresa As String, _Modalidad As String, _Tido As String)
+
+        Dim js As New JavaScriptSerializer
+
+        _Sql = New Class_SQL
+
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'").ToString.Trim & ".dbo."
+
+        Consulta_sql = "Select Top 1 Isnull(TIDO,'') As Tido,Rtrim(Ltrim(Isnull(NOTIDO,''))) As Notido,Isnull(FrmMod.Modalidad,'') As Modalidad," & vbCrLf &
+                        "Isnull(FrmFx.NombreFormato,'') As NombreFomato,Isnull(FrmMod.NombreFormato,'') As NombreFomatoEnMod,Isnull(FrmFx.NroLineasXpag,0) As NroLineasXpag," & vbCrLf &
+                        "CAST((Case When FrmFx.NombreFormato Is null Then 0 Else 1 End) As bit) As TieneFormato,Cast(1 As Bit) As EsCorrecto" & vbCrLf &
+                        "From " & _Global_BaseBk & "Zw_Configuracion_Formatos_X_Modalidad FrmMod" & vbCrLf &
+                        "Left Join " & _Global_BaseBk & "Zw_Format_01 FrmFx On FrmFx.TipoDoc = FrmMod.TipoDoc And " &
+                        "FrmFx.NombreFormato = FrmMod.NombreFormato" & vbCrLf &
+                        "Left Join TABTIDO On TIDO = FrmMod.TipoDoc" & vbCrLf &
+                        "Where Empresa = '" & _Empresa & "' And Modalidad = '" & _Modalidad & "' And FrmMod.TipoDoc = '" & _Tido & "'"
+
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Dim _TieneFormato As Boolean
+
+        Try
+            If Not CBool(_Ds.Tables(0).Rows.Count) Then
+                Throw New System.Exception("No existe formato o documento para Empresa: [" & _Empresa & "], Modalidad: [" & _Modalidad & "], Tido: [" & _Tido & "]")
+            End If
+            _TieneFormato = _Ds.Tables(0).Rows(0).Item("TieneFormato")
+        Catch ex As Exception
+            Consulta_sql = "Select Cast(0 as Bit) As EsCorrecto,'" & Replace(ex.Message, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End Try
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
 
 #End Region
 

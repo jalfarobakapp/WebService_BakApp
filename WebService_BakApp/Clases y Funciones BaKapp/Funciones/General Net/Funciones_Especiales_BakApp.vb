@@ -5,6 +5,7 @@ Imports System.Security.Cryptography
 Imports System.Drawing.Printing
 Imports System.Drawing
 
+
 Public Module Funciones_Especiales_BakApp
 
     Dim Consulta_sql As String
