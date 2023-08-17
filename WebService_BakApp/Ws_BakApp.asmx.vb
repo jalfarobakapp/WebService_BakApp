@@ -486,6 +486,7 @@ Public Class Ws_BakApp
             _Ds.Tables(0).Rows(0).Item("PrecioBrutoUdLista") = _PrecioBrutoUdLista
 
             _Ds.Tables(0).Rows(0).Item("PorIla") = _PorIla
+            '_Ds.Tables(0).Rows(0).Item("CodLista") = Lista
 
             ' ESPECIAL SOLO PARA VILLAR HNOS.
             If _Sql.Fx_Existe_Tabla("@WMS_GATEWAY_STOCK") Then
