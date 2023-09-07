@@ -1025,7 +1025,8 @@ Public Class Clase_Crear_Documento
                                 Optional _Cambiar_NroDocumento As Boolean = True,
                                 Optional ByRef _Origen_Modificado_Intertanto As Boolean = False,
                                 Optional _Es_TLV As Boolean = False,
-                                Optional _HoraAlFinalDelDia As Boolean = False) As Integer
+                                Optional _HoraAlFinalDelDia As Boolean = False,
+                                Optional _Editando As Boolean = False) As Integer
 
         'Optional _Tbl_Mevento_Edo As DataTable = Nothing,
         'Optional _Tbl_Mevento_Edd As DataTable = Nothing,
@@ -2566,8 +2567,9 @@ Public Class Clase_Crear_Documento
 
             End If
 
-            If _Tido = "COV" Or _Tido = "NVV" Or _Tido = "BLV" Or _Tido = "FCV" Or
-               _Tido = "GDV" Or _Tido = "GTI" Or _Tido = "GDP" Or _Tido = "NCV" Or _Tido = "GRI" Or _Tido = "GDI" Then
+            If Not _Editando AndAlso
+                (_Tido = "COV" Or _Tido = "NVV" Or _Tido = "BLV" Or _Tido = "FCV" Or
+                 _Tido = "GDV" Or _Tido = "GTI" Or _Tido = "GDP" Or _Tido = "NCV" Or _Tido = "GRI" Or _Tido = "GDI") Then
 
                 Consulta_sql = "Select * From MAEEDO Where TIDO = '" & _Tido & "' And NUDO = '" & _Nudo & "'"
                 Comando = New SqlCommand(Consulta_sql, cn2)
@@ -2592,28 +2594,39 @@ Public Class Clase_Crear_Documento
                                            "Favor intentar nuevamente la grabación")
                 End If
 
-                Consulta_sql = "Select * From MAEEDO Where TIDO = '" & _Tido & "' And KOFUDO = '" & _Kofudo & "'" &
+                Consulta_sql = "Select Edo.IDMAEEDO,Edo.TIDO,Edo.NUDO,Isnull(Obs.OCDO,'') As OCDO" & vbCrLf &
+                               "From MAEEDO Edo" & vbCrLf &
+                               "Left Join MAEEDOOB Obs On Edo.IDMAEEDO = Obs.IDMAEEDO" & vbCrLf &
+                               "Where TIDO = '" & _Tido & "' And KOFUDO = '" & _Kofudo & "'" &
                                " And FEEMDO = '" & _Feemdo & "' And ENDO = '" & _Endo & "' And SUENDO = '" & _Suendo & "' And CAPRCO = " & _Caprco &
                                " And VAIVDO = " & _Vaivdo & " And VANEDO = " & _Vanedo & " And VABRDO = " & _Vabrdo
                 Comando = New SqlCommand(Consulta_sql, cn2)
                 Comando.Transaction = myTrans
                 dfd1 = Comando.ExecuteReader()
 
+                Dim _Tido2 As String
+                Dim _Nudo2 As String
+
                 While dfd1.Read()
 
-                    Dim _RevIdmaeedo = dfd1("IDMAEEDO")
-                    _Tido = dfd1("TIDO")
-                    _Nudo = dfd1("NUDO")
-                    If _Idmaeedo <> _RevIdmaeedo Then
+                    Dim _RevIdmaeedo As Integer = dfd1("IDMAEEDO")
+                    Dim _Ocdo2 As String = dfd1("OCDO")
+
+                    _Tido2 = dfd1("TIDO")
+                    _Nudo2 = dfd1("NUDO")
+
+                    If _Idmaeedo <> _RevIdmaeedo And _Ocdo.Trim = _Ocdo2.trim Then
                         _ExisteOtraNumeracion = True
+                        Exit While
                     End If
 
                 End While
                 dfd1.Close()
 
                 If _ExisteOtraNumeracion Then
-                    Throw New System.Exception("Ya existe un documento con los mismos valores, numeración (" & _Tido & "-" & _Nudo & ")" & vbCrLf &
-                                               "Informe de esta situación al administrador del sistema, puede que se este duplicando el documento")
+                    Throw New System.Exception("Ya existe un documento con los mismos valores, numeración (" & _Tido2 & "-" & _Nudo2 & ")" & vbCrLf &
+                                               "Informe de esta situación al administrador del sistema, puede que se este duplicando el documento" & vbCrLf &
+                                               "Datos que no se pueden duplicar: Tipo, Número, Entidad, Vendedor, Fecha, Productos, Cantidades, Totales y Orden de compra")
                 End If
 
             End If

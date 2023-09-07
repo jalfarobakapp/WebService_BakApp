@@ -1178,6 +1178,7 @@ Public Class Ws_BakApp
 
             Fx_LlenarDatos(_Ds_Matriz_Documentos, _EncabezadoJs, "Encabezado_Doc")
 
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("FechaEmision") = FechaDelServidor()
             _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Post_Venta") = False
             _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Tipo_Documento") = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
 
@@ -1323,6 +1324,7 @@ Public Class Ws_BakApp
 
             Fx_LlenarDatos(_Ds_Matriz_Documentos, _EncabezadoJs, "Encabezado_Doc")
 
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("FechaEmision") = FechaDelServidor()
             _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Post_Venta") = False
             _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Tipo_Documento") = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
 
@@ -1491,7 +1493,7 @@ Public Class Ws_BakApp
             _Row_DespachoSimple = _Ds.Tables(0).Rows(0)
 
 
-            _NewIdmaeedo = _New_Doc.Fx_Crear_Documento2(_Tido, _Nudo, False, False, _Ds_Matriz_Documentos)
+            _NewIdmaeedo = _New_Doc.Fx_Crear_Documento2(_Tido, _Nudo, False, False, _Ds_Matriz_Documentos,,,,,, True)
 
             If Not _Cambiar_NroDocumento Then _Nudo = _Old_Nudo
 
