@@ -8,6 +8,7 @@ Public Class Class_SQL
     Dim _Error As String
     Dim _Cn As New SqlConnection
 
+    Public Property BaseConectada As Boolean
     Public ReadOnly Property Pro_Error() As String
         Get
             Return _Error
@@ -15,7 +16,12 @@ Public Class Class_SQL
     End Property
 
     Public Sub New()
-        '_SQL_String_conexion = SQL_String_conexion
+
+        Dim _Cn As New SqlConnection
+        Sb_Abrir_Conexion(_Cn)
+
+        If String.IsNullOrEmpty(Pro_Error) Then _BaseConectada = True
+
     End Sub
 
     Function Fx_Ej_consulta_IDU(ConsultaSql As String, _
