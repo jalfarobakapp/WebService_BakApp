@@ -1,5 +1,6 @@
 ﻿Imports System.ComponentModel
 Imports System.IO
+Imports System.Security.Claims
 Imports System.Web.Script.Serialization
 Imports System.Web.Script.Services
 Imports System.Web.Services
@@ -210,12 +211,6 @@ Public Class Ws_BakApp
         Context.Response.End()
 
     End Sub
-
-
-
-
-
-
 
     <WebMethod(True)>
     Function Fx_Login_Usuario_Soap(_Clave As String) As DataSet
@@ -1178,6 +1173,7 @@ Public Class Ws_BakApp
 
             Fx_LlenarDatos(_Ds_Matriz_Documentos, _EncabezadoJs, "Encabezado_Doc")
 
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("FechaEmision") = FechaDelServidor()
             _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Post_Venta") = False
             _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Tipo_Documento") = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
 
@@ -1323,6 +1319,7 @@ Public Class Ws_BakApp
 
             Fx_LlenarDatos(_Ds_Matriz_Documentos, _EncabezadoJs, "Encabezado_Doc")
 
+            _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("FechaEmision") = FechaDelServidor()
             _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Post_Venta") = False
             _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("Tipo_Documento") = _Ds_Matriz_Documentos.Tables("Encabezado_Doc").Rows(0).Item("TipoDoc")
 
@@ -1491,7 +1488,7 @@ Public Class Ws_BakApp
             _Row_DespachoSimple = _Ds.Tables(0).Rows(0)
 
 
-            _NewIdmaeedo = _New_Doc.Fx_Crear_Documento2(_Tido, _Nudo, False, False, _Ds_Matriz_Documentos)
+            _NewIdmaeedo = _New_Doc.Fx_Crear_Documento2(_Tido, _Nudo, False, False, _Ds_Matriz_Documentos,,,,,, True)
 
             If Not _Cambiar_NroDocumento Then _Nudo = _Old_Nudo
 
@@ -2570,6 +2567,87 @@ Public Class Ws_BakApp
 
     End Sub
 
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Token_Generar(_Key As String)
+
+        _Sql = New Class_SQL
+
+        If _Sql.BaseConectada Then
+
+            Dim js As New JavaScriptSerializer
+
+            Dim _MinutosExpiracion As Integer = 15 ' Duración del token en minutos
+
+            Dim _TokenGenerator As New TokenGenerator()
+
+            Dim _Token As String = _TokenGenerator.GenerateToken(_Key, _MinutosExpiracion)
+
+            Consulta_sql = "Select '" & _Token & "' As Token,Cast(1 As Bit) As EsCorrecto,'" & _Key & "' As Observacion"
+
+        Else
+            Consulta_sql = "Select '' As Token,Cast(0 As Bit) As EsCorrecto,'Error de conexión a la base de datos' As Observacion"
+        End If
+
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Token_Validar(_Token As String, _Key As String)
+
+        _Sql = New Class_SQL
+
+        Dim _Estado As String
+        Dim _EsCorrecto As Integer
+
+        If _Sql.BaseConectada Then
+
+            Dim js As New JavaScriptSerializer
+
+            Dim _MinutosExpiracion As Integer = 1 ' Duración del token en minutos
+
+            Dim _TokenGenerator As New TokenGenerator()
+
+            Dim principal As ClaimsPrincipal = _TokenGenerator.ValidateToken(_Token)
+
+            If principal IsNot Nothing Then
+
+                If principal.Identity.Name.ToString.Trim = _Key Then
+                    _Estado = "Token válido para el dispositivo: " & principal.Identity.Name
+                    _EsCorrecto = 1
+                Else
+                    _Estado = "Token no corresponde al dispositivo: " & _Key
+                    _EsCorrecto = 0
+                End If
+            Else
+                _Estado = "Token inválido o expirado."
+                _EsCorrecto = 0
+            End If
+
+            Consulta_sql = "Select '" & _Estado & "' As Estado,Cast(" & _EsCorrecto & " As Bit) As EsCorrecto,'' As Observacion"
+
+        Else
+            Consulta_sql = "Select 'Error de conexión' As Estado,Cast(0 As Bit) As EsCorrecto,'Error de conexión a la base de datos' As Observacion"
+        End If
+
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+
+    End Sub
 
 #End Region
 
