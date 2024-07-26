@@ -185,9 +185,6 @@ Public Class Ws_BakApp
         Return True
     End Function
 
-
-
-
     <WebMethod(True)>
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Sb_Version()
@@ -2613,7 +2610,7 @@ Public Class Ws_BakApp
 
             Dim js As New JavaScriptSerializer
 
-            Dim _MinutosExpiracion As Integer = 1 ' Duración del token en minutos
+            'Dim _MinutosExpiracion As Integer = 1 ' Duración del token en minutos
 
             Dim _TokenGenerator As New TokenGenerator()
 
