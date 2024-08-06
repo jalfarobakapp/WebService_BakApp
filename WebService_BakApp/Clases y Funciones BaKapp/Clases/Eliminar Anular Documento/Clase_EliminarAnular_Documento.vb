@@ -30,7 +30,7 @@ Public Class Clase_EliminarAnular_Documento
             Consulta_sql = "Select EMPRESA,SUDO,TIDO,NUDO,ENDO,SUENDO,FEEMDO,KOFUDO,VANEDO,VABRDO" & vbCrLf &
                            "FROM MAEEDO" & vbCrLf &
                            "WHERE IDMAEEDO = " & _Idmaeedo
-            Dim Tabla_Doc As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+            Dim Tabla_Doc As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
 
             With Tabla_Doc.Rows(0)
 

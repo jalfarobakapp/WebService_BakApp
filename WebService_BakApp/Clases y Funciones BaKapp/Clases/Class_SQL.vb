@@ -57,7 +57,7 @@ Public Class Class_SQL
 
     End Function
 
-    Function Fx_Get_Tablas(_Consulta_sql As String) As DataTable
+    Function Fx_Get_DataTable(_Consulta_sql As String) As DataTable
 
         Dim _Tbl As New DataTable
         _Error = String.Empty
@@ -87,7 +87,7 @@ Public Class Class_SQL
 
         Try
             _Error = String.Empty
-            Dim _Tbl As DataTable = Fx_Get_Tablas(_Consulta_sql)
+            Dim _Tbl As DataTable = Fx_Get_DataTable(_Consulta_sql)
 
             If CBool(_Tbl.Rows.Count) Then
                 Return _Tbl.Rows(0)
@@ -101,8 +101,8 @@ Public Class Class_SQL
 
     End Function
 
-    Function Fx_Get_DataSet(_Consulta_sql As String, _
-                            _Ds As DataSet, _
+    Function Fx_Get_DataSet(_Consulta_sql As String,
+                            _Ds As DataSet,
                             _Nombre_Tabla As String) As DataSet
 
         Dim _Tbl As New DataTable
@@ -154,10 +154,10 @@ Public Class Class_SQL
 
     End Function
 
-    Function Fx_Extrae_Archivo_desde_BD(_Tabla As String, _
-                                        _Campo As String, _
-                                        _Condicion As String, _
-                                        _Nom_Archivo As String, _
+    Function Fx_Extrae_Archivo_desde_BD(_Tabla As String,
+                                        _Campo As String,
+                                        _Condicion As String,
+                                        _Nom_Archivo As String,
                                         _Dir_Temp As String) As Boolean
 
         Dim data As Byte() = Nothing
@@ -307,11 +307,11 @@ Public Class Class_SQL
 
     End Function
 
-    Function Fx_Trae_Dato(_Tabla As String, _
-                         _Campo As String, _
-                         Optional _Condicion As String = "", _
-                         Optional _DevNumero As Boolean = False, _
-                         Optional _MostrarError As Boolean = True, _
+    Function Fx_Trae_Dato(_Tabla As String,
+                         _Campo As String,
+                         Optional _Condicion As String = "",
+                         Optional _DevNumero As Boolean = False,
+                         Optional _MostrarError As Boolean = True,
                          Optional _Dato_Default As String = "") As String
         Try
 
@@ -327,11 +327,11 @@ Public Class Class_SQL
             End If
             'Then Valor_Si_No_Encuentra = 0
 
-            Dim _Sql As String = "SELECT TOP (1) " & _Campo & " AS CAMPO FROM " & _Tabla & vbCrLf & _
+            Dim _Sql As String = "SELECT TOP (1) " & _Campo & " AS CAMPO FROM " & _Tabla & vbCrLf &
                                  "Where 1 > 0" & _Condicion
 
 
-            Dim _Tbl As DataTable = Fx_Get_Tablas(_Sql)
+            Dim _Tbl As DataTable = Fx_Get_DataTable(_Sql)
 
             Dim cuenta As Long = _Tbl.Rows.Count
 
@@ -369,7 +369,7 @@ Public Class Class_SQL
 
     End Function
 
-    Function Fx_Cuenta_Registros(_Tabla As String, _
+    Function Fx_Cuenta_Registros(_Tabla As String,
                                  Optional _Condicion As String = "") As Double
 
         If Not String.IsNullOrEmpty(_Condicion) Then
@@ -406,10 +406,10 @@ Public Class Class_SQL
 
     Sub Sb_Eliminar_Tabla_De_Paso(_Tabla_Paso As String)
 
-        Dim _ConsultaSql As String = "BEGIN TRY" & vbCrLf & _
-                                     "DROP TABLE " & _Tabla_Paso & vbCrLf & _
-                                     "End Try" & vbCrLf & _
-                                     "BEGIN CATCH" & vbCrLf & _
+        Dim _ConsultaSql As String = "BEGIN TRY" & vbCrLf &
+                                     "DROP TABLE " & _Tabla_Paso & vbCrLf &
+                                     "End Try" & vbCrLf &
+                                     "BEGIN CATCH" & vbCrLf &
                                      "END CATCH"
 
         Fx_Ej_consulta_IDU(_ConsultaSql, False)
@@ -444,7 +444,7 @@ Public Class Class_SQL
 
         End If
 
-        Dim _Tbl As DataTable = Fx_Get_Tablas(_ConsultaSql)
+        Dim _Tbl As DataTable = Fx_Get_DataTable(_ConsultaSql)
 
         Return _Tbl.Rows.Count
 
@@ -468,7 +468,7 @@ Public Class Class_SQL
 
         End If
 
-        Dim _Tbl As DataTable = Fx_Get_Tablas(_ConsultaSql)
+        Dim _Tbl As DataTable = Fx_Get_DataTable(_ConsultaSql)
 
         Return CBool(_Tbl.Rows.Count)
 

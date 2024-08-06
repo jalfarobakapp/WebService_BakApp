@@ -4,7 +4,10 @@ Imports System.Security.Claims
 Imports System.Web.Script.Serialization
 Imports System.Web.Script.Services
 Imports System.Web.Services
+Imports DevComponents.DotNetBar
+Imports System.Windows.Forms
 Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Linq
 
 ' Para permitir que se llame a este servicio web desde un script, usando ASP.NET AJAX, quite la marca de comentario de la siguiente línea.
 ' <System.Web.Script.Services.ScriptService()> _
@@ -770,7 +773,7 @@ Public Class Ws_BakApp
             Dim _Opera_Rev = Split(_Opera, ",")
 
             Consulta_sql = "Select Top 1 * From TABPRE Where KOLT = '" & _CodLista & "' And KOPR = '" & _Codigo & "'"
-            Dim _TblTabpre As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+            Dim _TblTabpre As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
 
             ' Asi es como actua el campo OPERA, este campo define como se comportaran los campos adicionales a partir del campo nro 29 en adelante
 
@@ -787,7 +790,7 @@ Public Class Ws_BakApp
 
             Consulta_sql = "Select Cast('' As Varchar(20)) As Tcampo,Cast(0 As Float) As Dscto,Cast(0 As Float) As Valor" & Environment.NewLine &
                            "Where 1 < 0"
-            _TblDscto = _Sql.Fx_Get_Tablas(Consulta_sql)
+            _TblDscto = _Sql.Fx_Get_DataTable(Consulta_sql)
 
             For _i = 28 To _TblTabpre.Columns.Count - 1
 
@@ -2564,7 +2567,6 @@ Public Class Ws_BakApp
 
     End Sub
 
-
     <WebMethod(True)>
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Sb_Token_Generar(_Key As String)
@@ -2646,6 +2648,258 @@ Public Class Ws_BakApp
 
     End Sub
 
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_ImprimirEnPDF2Bit(_Tido As String, _Nudo As String)
+
+        Dim js As New JavaScriptSerializer
+
+        _Sql = New Class_SQL
+
+        Dim _NombreFormato As String = "Tamaño carta Alameda PDA"
+        Dim _Path As String = "D:\PdfCreator impresiones"
+        Dim _Idmaeedo As Integer = _Sql.Fx_Trae_Dato("MAEEDO", "IDMAEEDO", "TIDO = '" & _Tido & "' And NUDO = '" & _Nudo & "'", True)
+        Dim _RutEmpresa As String = "81756300-7"
+
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'").ToString.Trim & ".dbo."
+
+
+        Dim _Pdf_Adjunto As New Clas_PDF_Crear_Documento(_Idmaeedo,
+                                                         _Tido,
+                                                         _NombreFormato,
+                                                         _Tido & "-" & _Nudo,
+                                                         _Path, _Tido & "-" & _Nudo,
+                                                         False,
+                                                         _Global_BaseBk,
+                                                         _RutEmpresa)
+
+        _Pdf_Adjunto.Sb_Crear_PDF("", False, _Pdf_Adjunto.Pro_Nombre_Archivo)
+
+        Dim _Error_Pdf = _Pdf_Adjunto.Pro_Error
+        Dim _Existe_File = System.IO.File.Exists(_Pdf_Adjunto.Pro_Full_Path_Archivo_PDF & "\" & _Pdf_Adjunto.Pro_Nombre_Archivo & ".pdf")
+
+        If String.IsNullOrEmpty(_Error_Pdf) Then
+
+            '_Pdf_Adjunto.Sb_Abrir_Archivo()
+
+            'If _Imprimir_Cedible Then
+            '    _Pdf_Adjunto.Pro_Nombre_Archivo = _Pdf_Adjunto.Pro_Nombre_Archivo & "_Cedible"
+            '    _Existe_File = System.IO.File.Exists(_Pdf_Adjunto.Pro_Full_Path_Archivo_PDF & "\" & _Pdf_Adjunto.Pro_Nombre_Archivo & ".pdf")
+            '    _Pdf_Adjunto.Sb_Abrir_Archivo()
+            'End If
+
+
+        Else
+
+            'MessageBoxEx.Show(Me, _Error_Pdf, "Problemas al crear el archivo", MessageBoxButtons.OK, MessageBoxIcon.Stop)
+
+        End If
+
+
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Dim _TieneFormato As Boolean
+
+        Try
+            If Not CBool(_Ds.Tables(0).Rows.Count) Then
+                Throw New System.Exception("No existe formato o documento, Tido: [" & _Tido & " - " & _Nudo & "]")
+            End If
+            _TieneFormato = _Ds.Tables(0).Rows(0).Item("TieneFormato")
+        Catch ex As Exception
+            Consulta_sql = "Select Cast(0 as Bit) As EsCorrecto,'" & Replace(ex.Message, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End Try
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Inv_IngresarHoja(_Inv_Hoja As String, _Ls_Inv_Hoja_Detalle As String)
+
+        Dim js As New JavaScriptSerializer
+
+        _Sql = New Class_SQL
+
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
+
+        Dim Json = _Inv_Hoja
+        Dim _Zw_Inv_Hoja = JsonConvert.DeserializeObject(Of Zw_Inv_Hoja)(Json)
+        Json = _Ls_Inv_Hoja_Detalle
+        Dim _Zw_Ls_Inv_Hoja_Detalle As List(Of Zw_Inv_Hoja_Detalle) = JsonConvert.DeserializeObject(Of List(Of Zw_Inv_Hoja_Detalle))(Json)
+
+        'Dim inv_Hoja As New Inv_Hoja()
+        'inv_Hoja.Zw_Inv_Hoja = _Zw_Inv_Hoja
+        'inv_Hoja.Zw_Ls_Inv_Hoja_Detalle = _Zw_Ls_Inv_Hoja_Detalle
+
+        Dim Cl_Conteo As New Cl_Conteo
+        Cl_Conteo.Zw_Inv_Hoja = _Zw_Inv_Hoja
+        Cl_Conteo.Ls_Zw_Inv_Hoja_Detalle = _Zw_Ls_Inv_Hoja_Detalle
+
+        Dim _Mensaje As LsValiciones.Mensajes
+
+        _Mensaje = Cl_Conteo.Fx_Grabar_Nueva_Hoja()
+
+        'MessageBoxEx.Show(Me, _Mensaje.Mensaje, _Mensaje.Detalle, MessageBoxButtons.OK, _Mensaje.Icono)
+
+        Dim _Ds As DataSet
+
+        If _Mensaje.EsCorrecto Then
+            Consulta_sql = "Select Cast(1 as Bit) As EsCorrecto,'' As Error,'" & _Version & "' As Version," & _Mensaje.Id & " As Id,'" & Cl_Conteo.Zw_Inv_Hoja.Nro_Hoja & "' As Numero"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+        Else
+            Consulta_sql = "Select Cast(0 as Bit) As EsCorrecto,'" & Replace(_Mensaje.Mensaje, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+            Return
+        End If
+
+        Try
+            If Not CBool(_Ds.Tables(0).Rows.Count) Then
+                'Throw New System.Exception("No existe formato o documento, Tido: [" & _Tido & " - " & _Nudo & "]")
+            End If
+        Catch ex As Exception
+            Consulta_sql = "Select Cast(0 as Bit) As EsCorrecto,'" & Replace(ex.Message, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End Try
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Dim _Respuesta = Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None)
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
+#Region "Diego"
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub JS_COD(Tipo As String, Codigo As String)
+
+        _Sql = New Class_SQL
+        Dim js As New JavaScriptSerializer
+        Dim donde As String = ""
+
+        If Tipo = "Principal" Then
+            donde = "KOPR"
+        ElseIf Tipo = "Tecnico" Then
+            donde = "KOPRTE"
+        ElseIf Tipo = "Rapido" Then
+            donde = "KOPRRA"
+        End If
+
+        Consulta_sql = "select MP.KOPR as Principal ,MP.KOPRRA as Rapido, MP.KOPRTE as Tecnico, NOKOPR as Descripcion , ST.STFI1 as StockBodega , 
+MP.FMPR as SuperFamilia ,TABFM.NOKOFM as NombreSuper, 
+MP.PFPR as Familia ,TABPF.NOKOPF as NombreFamilia, 
+MP.HFPR as SubFamilia, TABHF.NOKOHF as NombreSub, MP.MRPR ,NOKOMR As 'MARCA',Cast(1000 As float) As Precio
+FROM MAEPR MP 
+INNER JOIN MAEST ST ON MP.KOPR = ST.KOPR
+RIGHT JOIN TABFM ON  MP.FMPR = TABFM.KOFM
+RIGHT JOIN TABPF ON  MP.FMPR = TABPF.KOFM AND MP.PFPR = TABPF.KOPF
+RIGHT JOIN TABHF ON  MP.FMPR = TABHF.KOFM AND MP.PFPR = TABHF.KOPF AND  MP.HFPR = TABHF.KOHF
+RIGHT JOIN TABMR On MP.MRPR = TABMR.KOMR
+WHERE EMPRESA = '01' AND KOSU = 'CM' AND KOBO = 'PR' AND MP." & donde & " = '" & Codigo & "'"
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Consulta_sql = "Select * From " & _Global_BaseBk & "tabladebakapp"
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+
+    End Sub
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub JS_SECTOR(Sector As String, IdInv As String)
+
+        Dim auxbk As String = "BAKAPP_PRB.dbo."
+        _Sql = New Class_SQL
+        Dim js As New JavaScriptSerializer
+
+        If IsNumeric(Sector) Then
+            Consulta_sql = "Select * From " & auxbk & "Zw_Inv_Sector Where IdInventario = " & IdInv & " And Id = '" & Sector & "'"
+        Else
+            Consulta_sql = "Select * From " & auxbk & "Zw_Inv_Sector Where IdInventario = " & IdInv & " And Sector = '" & Sector & "'"
+        End If
+
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub JS_Inventario(Inventario As String)
+
+        Dim auxbk As String = "BAKAPP_PRB.dbo."
+
+        _Sql = New Class_SQL
+        Dim js As New JavaScriptSerializer
+
+        Consulta_sql = "Select * From " & auxbk & "Zw_Inv_Inventario Where Id = '" & Inventario & "'"
+
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+
+    End Sub
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub JS_ProcesarHojas(InventarioJson As String)
+        Try
+            ' Convertir el JSON en un JObject
+            Dim inventarioJObject As JObject = JObject.Parse(InventarioJson)
+
+            ' Obtener el objeto 'Hoja'
+            Dim hoja As JObject = inventarioJObject("Hoja")
+
+            ' Obtener el valor de 'Nro_Hoja'
+            Dim nroHoja As String = hoja("Nro_Hoja").ToString()
+
+            ' Crear un nuevo diccionario para la respuesta
+            Dim MAPaux As New Dictionary(Of String, Object)
+            MAPaux.Add("Numero_Hoja", nroHoja)
+
+            ' Configurar la respuesta HTTP
+            Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+            Context.Response.ContentType = "application/json"
+            Context.Response.Write(JsonConvert.SerializeObject(MAPaux, Formatting.None))
+            Context.Response.Flush()
+            Context.Response.End()
+        Catch ex As Exception
+            ' Manejar cualquier error y devolver una respuesta adecuada
+            Context.Response.StatusCode = 500
+            Context.Response.ContentType = "application/json"
+            Dim errorResponse As New Dictionary(Of String, String)
+            errorResponse.Add("error", ex.Message)
+            Context.Response.Write(JsonConvert.SerializeObject(errorResponse, Formatting.None))
+            Context.Response.Flush()
+            Context.Response.End()
+        End Try
+    End Sub
+
 #End Region
+
+#End Region
+
 
 End Class
