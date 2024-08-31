@@ -19,8 +19,8 @@ Public Class Class_SQL
 
         Dim _Cn As New SqlConnection
         Sb_Abrir_Conexion(_Cn)
-
         If String.IsNullOrEmpty(Pro_Error) Then _BaseConectada = True
+        Sb_Cerrar_Conexion(_Cn)
 
     End Sub
 

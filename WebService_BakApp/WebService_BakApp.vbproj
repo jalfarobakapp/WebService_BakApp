@@ -11,7 +11,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>WebService_BakApp</RootNamespace>
     <AssemblyName>WebService_BakApp</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <OptionExplicit>On</OptionExplicit>
     <OptionCompare>Binary</OptionCompare>
     <OptionStrict>Off</OptionStrict>
@@ -236,6 +236,7 @@
     <Compile Include="Clases y Funciones BaKapp\Clases\Inventario\Modelos\Zw_Inv_Hoja_Detalle.vb" />
     <Compile Include="Clases y Funciones BaKapp\Clases\Inventario\Modelos\Zw_Inv_Inventario.vb" />
     <Compile Include="Clases y Funciones BaKapp\Clases\Inventario\Modelos\Zw_Inv_Sector.vb" />
+    <Compile Include="Clases y Funciones BaKapp\Clases\PDF\Pdf2Byte.vb" />
     <Compile Include="Clases y Funciones BaKapp\Clases\Variables\Variables.vb" />
     <Compile Include="Clases y Funciones BaKapp\Funciones\General Net\Funciones.vb" />
     <Compile Include="Clases y Funciones BaKapp\Funciones\General Net\Funciones_Especiales_BakApp.vb" />
