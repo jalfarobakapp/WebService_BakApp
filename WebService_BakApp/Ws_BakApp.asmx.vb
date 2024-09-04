@@ -2873,7 +2873,8 @@ WHERE Ft.IdInventario = " & _IdInventario & " And Ft.Empresa = '" & _Empresa & "
             donde = "KOPRRA"
         End If
 
-        Consulta_sql = "Select MP.KOPR as Principal ,MP.KOPRRA as Rapido, MP.KOPRTE as Tecnico,RLUD As Rtu,UD01PR As Ud1,UD02PR As Ud2,NOKOPR as Descripcion,Isnull(Ft.StFisicoUd1,0) as StFisicoUd1, Isnull(Ft.StFisicoUd2,0) as StFisicoUd2,
+        Consulta_sql = "Select MP.KOPR as Principal ,MP.KOPRRA as Rapido, MP.KOPRTE as Tecnico,RLUD As Rtu,UD01PR As Ud1,UD02PR As Ud2,NOKOPR as Descripcion,
+Round(Isnull(Ft.StFisicoUd1,0),3) as StFisicoUd1, Round(Isnull(Ft.StFisicoUd2,0),3) as StFisicoUd2,
 Isnull(MP.FMPR, '') as SuperFamilia ,Isnull(TABFM.NOKOFM,'') as NombreSuper, 
 Isnull(MP.PFPR, '') as Familia ,Isnull(TABPF.NOKOPF,'') as NombreFamilia, 
 Isnull(MP.HFPR, '') as SubFamilia, Isnull(TABHF.NOKOHF, '') as NombreSub, MP.MRPR ,Isnull(NOKOMR,'') As MARCA,Cast(0 As float) As PrecioListaUd1,Cast(0 As float) As PrecioListaUd2

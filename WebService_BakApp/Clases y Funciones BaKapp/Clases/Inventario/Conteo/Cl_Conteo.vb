@@ -272,7 +272,7 @@ Public Class Cl_Conteo
                                        "(" & .IdHoja & ",'" & .Nro_Hoja & "'," & .IdInventario & ",'" & .Empresa & "','" & .Sucursal & "','" & .Bodega & "'" &
                                        ",'" & .Responsable & "'," & .IdContador1 & "," & .IdContador2 & ",'" & .Item_Hoja & "'," & .IdSector &
                                        ",'" & .Sector & "','" & .Ubicacion & "','" & .TipoConteo & "','" & .Codigo & "'," & Convert.ToInt32(.EsSeriado) & ",'" & .NroSerie & "'" &
-                                       ",Getdate(),'" & .Rtu & "','" & .RtuVariable & "','" & .Udtrpr & "'" &
+                                       ",Getdate()," & De_Num_a_Tx_01(.Rtu, False, 5) & ",'" & .RtuVariable & "','" & .Udtrpr & "'" &
                                        "," & De_Num_a_Tx_01(.Cantidad, False, 5) & ",'" & .Ud1 &
                                        "'," & De_Num_a_Tx_01(.CantidadUd1, False, 5) & ",'" & .Ud2 & "'," & De_Num_a_Tx_01(.CantidadUd2, False, 5) &
                                        ",'" & .Observaciones & "'," & Convert.ToInt32(.Recontado) & ",'" & .Actualizado_por & "','" & .Obs_Actualizacion & "')"
@@ -281,7 +281,7 @@ Public Class Cl_Conteo
                         Comando.Transaction = myTrans
                         Comando.ExecuteNonQuery()
 
-                        Consulta_sql = "Update " & _Global_BaseBk & "Zw_Inv_FotoInventario Set Cant_Inventariada +=" & .Cantidad & vbCrLf &
+                        Consulta_sql = "Update " & _Global_BaseBk & "Zw_Inv_FotoInventario Set Cant_Inventariada +=" & De_Num_a_Tx_01(.Cantidad, False, 5) & vbCrLf &
                                        "Where IdInventario = " & .IdInventario & " And Codigo = '" & .Codigo & "'"
 
                         Comando = New SqlClient.SqlCommand(Consulta_sql, Cn2)
