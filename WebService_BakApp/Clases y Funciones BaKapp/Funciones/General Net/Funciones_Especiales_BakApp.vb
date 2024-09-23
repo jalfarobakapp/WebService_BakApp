@@ -17,7 +17,7 @@ Public Module Funciones_Especiales_BakApp
         Dim _Sql As New Class_SQL()
 
         Dim _Consulta_sql = "Select Top 1 " & _Tido & " From CONFIEST Where MODALIDAD = '" & _Modalidad & "'"
-        Dim _Tbl As DataTable = _Sql.Fx_Get_Tablas(_Consulta_sql) 'get_Tablas(_Consulta_sql, cn1)
+        Dim _Tbl As DataTable = _Sql.Fx_Get_DataTable(_Consulta_sql) 'get_Tablas(_Consulta_sql, cn1)
 
         Dim _Nudo_Modalidad As String
 
@@ -61,7 +61,7 @@ Public Module Funciones_Especiales_BakApp
         Dim _Sql As New Class_SQL()
 
         Consulta_sql = "Select * From " & _Global_BaseBk & "Zw_Licencia Where Rut = '" & _RutEmpresa & "'"
-        Dim _TblLicencia As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+        Dim _TblLicencia As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
 
         If CBool(_TblLicencia.Rows.Count) Then
 
@@ -223,7 +223,7 @@ Public Module Funciones_Especiales_BakApp
         Consulta_sql = "Select * From " & _Global_BaseBk & "ZW_PermisosVsUsuarios" & vbCrLf &
                        "Where CodPermiso = '" & _CodPremiso & "' And CodUsuario = '" & _CodUsuario & "'"
 
-        _Tbl = _Sql.Fx_Get_Tablas(Consulta_sql)
+        _Tbl = _Sql.Fx_Get_DataTable(Consulta_sql)
 
         Return _Tbl
 
@@ -386,7 +386,7 @@ Public Module Funciones_Especiales_BakApp
         End If
 
         Consulta_sql = "SELECT ROUND(SUM(" & CAMPO & ")," & Decimales & ") AS CAMPO FROM " & TABLA & condicion & ""
-        Dim _Tbl As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+        Dim _Tbl As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
 
         Dim cuenta As Long = _Tbl.Rows.Count
         Dim dr As DataRow = _Tbl.Rows(0)
@@ -701,7 +701,7 @@ Public Module Funciones_Especiales_BakApp
         _Filtro_Listas = Generar_Filtro_IN_Arreglo(_Listas, False)
 
         Consulta_sql = "Select * From TABPP Where KOLT In (" & _Filtro_Listas & ")"
-        Dim _Tbl_Listas As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+        Dim _Tbl_Listas As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
 
         Dim _Campo As String
 
@@ -718,7 +718,7 @@ Public Module Funciones_Especiales_BakApp
                 Dim _Contador = 0
 
                 Consulta_sql = "Select COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = 'TABPRE'"
-                Dim _Tbl_Campos_Tabpre As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+                Dim _Tbl_Campos_Tabpre As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
 
                 For Each _FColumnas As DataRow In _Tbl_Campos_Tabpre.Rows
 
@@ -790,7 +790,7 @@ Public Module Funciones_Especiales_BakApp
         End If
 
         Consulta_sql = "Select * From PNOMDIM Where DEPENDENCI = 'Valor_propio'"
-        Dim _Tbl_Dimension_Valor_Propio As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+        Dim _Tbl_Dimension_Valor_Propio As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
 
         For Each _FDim_Vp As DataRow In _Tbl_Dimension_Valor_Propio.Rows
 
@@ -813,7 +813,7 @@ Public Module Funciones_Especiales_BakApp
         Next
 
         Consulta_sql = "Select * From PNOMDIM Where DEPENDENCI = 'Por_producto'"
-        Dim _Tbl_Dimension_Por_Producto As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+        Dim _Tbl_Dimension_Por_Producto As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
 
         For Each _FDim_Vp As DataRow In _Tbl_Dimension_Por_Producto.Rows
 
@@ -839,7 +839,7 @@ Public Module Funciones_Especiales_BakApp
         Consulta_sql = "Select * From PNOMDIM 
                         Inner Join INFORMATION_SCHEMA.COLUMNS On PNOMDIM.CODIGO = COLUMN_NAME And DATA_TYPE In ('float','int')
                         Where DEPENDENCI = 'Por_entidad' And TABLE_NAME = 'PDIMCLI'"
-        Dim _Tbl_Dimension_Por_Entidad As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+        Dim _Tbl_Dimension_Por_Entidad As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
 
         For Each _FDim_Vp As DataRow In _Tbl_Dimension_Por_Entidad.Rows
 
@@ -1220,13 +1220,13 @@ Public Module Modulo_Precios_Costos
     Function Fx_Traer_Campo_Desde_Lista(_Codigo As String, _Ecuacion As String) As String
 
         Consulta_sql = "Select * From TABPP"
-        Dim _Tbl_Listas As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+        Dim _Tbl_Listas As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
 
         Consulta_sql = "Select * From PNOMDIM Where CODIGO <> ''"
-        Dim _Tbl_Dimensiones As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+        Dim _Tbl_Dimensiones As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
 
         Consulta_sql = "Select COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = 'TABPRE'"
-        Dim _Tbl_Campos_Tabpre As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+        Dim _Tbl_Campos_Tabpre As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
 
         Dim _Campo As String
 
@@ -1406,7 +1406,8 @@ Public Module Modulo_Precios_Costos
 
     Function Fx_Formato_Numerico(_Valor As String,
                                  _Formato As String,
-                                 _Es_Descuento As Boolean) As String
+                                 _Es_Descuento As Boolean,
+                                 Optional _Moneda_Str As String = "$") As String
 
         Dim _Cant_Caracteres As Integer = Len(_Formato)
         Dim _Moneda As Boolean
@@ -1449,7 +1450,7 @@ Public Module Modulo_Precios_Costos
 
             _Moneda = True
             _Relleno = " "
-            _Cant_Caracteres -= 1
+            _Cant_Caracteres -= _Moneda_Str.Length '1
 
         End If
 
@@ -1468,8 +1469,7 @@ Public Module Modulo_Precios_Costos
         End If
 
         If _Moneda Then
-            '_Valor = Mid(_Precio, 1, Len(_Precio) - 1)
-            _Valor = "$" & _Precio
+            _Valor = _Moneda_Str & _Precio
         Else
             If _Es_Prcentaje Then
                 _Valor = _Precio & "%"
@@ -1659,7 +1659,88 @@ Public Module Colores_Bakapp
 
     End Function
 
+    Function Fx_Caracter_Raro_Quitar(ByRef _Texto As String)
+
+        _Texto = Replace(_Texto, "&", "&amp;")
+        _Texto = Replace(_Texto, "<", "&lt;")
+        _Texto = Replace(_Texto, ">", "&gt;")
+        _Texto = Replace(_Texto, "'", "&apos;")
+        _Texto = Replace(_Texto, """", "&quot;")
+        _Texto = Replace(_Texto, "´", "")
+        _Texto = Replace(_Texto, "°", "")
+        _Texto = Replace(_Texto, "º", "")
+        _Texto = Replace(_Texto, "ñ", "n")
+        _Texto = Replace(_Texto, "Ñ", "N")
+
+        _Texto = Replace(_Texto, "á", "a")
+        _Texto = Replace(_Texto, "é", "e")
+        _Texto = Replace(_Texto, "í", "i")
+        _Texto = Replace(_Texto, "ó", "o")
+        _Texto = Replace(_Texto, "ú", "u")
+
+        _Texto = Replace(_Texto, "Á", "A")
+        _Texto = Replace(_Texto, "É", "E")
+        _Texto = Replace(_Texto, "Í", "I")
+        _Texto = Replace(_Texto, "Ó", "O")
+        _Texto = Replace(_Texto, "Ú", "U")
+
+        _Texto = Replace(_Texto, "ü", "u")
+        _Texto = Replace(_Texto, "Ü", "U")
+
+        _Texto = Replace(_Texto, vbCrLf, "")
+        _Texto = Replace(_Texto, " ", "")
+        _Texto = Replace(_Texto, "ª", "")
+
+        If Not String.IsNullOrEmpty(_Texto) Then
+            For i = 1 To _Texto.Length
+                Dim Letra As String = Mid(_Texto, i, 1)
+                Dim codeInt = Asc(Letra)
+                If (codeInt >= 0 And codeInt <= 31) Or (codeInt >= 127 And codeInt <= 255) Then
+                    _Texto = Replace(_Texto, Letra, " ")
+                End If
+            Next
+        End If
+
+        If IsNothing(_Texto) Then
+            _Texto = String.Empty
+        End If
+
+        _Texto = _Texto.Trim
+
+    End Function
+
 End Module
 
+Namespace LsValiciones
+
+    Public Class Mensajes
+
+        Public Property EsCorrecto As Boolean
+        Public Property Id As String
+        Public Property Fecha As DateTime
+        Public Property Detalle As String = String.Empty
+        Public Property Mensaje As String = String.Empty
+        Public Property Resultado As String = String.Empty
+        Public Property Tag As Object
+        Public Property UsarImagen As Boolean
+        Public Property NombreImagen As String = String.Empty
+        Public Property Icono As Object
+        Public Property Cancelado As Boolean
+        Public Property MostrarMensaje As Boolean = True
+        Public Property Cerrar As Boolean
+        Public Property ErrorDeConexionSQL As Boolean
+
+    End Class
+
+    Public Class Columnas
+
+        Public Property Nombre As String
+        Public Property Descripcion As String
+        Public Property Ancho As Integer
+
+    End Class
+
+
+End Namespace
 
 

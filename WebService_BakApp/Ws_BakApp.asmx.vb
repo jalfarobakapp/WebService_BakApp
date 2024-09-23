@@ -5,6 +5,7 @@ Imports System.Web.Script.Serialization
 Imports System.Web.Script.Services
 Imports System.Web.Services
 Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Linq
 
 ' Para permitir que se llame a este servicio web desde un script, usando ASP.NET AJAX, quite la marca de comentario de la siguiente línea.
 ' <System.Web.Script.Services.ScriptService()> _
@@ -770,7 +771,7 @@ Public Class Ws_BakApp
             Dim _Opera_Rev = Split(_Opera, ",")
 
             Consulta_sql = "Select Top 1 * From TABPRE Where KOLT = '" & _CodLista & "' And KOPR = '" & _Codigo & "'"
-            Dim _TblTabpre As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
+            Dim _TblTabpre As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
 
             ' Asi es como actua el campo OPERA, este campo define como se comportaran los campos adicionales a partir del campo nro 29 en adelante
 
@@ -787,7 +788,7 @@ Public Class Ws_BakApp
 
             Consulta_sql = "Select Cast('' As Varchar(20)) As Tcampo,Cast(0 As Float) As Dscto,Cast(0 As Float) As Valor" & Environment.NewLine &
                            "Where 1 < 0"
-            _TblDscto = _Sql.Fx_Get_Tablas(Consulta_sql)
+            _TblDscto = _Sql.Fx_Get_DataTable(Consulta_sql)
 
             For _i = 28 To _TblTabpre.Columns.Count - 1
 
@@ -2564,7 +2565,6 @@ Public Class Ws_BakApp
 
     End Sub
 
-
     <WebMethod(True)>
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Sb_Token_Generar(_Key As String)
@@ -2644,6 +2644,449 @@ Public Class Ws_BakApp
         Context.Response.Flush()
         Context.Response.End()
 
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_ImprimirEnPDF2Bit(_Tido As String, _Nudo As String, _RutEmpresa As String, _NombreFormato As String)
+
+        Dim js As New JavaScriptSerializer
+
+        Dim _Pdf2Byte As New Pdf2Byte
+
+        _Sql = New Class_SQL
+
+        'Dim _NombreFormato As String = "Tamaño carta Alameda PDA"
+        Dim _Path As String = ConfigurationManager.AppSettings("Ruta_Pdf") '"D:\PdfCreator impresiones"
+        Dim _Idmaeedo As Integer = _Sql.Fx_Trae_Dato("MAEEDO", "IDMAEEDO", "TIDO = '" & _Tido & "' And NUDO = '" & _Nudo & "'", True)
+        'Dim _RutEmpresa As String = "81756300-7"
+
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'").ToString.Trim & ".dbo."
+
+        Dim _Pdf_Adjunto As New Clas_PDF_Crear_Documento(_Idmaeedo,
+                                                         _Tido,
+                                                         _NombreFormato,
+                                                         _Tido & "-" & _Nudo,
+                                                         _Path, _Tido & "-" & _Nudo,
+                                                         False,
+                                                         _Global_BaseBk,
+                                                         _RutEmpresa)
+
+        _Pdf_Adjunto.Sb_Crear_PDF("", False, _Pdf_Adjunto.Pro_Nombre_Archivo)
+
+        Dim _RutayArchivo As String = _Pdf_Adjunto.Pro_Full_Path_Archivo_PDF & "\" & _Pdf_Adjunto.Pro_Nombre_Archivo & ".pdf"
+
+        Dim _Error_Pdf = _Pdf_Adjunto.Pro_Error
+        Dim _Existe_File = System.IO.File.Exists(_RutayArchivo)
+
+        If Not String.IsNullOrEmpty(_Error_Pdf) Then
+
+            _Pdf2Byte.EsCorrecto = False
+            _Pdf2Byte.MensajeError = _Error_Pdf
+            _Pdf2Byte.Mensaje = ""
+
+        Else
+
+            Dim blob As Byte()
+            blob = IO.File.ReadAllBytes(_RutayArchivo)
+
+            Dim _Pdf_Byte As Byte() = blob
+
+            _Pdf2Byte.EsCorrecto = _Existe_File
+            _Pdf2Byte.Pdf_Byte = _Pdf_Byte
+            _Pdf2Byte.Mensaje = ""
+
+        End If
+
+        ' Convert the data to JSON format
+        Dim json As String = Newtonsoft.Json.JsonConvert.SerializeObject(_Pdf2Byte)
+
+        ' Set the response content type to "application/json"
+        HttpContext.Current.Response.ContentType = "application/json"
+
+        ' Write the JSON data to the response
+        HttpContext.Current.Response.Write(json)
+
+        Context.Response.End()
+
+    End Sub
+
+#End Region
+
+#Region "Inventario"
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Inv_IngresarHoja(_Inv_Hoja As String, _Ls_Inv_Hoja_Detalle As String)
+
+        Dim js As New JavaScriptSerializer
+
+        _Sql = New Class_SQL
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
+
+        Dim Json = _Inv_Hoja
+        Dim _Zw_Inv_Hoja = JsonConvert.DeserializeObject(Of Zw_Inv_Hoja)(Json)
+        Json = _Ls_Inv_Hoja_Detalle
+        Dim _Zw_Ls_Inv_Hoja_Detalle As List(Of Zw_Inv_Hoja_Detalle) = JsonConvert.DeserializeObject(Of List(Of Zw_Inv_Hoja_Detalle))(Json)
+
+        'Dim inv_Hoja As New Inv_Hoja()
+        'inv_Hoja.Zw_Inv_Hoja = _Zw_Inv_Hoja
+        'inv_Hoja.Zw_Ls_Inv_Hoja_Detalle = _Zw_Ls_Inv_Hoja_Detalle
+
+        Dim Cl_Conteo As New Cl_Conteo
+        Cl_Conteo.Zw_Inv_Hoja = _Zw_Inv_Hoja
+        Cl_Conteo.Ls_Zw_Inv_Hoja_Detalle = _Zw_Ls_Inv_Hoja_Detalle
+
+        Dim _Mensaje As LsValiciones.Mensajes
+
+        _Mensaje = Cl_Conteo.Fx_Grabar_Nueva_Hoja()
+
+        'MessageBoxEx.Show(Me, _Mensaje.Mensaje, _Mensaje.Detalle, MessageBoxButtons.OK, _Mensaje.Icono)
+
+        Dim _Ds As DataSet
+
+        If _Mensaje.EsCorrecto Then
+            Consulta_sql = "Select Cast(1 as Bit) As EsCorrecto,'' As Error,'" & _Version & "' As Version," & _Mensaje.Id & " As Id,'" & Cl_Conteo.Zw_Inv_Hoja.Nro_Hoja & "' As Numero"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+        Else
+            Consulta_sql = "Select Cast(0 as Bit) As EsCorrecto,'" & Replace(_Mensaje.Mensaje, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End If
+
+        Try
+            If Not CBool(_Ds.Tables(0).Rows.Count) Then
+                'Throw New System.Exception("No existe formato o documento, Tido: [" & _Tido & " - " & _Nudo & "]")
+            End If
+        Catch ex As Exception
+            Consulta_sql = "Select Cast(0 as Bit) As EsCorrecto,'" & Replace(ex.Message, "'", "''") & "' As Error,'" & _Version & "' As Version"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+        End Try
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Dim _Respuesta = Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None)
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Inv_TraerProductoInventarioComentario(_IdInventario As Integer,
+                                              _Empresa As String,
+                                              _Sucursal As String,
+                                              _Bodega As String,
+                                              _Tipo As String,
+                                              _Codigo As String)
+
+        _Sql = New Class_SQL
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
+
+        Dim js As New JavaScriptSerializer
+        Dim donde As String = ""
+        Dim condicion As String = ""
+        If _Tipo = "Principal" Then
+            donde = "KOPR"
+            condicion = "MP." & donde & " Like '" & _Codigo & "'"
+
+        ElseIf _Tipo = "Tecnico" Then
+            donde = "KOPRTE"
+            condicion = "MP." & donde & " Like '" & _Codigo & "'"
+
+        ElseIf _Tipo = "Rapido" Then
+            donde = "KOPRRA"
+            condicion = "MP." & donde & " Like '" & _Codigo & "'"
+
+        ElseIf _Tipo = "Descripcion" Then
+            donde = "NOKOPR"
+            condicion = "MP." & donde & " Like '%" & _Codigo & "%'"
+
+        End If
+
+        Consulta_sql = "Select MP.KOPR as Principal ,MP.KOPRRA as Rapido, MP.KOPRTE as Tecnico,RLUD As Rtu,UD01PR As Ud1,UD02PR As Ud2,NOKOPR as Descripcion,Ft.StFisicoUd1 as StFisicoUd1 , Ft.StFisicoUd2 as StFisicoUd2,
+MP.FMPR as SuperFamilia ,TABFM.NOKOFM as NombreSuper, 
+MP.PFPR as Familia ,TABPF.NOKOPF as NombreFamilia, 
+MP.HFPR as SubFamilia, TABHF.NOKOHF as NombreSub, MP.MRPR ,NOKOMR As 'MARCA',Cast(0 As float) As PrecioListaUd1,Cast(0 As float) As PrecioListaUd2
+FROM MAEPR MP 
+--INNER JOIN MAEST ST ON MP.KOPR = ST.KOPR
+RIGHT JOIN TABFM ON  MP.FMPR = TABFM.KOFM
+RIGHT JOIN TABPF ON  MP.FMPR = TABPF.KOFM AND MP.PFPR = TABPF.KOPF
+RIGHT JOIN TABHF ON  MP.FMPR = TABHF.KOFM AND MP.PFPR = TABHF.KOPF AND  MP.HFPR = TABHF.KOHF
+RIGHT JOIN TABMR On MP.MRPR = TABMR.KOMR
+Left Join " & _Global_BaseBk & "Zw_Inv_FotoInventario Ft On Ft.Codigo = MP.KOPR
+WHERE Ft.IdInventario = " & _IdInventario & " And Ft.Empresa = '" & _Empresa & "' AND Ft.Sucursal = '" & _Sucursal & "' AND Ft.Bodega = '" & _Bodega & "' AND " & condicion
+
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Try
+
+            Dim _Lista As String = "01P"
+
+            Consulta_sql = "SELECT Top 1 *,--PP01UD,PP02UD,DTMA01UD As DSCTOMAX,ECUACION,
+                            (SELECT top 1 MELT FROM TABPP Where KOLT = '" & _Lista & "') As MELT FROM TABPRE
+                            Where KOLT = '" & _Lista & "' And KOPR = '" & _Codigo & "'"
+            Dim _RowPrecios As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, "")
+            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, "")
+
+            _Ds.Tables(0).Rows(0).Item("PrecioListaUd1") = _PrecioListaUd1
+            _Ds.Tables(0).Rows(0).Item("PrecioListaUd2") = _PrecioListaUd2
+
+        Catch ex As Exception
+
+            Consulta_sql = "Select 'Error_" & Replace(ex.Message, "'", "''") & "' As Codigo,'" & _Version & "' As Version"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        End Try
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Inv_TraerProductoInventario(_IdInventario As Integer,
+                                              _Empresa As String,
+                                              _Sucursal As String,
+                                              _Bodega As String,
+                                              _Tipo As String,
+                                              _Codigo As String)
+
+        _Sql = New Class_SQL
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
+
+        Dim js As New JavaScriptSerializer
+        Dim donde As String = ""
+
+        If _Tipo = "Principal" Then
+            donde = "KOPR"
+        ElseIf _Tipo = "Tecnico" Then
+            donde = "KOPRTE"
+        ElseIf _Tipo = "Rapido" Then
+            donde = "KOPRRA"
+        End If
+
+        Consulta_sql = "Select MP.KOPR as Principal ,MP.KOPRRA as Rapido, MP.KOPRTE as Tecnico,RLUD As Rtu,UD01PR As Ud1,UD02PR As Ud2,NOKOPR as Descripcion,
+Round(Isnull(Ft.StFisicoUd1,0),3) as StFisicoUd1, Round(Isnull(Ft.StFisicoUd2,0),3) as StFisicoUd2,
+Isnull(MP.FMPR, '') as SuperFamilia ,Isnull(TABFM.NOKOFM,'') as NombreSuper, 
+Isnull(MP.PFPR, '') as Familia ,Isnull(TABPF.NOKOPF,'') as NombreFamilia, 
+Isnull(MP.HFPR, '') as SubFamilia, Isnull(TABHF.NOKOHF, '') as NombreSub, MP.MRPR ,Isnull(NOKOMR,'') As MARCA,Cast(0 As float) As PrecioListaUd1,Cast(0 As float) As PrecioListaUd2
+FROM MAEPR MP 
+--INNER JOIN MAEST ST ON MP.KOPR = ST.KOPR
+LEFT JOIN TABFM ON  MP.FMPR = TABFM.KOFM
+LEFT JOIN TABPF ON  MP.FMPR = TABPF.KOFM AND MP.PFPR = TABPF.KOPF
+LEFT JOIN TABHF ON  MP.FMPR = TABHF.KOFM AND MP.PFPR = TABHF.KOPF AND  MP.HFPR = TABHF.KOHF
+LEFT JOIN TABMR On MP.MRPR = TABMR.KOMR
+Left Join " & _Global_BaseBk & "Zw_Inv_FotoInventario Ft On Ft.Codigo = MP.KOPR And Ft.IdInventario = " & _IdInventario & " And Ft.Empresa = '" & _Empresa & "' AND Ft.Sucursal = '" & _Sucursal & "' AND Ft.Bodega = '" & _Bodega & "' 
+WHERE MP." & donde & " = '" & _Codigo & "'"
+
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Try
+
+            Dim _Lista As String = "01P"
+
+            Consulta_sql = "SELECT Top 1 *,--PP01UD,PP02UD,DTMA01UD As DSCTOMAX,ECUACION,
+                            (SELECT top 1 MELT FROM TABPP Where KOLT = '" & _Lista & "') As MELT FROM TABPRE
+                            Where KOLT = '" & _Lista & "' And KOPR = '" & _Codigo & "'"
+            Dim _RowPrecios As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, "")
+            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, "")
+
+            _Ds.Tables(0).Rows(0).Item("PrecioListaUd1") = _PrecioListaUd1
+            _Ds.Tables(0).Rows(0).Item("PrecioListaUd2") = _PrecioListaUd2
+
+        Catch ex As Exception
+
+            Consulta_sql = "Select 'Error_" & Replace(ex.Message, "'", "''") & "' As Codigo,'" & _Version & "' As Version"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        End Try
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Inv_TraerProductoInventario2(_IdInventario As Integer,
+                                              _Empresa As String,
+                                              _Sucursal As String,
+                                              _Bodega As String,
+                                              _Tipo As String,
+                                              _Codigo As String)
+
+        _Sql = New Class_SQL
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
+
+        Dim js As New JavaScriptSerializer
+        Dim donde As String = ""
+
+        If _Tipo = "Principal" Then
+            donde = "KOPR"
+        ElseIf _Tipo = "Tecnico" Then
+            donde = "KOPRTE"
+        ElseIf _Tipo = "Rapido" Then
+            donde = "KOPRRA"
+        End If
+
+        Consulta_sql = "Select MP.KOPR as Principal ,MP.KOPRRA as Rapido, MP.KOPRTE as Tecnico,RLUD As Rtu,UD01PR As Ud1,UD02PR As Ud2,NOKOPR as Descripcion,Isnull(Ft.StFisicoUd1,0) as StFisicoUd1, Isnull(Ft.StFisicoUd2,0) as StFisicoUd2,
+Isnull(MP.FMPR, '') as SuperFamilia ,Isnull(TABFM.NOKOFM,'') as NombreSuper, 
+Isnull(MP.PFPR, '') as Familia ,Isnull(TABPF.NOKOPF,'') as NombreFamilia, 
+Isnull(MP.HFPR, '') as SubFamilia, Isnull(TABHF.NOKOHF, '') as NombreSub, MP.MRPR ,Isnull(NOKOMR,'') As MARCA,Cast(0 As float) As PrecioListaUd1,Cast(0 As float) As PrecioListaUd2
+FROM MAEPR MP 
+--INNER JOIN MAEST ST ON MP.KOPR = ST.KOPR
+LEFT JOIN TABFM ON  MP.FMPR = TABFM.KOFM
+LEFT JOIN TABPF ON  MP.FMPR = TABPF.KOFM AND MP.PFPR = TABPF.KOPF
+LEFT JOIN TABHF ON  MP.FMPR = TABHF.KOFM AND MP.PFPR = TABHF.KOPF AND  MP.HFPR = TABHF.KOHF
+LEFT JOIN TABMR On MP.MRPR = TABMR.KOMR
+Left Join " & _Global_BaseBk & "Zw_Inv_FotoInventario Ft On Ft.Codigo = MP.KOPR And Ft.Empresa = '" & _Empresa & "' AND Ft.Sucursal = '" & _Sucursal & "' AND Ft.Bodega = '" & _Bodega & "' 
+WHERE MP." & donde & " = '" & _Codigo & "'"
+
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Try
+
+            Dim _Lista As String = "01P"
+
+            Consulta_sql = "SELECT Top 1 *,--PP01UD,PP02UD,DTMA01UD As DSCTOMAX,ECUACION,
+                            (SELECT top 1 MELT FROM TABPP Where KOLT = '" & _Lista & "') As MELT FROM TABPRE
+                            Where KOLT = '" & _Lista & "' And KOPR = '" & _Codigo & "'"
+            Dim _RowPrecios As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, "")
+            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, "")
+
+            _Ds.Tables(0).Rows(0).Item("PrecioListaUd1") = _PrecioListaUd1
+            _Ds.Tables(0).Rows(0).Item("PrecioListaUd2") = _PrecioListaUd2
+
+        Catch ex As Exception
+
+            Consulta_sql = "Select 'Error_" & Replace(ex.Message, "'", "''") & "' As Codigo,'" & _Version & "' As Version"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        End Try
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Inv_BuscarSector(Sector As String, IdInv As String)
+
+        _Sql = New Class_SQL
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
+
+        Dim js As New JavaScriptSerializer
+
+        If IsNumeric(Sector) Then
+            Consulta_sql = "Select * From " & _Global_BaseBk & "Zw_Inv_Sector Where IdInventario = " & IdInv & " And Id = '" & Sector & "'"
+        Else
+            Consulta_sql = "Select * From " & _Global_BaseBk & "Zw_Inv_Sector Where IdInventario = " & IdInv & " And Sector = '" & Sector & "'"
+        End If
+
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Inv_BuscarInventario(Inventario As String)
+
+        _Sql = New Class_SQL
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
+
+        Dim js As New JavaScriptSerializer
+
+        Consulta_sql = "Select * From " & _Global_BaseBk & "Zw_Inv_Inventario Where Id = '" & Inventario & "'"
+
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Inv_BuscarContador(Rut As String, Rut2 As String)
+
+        _Sql = New Class_SQL
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
+
+        Dim js As New JavaScriptSerializer
+
+        Consulta_sql = "Select * From " & _Global_BaseBk & "Zw_Inv_Contador Where Activo = '1' and Rut  != '" & Rut & "' and Rut  != '" & Rut2 & "'"
+
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub JS_ProcesarHojas(InventarioJson As String)
+        Try
+            ' Convertir el JSON en un JObject
+            Dim inventarioJObject As JObject = JObject.Parse(InventarioJson)
+
+            ' Obtener el objeto 'Hoja'
+            Dim hoja As JObject = inventarioJObject("Hoja")
+
+            ' Obtener el valor de 'Nro_Hoja'
+            Dim nroHoja As String = hoja("Nro_Hoja").ToString()
+
+            ' Crear un nuevo diccionario para la respuesta
+            Dim MAPaux As New Dictionary(Of String, Object)
+            MAPaux.Add("Numero_Hoja", nroHoja)
+
+            ' Configurar la respuesta HTTP
+            Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+            Context.Response.ContentType = "application/json"
+            Context.Response.Write(JsonConvert.SerializeObject(MAPaux, Formatting.None))
+            Context.Response.Flush()
+            Context.Response.End()
+        Catch ex As Exception
+            ' Manejar cualquier error y devolver una respuesta adecuada
+            Context.Response.StatusCode = 500
+            Context.Response.ContentType = "application/json"
+            Dim errorResponse As New Dictionary(Of String, String)
+            errorResponse.Add("error", ex.Message)
+            Context.Response.Write(JsonConvert.SerializeObject(errorResponse, Formatting.None))
+            Context.Response.Flush()
+            Context.Response.End()
+        End Try
     End Sub
 
 #End Region

@@ -1,0 +1,34 @@
+﻿Public Class Zw_Inv_Hoja_Detalle
+    Public Property Id As Integer
+    Public Property IdHoja As Integer
+    Public Property Nro_Hoja As String
+    Public Property IdInventario As Integer
+    Public Property Empresa As String
+    Public Property Sucursal As String
+    Public Property Bodega As String
+    Public Property Responsable As String
+    Public Property IdContador1 As Integer
+    Public Property IdContador2 As Integer
+    Public Property Item_Hoja As String
+    Public Property IdSector As Integer
+    Public Property Sector As String
+    Public Property Ubicacion As String
+    Public Property TipoConteo As String
+    Public Property Codigo As String
+    Public Property Descripcion As String
+    Public Property EsSeriado As Boolean
+    Public Property NroSerie As String
+    Public Property FechaHoraToma As DateTime?
+    Public Property Rtu As Double
+    Public Property RtuVariable As Boolean
+    Public Property Udtrpr As Integer
+    Public Property Cantidad As Double
+    Public Property Ud1 As String
+    Public Property CantidadUd1 As Double
+    Public Property Ud2 As String
+    Public Property CantidadUd2 As Double
+    Public Property Observaciones As String
+    Public Property Recontado As Boolean
+    Public Property Actualizado_por As String
+    Public Property Obs_Actualizacion As String
+End Class
