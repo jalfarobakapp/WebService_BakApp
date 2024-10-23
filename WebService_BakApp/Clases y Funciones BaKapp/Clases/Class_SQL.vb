@@ -22,6 +22,8 @@ Public Class Class_SQL
 
         If String.IsNullOrEmpty(Pro_Error) Then _BaseConectada = True
 
+        Sb_Cerrar_Conexion(_Cn)
+
     End Sub
 
     Function Fx_Ej_consulta_IDU(ConsultaSql As String, _
