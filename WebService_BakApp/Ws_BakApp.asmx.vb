@@ -2711,6 +2711,57 @@ Public Class Ws_BakApp
 
     End Sub
 
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_ImprimirEtiquetaZPL_01(_NombreEtiqueta As String,
+                                         _Codigo As String,
+                                         _CodLista As String,
+                                         _Empresa As String,
+                                         _Sucursal As String,
+                                         _Bodega As String,
+                                         _CodAlternativo As String)
+
+        Dim js As New JavaScriptSerializer
+
+        Dim _ImpEtiqueta As New ImpEtiqueta
+
+        _Sql = New Class_SQL
+
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'").ToString.Trim & ".dbo."
+
+        Dim _Mensaje As New LsValiciones.Mensajes
+
+        Dim _Cl_Imprimir_Barra As New Class_Imprimir_Barras
+
+        _Mensaje = _Cl_Imprimir_Barra.Fx_Imprimir_Etiquea_Producto(_NombreEtiqueta, _Codigo, _CodLista, _Empresa, _Sucursal, _Bodega, _CodAlternativo)
+
+        If Not _Mensaje.EsCorrecto Then
+
+            _ImpEtiqueta.EsCorrecto = False
+            _ImpEtiqueta.Etiqueta = String.Empty
+            _ImpEtiqueta.Mensaje = _Mensaje.Mensaje
+
+        Else
+
+            _ImpEtiqueta.EsCorrecto = True
+            _ImpEtiqueta.Etiqueta = _Mensaje.Tag
+            _ImpEtiqueta.Mensaje = _Mensaje.Mensaje
+
+        End If
+
+        ' Convert the data to JSON format
+        Dim json As String = Newtonsoft.Json.JsonConvert.SerializeObject(_ImpEtiqueta)
+
+        ' Set the response content type to "application/json"
+        HttpContext.Current.Response.ContentType = "application/json"
+
+        ' Write the JSON data to the response
+        HttpContext.Current.Response.Write(json)
+
+        Context.Response.End()
+
+    End Sub
+
 #End Region
 
 #Region "Inventario"
