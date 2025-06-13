@@ -467,6 +467,15 @@
         _Texto = Replace(_Texto, "<TIDOPA>", _Tidopa)
         _Texto = Replace(_Texto, "<NUDOPA>", _Nudopa)
 
+        Dim _PU01_BrutoCtdo As String
+        Dim _PU02_BrutoCtdo As String
+
+        _PU01_BrutoCtdo = Fx_FormatearValorCentrado(_PU01_Bruto, 12)
+        _PU02_BrutoCtdo = Fx_FormatearValorCentrado(_PU02_Bruto, 12)
+
+        _Texto = Replace(_Texto, "<PBRUTO_UD1_CENT>", _PU01_BrutoCtdo)
+        _Texto = Replace(_Texto, "<PBRUTO_UD2_CENT>", _PU02_BrutoCtdo)
+
         Dim _Nudopa_Sc As String
 
         Try
@@ -479,6 +488,30 @@
 
         Return _Texto
 
+    End Function
+
+    Function Fx_FormatearValorCentrado(valor As String, Optional largo As Integer = 12) As String
+        ' Intenta convertir a número y dar formato con puntos como separador de miles
+        Dim valorNumerico As Decimal
+        If Decimal.TryParse(valor, valorNumerico) Then
+            valor = valorNumerico.ToString("#,##0") ' Ej: 9.999.999
+        End If
+
+        ' Agrega el símbolo $
+        Dim valorFormateado As String = "$ " & valor
+
+        ' Si el resultado es mayor que el largo, recorta
+        If valorFormateado.Length > largo Then
+            valorFormateado = valorFormateado.Substring(0, largo)
+        End If
+
+        ' Centrado visual: calcula espacios a la izquierda y derecha
+        Dim espaciosTotales As Integer = largo - valorFormateado.Length
+        Dim espaciosIzquierda As Integer = espaciosTotales \ 2
+        Dim espaciosDerecha As Integer = espaciosTotales - espaciosIzquierda
+
+        ' Devuelve el valor con espacios a ambos lados
+        Return New String(" "c, espaciosIzquierda) & valorFormateado & New String(" "c, espaciosDerecha)
     End Function
 
 #End Region
@@ -544,7 +577,7 @@
 
             Dim _RowProducto As DataRow = _Tbl.Rows(0)
 
-            Sb_Incorporar_Precios(_RowProducto, _CodLista, _ImprimirDesdePrecioFuturo, _Id_PrecioFuturo)
+            Sb_Incorporar_Precios(_Empresa, _RowProducto, _CodLista, _ImprimirDesdePrecioFuturo, _Id_PrecioFuturo)
 
             Return _RowProducto
 
@@ -554,7 +587,8 @@
 
     End Function
 
-    Sub Sb_Incorporar_Precios(ByRef _RowProducto As DataRow,
+    Sub Sb_Incorporar_Precios(_Empresa As String,
+                              ByRef _RowProducto As DataRow,
                               _CodLista As String,
                               _ImprimirDesdePrecioFuturo As Boolean,
                               _Id_PrecioFuturo As Integer)
@@ -595,11 +629,11 @@
             '_PrecioListaUd1 = Fx_Funcion_Ecuacion_Random(Nothing, _CodEntidad, _Ecuacion, _Codigo, 1, _RowPrecios, 0, 0, 0)
             '_PrecioListaUd2 = Fx_Funcion_Ecuacion_Random(Nothing, _CodEntidad, _Ecuacionu2, _Codigo, 2, _RowPrecios, 0, 0, 0)
 
-            _PrecioListaUd1 = Fx_Precio_Formula_Random(Nothing, _CodEntidad, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, "")
-            _PrecioListaUd2 = Fx_Precio_Formula_Random(Nothing, _CodEntidad, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, "")
+            _PrecioListaUd1 = Fx_Precio_Formula_Random(_Empresa, _CodEntidad, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, "")
+            _PrecioListaUd2 = Fx_Precio_Formula_Random(_Empresa, _CodEntidad, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, "")
 
             If _PrecioListaUd1 = 0 Then _PrecioListaUd1 = NuloPorNro(_RowPrecios.Item("PP01UD"), 0)
-            If _PrecioListaUd2 = 0 Then _PrecioListaUd1 = NuloPorNro(_RowPrecios.Item("PP02UD"), 0)
+            If _PrecioListaUd2 = 0 Then _PrecioListaUd2 = NuloPorNro(_RowPrecios.Item("PP02UD"), 0)
 
         End If
 

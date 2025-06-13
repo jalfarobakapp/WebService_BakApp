@@ -1929,6 +1929,29 @@ Public Class Ws_BakApp
 
     <WebMethod(True)>
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_TraerEtiquetas()
+
+        _Sql = New Class_SQL
+        Dim Consulta_sql As String
+
+        Dim _Ds As DataSet
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
+
+        Consulta_sql = $"SELECT NombreEtiqueta, FUNCION FROM {_Global_BaseBk}Zw_Tbl_DisenoBarras WHERE NombreEtiqueta LIKE '%(Movil)%'"
+        _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Sb_Traer_Descuento_Global_X_Cliente(_Global_BaseBk As String, _Koen As String, _Suen As String)
 
         _Sql = New Class_SQL
@@ -2855,6 +2878,18 @@ Public Class Ws_BakApp
             condicion = "MP." & donde & " Like '%" & _Codigo & "%'"
 
         End If
+        '        Consulta_sql = "Select MP.KOPR as Principal ,MP.KOPRRA as Rapido, MP.KOPRTE as Tecnico,RLUD As Rtu,UD01PR As Ud1,UD02PR As Ud2,NOKOPR as Descripcion,Ft.StFisicoUd1 as StFisicoUd1 , Ft.StFisicoUd2 as StFisicoUd2,
+        'MP.FMPR as SuperFamilia ,TABFM.NOKOFM as NombreSuper, 
+        'MP.PFPR as Familia ,TABPF.NOKOPF as NombreFamilia, 
+        'MP.HFPR as SubFamilia, TABHF.NOKOHF as NombreSub, MP.MRPR ,NOKOMR As 'MARCA',Cast(0 As float) As PrecioListaUd1,Cast(0 As float) As PrecioListaUd2
+        'FROM MAEPR MP 
+        '--INNER JOIN MAEST ST ON MP.KOPR = ST.KOPR
+        'RIGHT JOIN TABFM ON  MP.FMPR = TABFM.KOFM
+        'RIGHT JOIN TABPF ON  MP.FMPR = TABPF.KOFM AND MP.PFPR = TABPF.KOPF
+        'RIGHT JOIN TABHF ON  MP.FMPR = TABHF.KOFM AND MP.PFPR = TABHF.KOPF AND  MP.HFPR = TABHF.KOHF
+        'RIGHT JOIN TABMR On MP.MRPR = TABMR.KOMR
+        'Left Join " & _Global_BaseBk & "Zw_Inv_FotoInventario Ft On Ft.Codigo = MP.KOPR
+        'WHERE Ft.IdInventario = " & _IdInventario & " And Ft.Empresa = '" & _Empresa & "' AND Ft.Sucursal = '" & _Sucursal & "' AND Ft.Bodega = '" & _Bodega & "' AND " & condicion
 
         Consulta_sql = "Select MP.KOPR as Principal ,MP.KOPRRA as Rapido, MP.KOPRTE as Tecnico,RLUD As Rtu,UD01PR As Ud1,UD02PR As Ud2,NOKOPR as Descripcion,Ft.StFisicoUd1 as StFisicoUd1 , Ft.StFisicoUd2 as StFisicoUd2,
 MP.FMPR as SuperFamilia ,TABFM.NOKOFM as NombreSuper, 
@@ -2866,8 +2901,8 @@ RIGHT JOIN TABFM ON  MP.FMPR = TABFM.KOFM
 RIGHT JOIN TABPF ON  MP.FMPR = TABPF.KOFM AND MP.PFPR = TABPF.KOPF
 RIGHT JOIN TABHF ON  MP.FMPR = TABHF.KOFM AND MP.PFPR = TABHF.KOPF AND  MP.HFPR = TABHF.KOHF
 RIGHT JOIN TABMR On MP.MRPR = TABMR.KOMR
-Left Join " & _Global_BaseBk & "Zw_Inv_FotoInventario Ft On Ft.Codigo = MP.KOPR
-WHERE Ft.IdInventario = " & _IdInventario & " And Ft.Empresa = '" & _Empresa & "' AND Ft.Sucursal = '" & _Sucursal & "' AND Ft.Bodega = '" & _Bodega & "' AND " & condicion
+
+WHERE " & condicion
 
         Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
 
@@ -2900,6 +2935,7 @@ WHERE Ft.IdInventario = " & _IdInventario & " And Ft.Empresa = '" & _Empresa & "
         Context.Response.End()
 
     End Sub
+
     <WebMethod(True)>
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Sb_Inv_TraerProductoInventarioTicket(
@@ -2907,20 +2943,34 @@ WHERE Ft.IdInventario = " & _IdInventario & " And Ft.Empresa = '" & _Empresa & "
                                               _Sucursal As String,
                                               _Bodega As String,
                                               _Tipo As String,
-                                              _Codigo As String)
+                                              _Codigo As String,
+                                               _Lista As String)
 
         _Sql = New Class_SQL
         _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
 
         Dim js As New JavaScriptSerializer
         Dim donde As String = ""
-
+        Dim Join = ""
+        Dim Condicion = ""
         If _Tipo = "Principal" Then
             donde = "KOPR"
+            'Join = ""
+            'Dim kopral = _Codigo
+            'Dim KOPR = _Sql.Fx_Trae_Dato("TABCODAL", "KOPR", "KOPRAL ='" & kopral & "' and KOEN = ''")
+            'If String.IsNullOrWhiteSpace(KOPR) Then
+
+            '    KOPR = _Sql.Fx_Trae_Dato("MAEPR", "KOPR", "KOPR ='" & KOPR & "'")
+
+
+            'End If
+
+
         ElseIf _Tipo = "Tecnico" Then
             donde = "KOPRTE"
         ElseIf _Tipo = "Rapido" Then
             donde = "KOPRRA"
+
         End If
 
         Consulta_sql = "Select MP.KOPR as Principal ,MP.KOPRRA as Rapido, MP.KOPRTE as Tecnico,RLUD As Rtu,UD01PR As Ud1,UD02PR As Ud2,NOKOPR as Descripcion,
@@ -2941,7 +2991,7 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
 
         Try
 
-            Dim _Lista As String = "01P"
+            'Dim _Lista As String = "01P" '-- Esto tiene que venior como parametro
 
             Consulta_sql = "SELECT Top 1 *,--PP01UD,PP02UD,DTMA01UD As DSCTOMAX,ECUACION,
                             (SELECT top 1 MELT FROM TABPP Where KOLT = '" & _Lista & "') As MELT FROM TABPRE
@@ -3104,9 +3154,25 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
         Context.Response.End()
 
     End Sub
-
+    '    Select Case* From TABPP
+    'Where TILT = 'P'
     <WebMethod(True)>
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_BuscarListaPrecios()
+        _Sql = New Class_SQL
+
+        Dim sqlQuery As String
+        sqlQuery = " Select * From TABPP Where TILT = 'P'"
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(sqlQuery)
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+    End Sub
+    <WebMethod(True)>
+        <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Sb_Inv_BuscarSector(Sector As String, IdInv As String)
 
         _Sql = New Class_SQL
@@ -3131,7 +3197,7 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
     End Sub
 
     <WebMethod(True)>
-    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+                <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Sb_Inv_BuscarInventario(Inventario As String)
 
         _Sql = New Class_SQL
@@ -3152,7 +3218,7 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
     End Sub
 
     <WebMethod(True)>
-    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+                        <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Sb_Inv_BuscarContador(Rut As String, Rut2 As String)
 
         _Sql = New Class_SQL
@@ -3173,7 +3239,7 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
     End Sub
 
     <WebMethod(True)>
-    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+                                <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
     Public Sub JS_ProcesarHojas(InventarioJson As String)
         Try
             ' Convertir el JSON en un JObject

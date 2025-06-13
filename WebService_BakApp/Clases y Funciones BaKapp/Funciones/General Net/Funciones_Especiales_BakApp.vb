@@ -589,6 +589,7 @@ Public Module Funciones_Especiales_BakApp
             Dim _Pmsuc As String = 0
 
             If (_RowCostos_PM Is Nothing) Then
+                'aqui puede ser 
 
                 Consulta_sql = "Select Top 1 PM,PM AS PM01,PPUL01,PPUL02,Isnull(Round(PMSUC,5),0) As PMSUC
                             From MAEPREM EM
@@ -648,7 +649,7 @@ Public Module Funciones_Especiales_BakApp
 
                 _Fx1 = UCase(_Fx1)
 
-
+                'aqui esta el error
                 Sb_Buscar_Valor_En_Dimensiones(_Empresa, _Fx1, _Codigo, _Koen)
 
 
