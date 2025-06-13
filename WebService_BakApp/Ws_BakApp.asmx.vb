@@ -1929,6 +1929,29 @@ Public Class Ws_BakApp
 
     <WebMethod(True)>
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_TraerEtiquetas()
+
+        _Sql = New Class_SQL
+        Dim Consulta_sql As String
+
+        Dim _Ds As DataSet
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
+
+        Consulta_sql = $"SELECT NombreEtiqueta, FUNCION FROM {_Global_BaseBk}Zw_Tbl_DisenoBarras WHERE NombreEtiqueta LIKE '%(Movil)%'"
+        _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Dim js As New JavaScriptSerializer
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+
+        Context.Response.End()
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Sb_Traer_Descuento_Global_X_Cliente(_Global_BaseBk As String, _Koen As String, _Suen As String)
 
         _Sql = New Class_SQL
@@ -2912,6 +2935,7 @@ WHERE " & condicion
         Context.Response.End()
 
     End Sub
+
     <WebMethod(True)>
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Sb_Inv_TraerProductoInventarioTicket(
@@ -2927,13 +2951,26 @@ WHERE " & condicion
 
         Dim js As New JavaScriptSerializer
         Dim donde As String = ""
-
+        Dim Join = ""
+        Dim Condicion = ""
         If _Tipo = "Principal" Then
             donde = "KOPR"
+            'Join = ""
+            'Dim kopral = _Codigo
+            'Dim KOPR = _Sql.Fx_Trae_Dato("TABCODAL", "KOPR", "KOPRAL ='" & kopral & "' and KOEN = ''")
+            'If String.IsNullOrWhiteSpace(KOPR) Then
+
+            '    KOPR = _Sql.Fx_Trae_Dato("MAEPR", "KOPR", "KOPR ='" & KOPR & "'")
+
+
+            'End If
+
+
         ElseIf _Tipo = "Tecnico" Then
             donde = "KOPRTE"
         ElseIf _Tipo = "Rapido" Then
             donde = "KOPRRA"
+
         End If
 
         Consulta_sql = "Select MP.KOPR as Principal ,MP.KOPRRA as Rapido, MP.KOPRTE as Tecnico,RLUD As Rtu,UD01PR As Ud1,UD02PR As Ud2,NOKOPR as Descripcion,
