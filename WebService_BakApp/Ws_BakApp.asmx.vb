@@ -3172,7 +3172,7 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
         Context.Response.End()
     End Sub
     <WebMethod(True)>
-        <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Sb_Inv_BuscarSector(Sector As String, IdInv As String)
 
         _Sql = New Class_SQL
@@ -3197,7 +3197,7 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
     End Sub
 
     <WebMethod(True)>
-                <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Sb_Inv_BuscarInventario(Inventario As String)
 
         _Sql = New Class_SQL
@@ -3218,7 +3218,7 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
     End Sub
 
     <WebMethod(True)>
-                        <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Sb_Inv_BuscarContador(Rut As String, Rut2 As String)
 
         _Sql = New Class_SQL
@@ -3239,7 +3239,7 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
     End Sub
 
     <WebMethod(True)>
-                                <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
     Public Sub JS_ProcesarHojas(InventarioJson As String)
         Try
             ' Convertir el JSON en un JObject
