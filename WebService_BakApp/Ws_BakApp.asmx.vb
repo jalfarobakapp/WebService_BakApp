@@ -3003,8 +3003,7 @@ WHERE " & condicion
                                                     _Bodega As String,
                                                     _Tipo As String,
                                                     _Codigo As String,
-                                                    _Lista As String,
-                                                    _Kopral As String)
+                                                    _Lista As String)
 
         _Sql = New Class_SQL
         _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
@@ -3033,7 +3032,7 @@ WHERE " & condicion
 
         End If
 
-        Consulta_sql = "Select MP.KOPR as Principal ,MP.KOPRRA as Rapido, MP.KOPRTE as Tecnico,'" & _Kopral & "' As KOPRAL,RLUD As Rtu,UD01PR As Ud1,UD02PR As Ud2,NOKOPR as Descripcion,
+        Consulta_sql = "Select MP.KOPR as Principal ,MP.KOPRRA as Rapido, MP.KOPRTE as Tecnico,RLUD As Rtu,UD01PR As Ud1,UD02PR As Ud2,NOKOPR as Descripcion,
 Round(Isnull(Ft.StFisicoUd1,0),3) as StFisicoUd1, Round(Isnull(Ft.StFisicoUd2,0),3) as StFisicoUd2,
 Isnull(MP.FMPR, '') as SuperFamilia ,Isnull(TABFM.NOKOFM,'') as NombreSuper, 
 Isnull(MP.PFPR, '') as Familia ,Isnull(TABPF.NOKOPF,'') as NombreFamilia, 

@@ -655,7 +655,8 @@ Public Module Funciones_Especiales_BakApp
             Else
 
                 If _Fx1.ToString.Contains("<") Then
-                    _Fx1 = Fx_Traer_Campo_Desde_Otra_Lista(_Kopr, _Fx1, _Koen, _vCantUd1, _vCantUd2)
+                    '_Fx1 = Fx_Traer_Campo_Desde_Otra_Lista(_Kopr, _Fx1, _Koen, _Ecuacion, _Koen)
+                    _Fx1 = Fx_Traer_Campo_Desde_Otra_Lista(_Empresa, _Sucursal, _Kopr, _Ecuacion, _Koen, 0, 0)
                 End If
 
                 _Fx1 = Replace(_Fx1, "RLUD", _Rtu)
@@ -993,7 +994,8 @@ Public Module Funciones_Especiales_BakApp
             Else
 
                 If _Fx1.ToString.Contains("<") Then
-                    _Fx1 = Fx_Traer_Campo_Desde_Otra_Lista(_Codigo, _Fx1, _Koen, _vCantUd1, _vCantUd2)
+                    '_Fx1 = Fx_Traer_Campo_Desde_Otra_Lista(_Codigo, _Fx1, _Koen, _vCantUd1, _vCantUd2)
+                    _Fx1 = Fx_Traer_Campo_Desde_Otra_Lista(_Empresa, _Sucursal, _Codigo, _Ecuacion, _Koen, _vCantUd1, _vCantUd2)
                 End If
 
                 _Fx1 = Replace(_Fx1, "RLUD", _Rtu)
@@ -1040,7 +1042,112 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function Fx_Traer_Campo_Desde_Otra_Lista(_Empresa As String, _Sucursal As String, _Codigo As String, _Ecuacion As String, _Koen As String) As String
+    'Function Fx_Traer_Campo_Desde_Otra_Lista(_Empresa As String, _Sucursal As String, _Codigo As String, _Ecuacion As String, _Koen As String) As String
+
+    '    Dim _Sql As New Class_SQL()
+
+    '    Dim _Ecuacion_Original As String = _Ecuacion
+
+    '    Dim _Ecuaciones = Split(_Ecuacion, ">")
+    '    Dim _Listas() As String
+    '    Dim _Filtro_Listas As String
+
+    '    Dim _Cont = 0
+
+    '    For i = 0 To _Ecuaciones.Length - 1
+
+    '        Dim _Lt = _Ecuaciones(i)
+
+    '        If _Lt.Contains("<") Then
+    '            _Lt = Replace(_Lt, "<", "")
+    '            ReDim Preserve _Listas(_Cont)
+    '            _Listas(_Cont) = _Lt
+    '            _Cont += 1
+    '        End If
+
+    '    Next
+
+    '    _Filtro_Listas = Generar_Filtro_IN_Arreglo(_Listas, False)
+
+    '    Consulta_sql = "Select * From TABPP Where KOLT In (" & _Filtro_Listas & ")"
+    '    Dim _Tbl_Listas As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
+
+    '    Dim _Campo As String
+
+    '    For Each _FLista As DataRow In _Tbl_Listas.Rows
+
+    '        Dim _Kolt As String = _FLista.Item("KOLT")
+    '        _Campo = "<" & _Kolt & ">"
+
+    '        If _Ecuacion.Contains(_Campo) Then
+
+    '            Consulta_sql = "Select * From TABPRE Where KOLT = '" & _Kolt & "' And KOPR = '" & _Codigo & "'"
+    '            Dim _RowPrecio As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+    '            Dim _Contador = 0
+
+    '            Consulta_sql = "Select COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = 'TABPRE'"
+    '            Dim _Tbl_Campos_Tabpre As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
+
+    '            For Each _FColumnas As DataRow In _Tbl_Campos_Tabpre.Rows
+
+    '                Dim _Columna As String = _FColumnas.Item("COLUMN_NAME").ToString.Trim
+    '                Dim _Campo_Lista As String = _Campo & _Columna
+    '                'Dim _Resultado As String
+
+    '                Dim _Campo_Precio As String = _Columna
+    '                Dim _Campo_Ecacion As String = String.Empty
+
+    '                If _Ecuacion.Contains(_Campo_Lista) Then
+
+    '                    Select Case _Campo_Precio
+    '                        Case "PP01UD"
+    '                            _Campo_Ecacion = "ECUACION"
+    '                        Case "PP02UD"
+    '                            _Campo_Ecacion = "ECUACIONU2"
+    '                        Case "MG01UD"
+    '                            _Campo_Ecacion = "EMG01UD"
+    '                        Case "MG02UD"
+    '                            _Campo_Ecacion = "EMG01UD"
+    '                        Case "DTMA01UD"
+    '                            _Campo_Ecacion = "EDTMA01UD"
+    '                        Case "DTMA02UD"
+    '                            _Campo_Ecacion = "DTMA02UD"
+    '                        Case Else
+    '                            If _Contador = 28 Then
+    '                                _Campo_Ecacion = _Tbl_Campos_Tabpre.Rows(_Contador + 1).Item("COLUMN_NAME")
+    '                            End If
+    '                    End Select
+
+    '                    Dim _Valor = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecio, _Campo_Precio, _Campo_Ecacion, Nothing, False, _Koen, 0, 0)
+
+    '                    _Ecuacion = Replace(_Ecuacion, _Campo_Lista, LCase(_Valor))
+
+    '                    If _Ecuacion <> _Ecuacion_Original Then
+    '                        Return _Ecuacion
+    '                    End If
+
+    '                End If
+
+    '                _Contador += 1
+
+    '            Next
+
+    '        End If
+
+    '    Next
+
+    '    Return _Ecuacion
+
+    'End Function
+
+    Function Fx_Traer_Campo_Desde_Otra_Lista(_Empresa As String,
+                                             _Sucursal As String,
+                                             _Codigo As String,
+                                             _Ecuacion As String,
+                                             _Koen As String,
+                                             _vCantUd1 As Double,
+                                             _vCantUd2 As Double) As String
 
         Dim _Sql As New Class_SQL()
 
@@ -1052,15 +1159,34 @@ Public Module Funciones_Especiales_BakApp
 
         Dim _Cont = 0
 
+        Consulta_sql = "Select * From TABPP"
+        Dim _TblListas As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
+
         For i = 0 To _Ecuaciones.Length - 1
 
             Dim _Lt = _Ecuaciones(i)
 
             If _Lt.Contains("<") Then
+
                 _Lt = Replace(_Lt, "<", "")
+                _Lt = Replace(_Lt, "(", "")
+                _Lt = Replace(_Lt, ")", "")
+
                 ReDim Preserve _Listas(_Cont)
-                _Listas(_Cont) = _Lt
+
+                For Each _Fl As DataRow In _TblListas.Rows
+
+                    Dim _Lista As String = _Fl.Item("KOLT")
+
+                    If _Lt.Contains(_Lista) Then
+                        _Listas(_Cont) = _Lista
+                        Exit For
+                    End If
+
+                Next
+
                 _Cont += 1
+
             End If
 
         Next
@@ -1076,6 +1202,9 @@ Public Module Funciones_Especiales_BakApp
 
             Dim _Kolt As String = _FLista.Item("KOLT")
             _Campo = "<" & _Kolt & ">"
+
+            'Consulta_sql = "Select * From PNOMDIM Where CODIGO <> ''"
+            'Dim _Tbl_Dimensiones As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
 
             If _Ecuacion.Contains(_Campo) Then
 
@@ -1117,13 +1246,27 @@ Public Module Funciones_Especiales_BakApp
                                 End If
                         End Select
 
-                        Dim _Valor = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecio, _Campo_Precio, _Campo_Ecacion, Nothing, False, _Koen, 0, 0)
+                        Dim _Precio As Double
+                        Dim _Valor
+
+                        Try
+                            _Precio = _Sql.Fx_Trae_Dato("TABPRE", _Campo_Precio, "KOLT = '" & _Kolt & "' And KOPR = '" & _Codigo & "'", True, False, 0)
+                        Catch ex As Exception
+                            _Precio = 0
+                        End Try
+
+                        If CBool(_Precio) Then
+                            _Valor = _Precio
+                        Else
+                            _Valor = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecio, _Campo_Precio, _Campo_Ecacion, Nothing, False, _Koen, _vCantUd1, _vCantUd2)
+                        End If
 
                         _Ecuacion = Replace(_Ecuacion, _Campo_Lista, LCase(_Valor))
 
                         If _Ecuacion <> _Ecuacion_Original Then
                             Return _Ecuacion
                         End If
+                        'Sb_Buscar_Valor_En_Dimensiones(_Ecuacion, _Codigo, _Koen)
 
                     End If
 
