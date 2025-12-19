@@ -284,6 +284,11 @@
     <Compile Include="Clases y Funciones BaKapp\Clases\Inventario\Modelos\Zw_Inv_Inventario.vb" />
     <Compile Include="Clases y Funciones BaKapp\Clases\Inventario\Modelos\Zw_Inv_Sector.vb" />
     <Compile Include="Clases y Funciones BaKapp\Clases\PDF\Pdf2Byte.vb" />
+    <Compile Include="Clases y Funciones BaKapp\Clases\Pickeo\DetalleHoja.vb" />
+    <Compile Include="Clases y Funciones BaKapp\Clases\Pickeo\EncabezadoPickeo.vb" />
+    <Compile Include="Clases y Funciones BaKapp\Clases\Pickeo\LogPickeoDTO.vb" />
+    <Compile Include="Clases y Funciones BaKapp\Clases\Pickeo\PaquetePickeo.vb" />
+    <Compile Include="Clases y Funciones BaKapp\Clases\Pickeo\PickeoInfoDTO.vb" />
     <Compile Include="Clases y Funciones BaKapp\Clases\Variables\Variables.vb" />
     <Compile Include="Clases y Funciones BaKapp\Funciones\General Net\Funciones.vb" />
     <Compile Include="Clases y Funciones BaKapp\Funciones\General Net\Funciones_Especiales_BakApp.vb" />
