@@ -3462,7 +3462,7 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
 
         Dim Consulta_sql As String =
         "UPDATE " & _Global_BaseBk & "Zw_WMS_Paquetes " &
-        "SET Reservado = 1 , Idmaeedo =" & IdMaeedo & "" &
+        "SET Reservado = 1 , Idmaeedo =" & IdMaeedo & ", Id_Enc = " & NumeroEnc & " " &
         " WHERE CodPaquete = '" & _Tag & "' AND Empresa = '" & _Empresa & "'"
 
         If _Sql.Fx_Ej_consulta_IDU(Consulta_sql) Then
