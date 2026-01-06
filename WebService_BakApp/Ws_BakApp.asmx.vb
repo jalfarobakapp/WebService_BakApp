@@ -3374,7 +3374,8 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
                                              _Empresa As String,
                                              _Tag As String,
                                              _IdMaeedo As String,
-                                             _CodEnc As String
+                                             _CodEnc As String,
+                                             Tido As String, Nudo As String
                                             )
 
 
@@ -3397,7 +3398,7 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
             If reservado Then
                 Context.Response.Write("{""Error"":""Paquete reservado""}")
             Else
-                Dim R As String = Sb_Reserva_Paquete(_Empresa, _Tag, _IdMaeedo, _CodEnc)
+                Dim R As String = Sb_Reserva_Paquete(_Empresa, _Tag, _IdMaeedo, _CodEnc, Tido, Nudo)
                 If R = "" Then
                     Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
                 Else
@@ -3455,14 +3456,14 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
     End Sub
 
 
-    Public Function Sb_Reserva_Paquete(_Empresa As String, _Tag As String, IdMaeedo As String, NumeroEnc As String) As String
+    Public Function Sb_Reserva_Paquete(_Empresa As String, _Tag As String, IdMaeedo As String, NumeroEnc As String, Tido As String, Nudo As String) As String
 
         _Sql = New Class_SQL
         _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'", , False).ToString.Trim & ".dbo."
 
         Dim Consulta_sql As String =
         "UPDATE " & _Global_BaseBk & "Zw_WMS_Paquetes " &
-        "SET Reservado = 1 , Idmaeedo =" & IdMaeedo & ", Id_Enc = " & NumeroEnc & " " &
+        "SET Reservado = 1 , Idmaeedo =" & IdMaeedo & ", Id_Enc = " & NumeroEnc & " , Tido = '" & Tido & "' , Nudo = '" & Nudo & "' " &
         " WHERE CodPaquete = '" & _Tag & "' AND Empresa = '" & _Empresa & "'"
 
         If _Sql.Fx_Ej_consulta_IDU(Consulta_sql) Then
@@ -3487,7 +3488,7 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
         Dim js As New JavaScriptSerializer
         Dim donde As String = ""
 
-        Consulta_sql = "update " & _Global_BaseBk & "Zw_WMS_Paquetes  set Reservado = 0,  Idmaeedo = NULL , Ubicacion = '" & _Ubicacion & "' Where CodPaquete = '" & _Tag & "' and Empresa = '" & _Empresa & "'"
+        Consulta_sql = "update " & _Global_BaseBk & "Zw_WMS_Paquetes  set Reservado = 0,  Idmaeedo = 0, Tido = '',Id_Enc = 0, Nudo =  '', Ubicacion = '" & _Ubicacion & "' Where CodPaquete = '" & _Tag & "' and Empresa = '" & _Empresa & "'"
         Dim aux As String = Consulta_sql
 
         If _Sql.Fx_Ej_consulta_IDU(Consulta_sql) Then
