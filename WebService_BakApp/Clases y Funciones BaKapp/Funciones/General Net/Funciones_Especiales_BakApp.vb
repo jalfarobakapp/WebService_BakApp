@@ -1,9 +1,10 @@
-﻿Imports System.Reflection.Assembly
-Imports DevComponents.DotNetBar
-Imports System.IO
-Imports System.Security.Cryptography
+﻿Imports System.Drawing
 Imports System.Drawing.Printing
-Imports System.Drawing
+Imports System.IO
+Imports System.Reflection.Assembly
+Imports System.Security.Cryptography
+Imports System.Windows.Forms
+Imports DevComponents.DotNetBar
 
 
 Public Module Funciones_Especiales_BakApp
@@ -534,7 +535,9 @@ Public Module Funciones_Especiales_BakApp
                                       _Campo_Ecuacion As String,
                                       _RowCostos_PM As DataRow,
                                       _Aplicar_Formula_Dinamica As Boolean,
-                                      _Koen As String)
+                                      _Koen As String,
+                                      _vCantUd1 As Double,
+                                      _vCantUd2 As Double)
 
         Dim _Sql As New Class_SQL()
 
@@ -542,15 +545,38 @@ Public Module Funciones_Especiales_BakApp
             Return 0
         End If
 
-        Dim _Lista = _RowPrecio.Item("KOLT")
-        Dim _Codigo = _RowPrecio.Item("KOPR")
+        Dim _Kolt = _RowPrecio.Item("KOLT")
+        Dim _Kopr = _RowPrecio.Item("KOPR")
 
-        Dim _Rtu = De_Num_a_Tx_01(_RowPrecio.Item("RLUD"), False, 5)
+        Dim _Rtu As String
+
+        Try
+            _Rtu = De_Num_a_Tx_01(_RowPrecio.Item("RLUD"), False, 5)
+        Catch ex As Exception
+            _Rtu = _Sql.Fx_Trae_Dato("MAEPR", "RLUD", "KOPR = '" & _Kopr & "'")
+            Consulta_sql = "Update TABPRE Set RLUD = " & De_Num_a_Tx_01(_Rtu, False, 5) & " Where KOLT = '" & _Kolt & "' And KOPR = '" & _Kopr & "'"
+            _Sql.Fx_Ej_consulta_IDU(Consulta_sql)
+        End Try
+
         Dim _Precio As Double
 
         Dim _Formula
 
-        Dim _Ecuacion As String = NuloPorNro(_RowPrecio.Item(_Campo_Ecuacion), "").ToString.Trim
+        Dim _Ecuacion As String
+
+        If String.IsNullOrEmpty(_Campo_Ecuacion) Then
+            _Ecuacion = String.Empty
+        Else
+            _Ecuacion = NuloPorNro(_RowPrecio.Item(_Campo_Ecuacion), "").ToString.Trim()
+        End If
+
+        Dim _Tiene_Cor As Boolean = InStr(1, _Ecuacion, "[")
+
+        If _Tiene_Cor Then
+            _Precio = Fx_Funcion_Ecuacion_Random(_Empresa, _Sucursal, "", _Ecuacion, _Kopr, 1, _RowPrecio, 1, 1, 1)
+            Return _Precio
+        End If
+
 
         Dim _Ejecutar_Ecuacion = False
 
@@ -567,7 +593,7 @@ Public Module Funciones_Especiales_BakApp
         End If
 
 
-        _Precio = _RowPrecio.Item(_Campo_Precio)
+        _Precio = NuloPorNro(_RowPrecio.Item(_Campo_Precio), 0)
         Dim _New_Precio As Double
 
         If _Ejecutar_Ecuacion Then
@@ -576,6 +602,9 @@ Public Module Funciones_Especiales_BakApp
 
             Dim _Pp01ud = De_Num_a_Tx_01(_RowPrecio.Item("PP01UD"), False, 5)
             Dim _Pp02ud = De_Num_a_Tx_01(_RowPrecio.Item("PP02UD"), False, 5)
+
+            Dim _CantUd1 = De_Num_a_Tx_01(_vCantUd1, False, 5)
+            Dim _CantUd2 = De_Num_a_Tx_01(_vCantUd2, False, 5)
 
             Dim _Mg01ud = De_Num_a_Tx_01(_RowPrecio.Item("MG01UD"), False, 5)
             Dim _Mg02ud = De_Num_a_Tx_01(_RowPrecio.Item("MG02UD"), False, 5)
@@ -589,12 +618,11 @@ Public Module Funciones_Especiales_BakApp
             Dim _Pmsuc As String = 0
 
             If (_RowCostos_PM Is Nothing) Then
-                'aqui puede ser 
 
-                Consulta_sql = "Select Top 1 PM,PM AS PM01,PPUL01,PPUL02,Isnull(Round(PMSUC,5),0) As PMSUC
-                            From MAEPREM EM
-                            Left Join MAEPMSUC SUC On EM.EMPRESA = SUC.EMPRESA AND SUC.KOSU = '" & _Sucursal & "' AND EM.KOPR = SUC.KOPR
-                            Where EM.EMPRESA = '" & _Empresa & "' And EM.KOPR = '" & _Codigo & "'"
+                Consulta_sql = "Select Top 1 PM,PM As PM01,PPUL01,PPUL02,Isnull(Round(PMSUC,5),0) As PMSUC
+                                From MAEPREM EM
+                                Left Join MAEPMSUC SUC On EM.EMPRESA = SUC.EMPRESA AND SUC.KOSU = '" & _Sucursal & "' AND EM.KOPR = SUC.KOPR
+                                Where EM.EMPRESA = '" & _Empresa & "' And EM.KOPR = '" & _Kopr & "'"
 
                 _RowCostos_PM = _Sql.Fx_Get_DataRow(Consulta_sql)
 
@@ -602,10 +630,10 @@ Public Module Funciones_Especiales_BakApp
 
             If Not (_RowCostos_PM Is Nothing) Then
 
-                _Pm = Math.Round(_RowCostos_PM.Item("PM01"), 5)
-                _Ppul01 = Math.Round(_RowCostos_PM.Item("PPUL01"), 5)
-                _Ppul02 = Math.Round(_RowCostos_PM.Item("PPUL02"), 5)
-                _Pmsuc = Math.Round(_RowCostos_PM.Item("PMSUC"), 5)
+                _Pm = Math.Round(NuloPorNro(_RowCostos_PM.Item("PM01"), 0), 5)
+                _Ppul01 = Math.Round(NuloPorNro(_RowCostos_PM.Item("PPUL01"), 0), 5)
+                _Ppul02 = Math.Round(NuloPorNro(_RowCostos_PM.Item("PPUL02"), 0), 5)
+                _Pmsuc = Math.Round(NuloPorNro(_RowCostos_PM.Item("PMSUC"), 0), 5)
 
             End If
 
@@ -627,7 +655,8 @@ Public Module Funciones_Especiales_BakApp
             Else
 
                 If _Fx1.ToString.Contains("<") Then
-                    _Fx1 = Fx_Traer_Campo_Desde_Otra_Lista(_Empresa, _Sucursal, _Codigo, _Fx1, _Koen)
+                    '_Fx1 = Fx_Traer_Campo_Desde_Otra_Lista(_Kopr, _Fx1, _Koen, _Ecuacion, _Koen)
+                    _Fx1 = Fx_Traer_Campo_Desde_Otra_Lista(_Empresa, _Sucursal, _Kopr, _Ecuacion, _Koen, 0, 0)
                 End If
 
                 _Fx1 = Replace(_Fx1, "RLUD", _Rtu)
@@ -645,13 +674,352 @@ Public Module Funciones_Especiales_BakApp
                 _Fx1 = Replace(_Fx1, "DTMA01UD", _Dtma01ud)
                 _Fx1 = Replace(_Fx1, "DTMA02UD", _Dtma02ud)
 
-                _Fx1 = Replace(_Fx1, ",", ".")
+                _Fx1 = Replace(_Fx1, "CAPRCO1", _CantUd1)
+                _Fx1 = Replace(_Fx1, "CAPRCO2", _CantUd2)
 
+                _Fx1 = Replace(_Fx1, ",", ".")
                 _Fx1 = UCase(_Fx1)
 
-                'aqui esta el error
-                Sb_Buscar_Valor_En_Dimensiones(_Empresa, _Fx1, _Codigo, _Koen)
+                Sb_Buscar_Valor_En_Dimensiones(_Empresa, _Fx1, _Kopr, _Koen)
 
+                Consulta_sql = "Select " & _Fx1 & " As Valor"
+                Dim _RowPr As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+                _Precio = _RowPr.Item("Valor")
+
+                _Redondeo = Fx_Redondeo_Random(_Redondeo)
+
+            End If
+
+            _New_Precio = Fx_Redondear_Precio(_Precio, _Redondeo)
+
+        Else
+            _New_Precio = _Precio
+        End If
+
+        _New_Precio = Math.Round(_New_Precio, 5)
+
+        Return _New_Precio
+
+    End Function
+
+    Function Fx_Funcion_Ecuacion_Random(_Empresa As String,
+                                        _Sucursal As String,
+                                        _Koen As String,
+                                        _Ecuacion As String,
+                                        _Codigo As String,
+                                        _UnTrans As String,
+                                        _RowPrecios As DataRow,
+                                        _Cantidad As Double,
+                                        _Caprco1 As Double,
+                                        _Caprco2 As Double,
+                                        Optional _MostrarError As Boolean = True) As Double
+
+        Dim _Sql As New Class_SQL()
+
+        Dim _PrecioLinea As Double
+        Dim _Fx As String
+        Dim _Kolt As String
+
+        Dim _Campo_Precio
+        Dim _Campo_Ecuacion
+
+        If _UnTrans = 1 Then
+            _Campo_Precio = "PP01UD"
+            _Campo_Ecuacion = "ECUACION"
+        Else
+            _Campo_Precio = "PP02UD"
+            _Campo_Ecuacion = "ECUACIONU2"
+        End If
+
+        _Ecuacion = _Ecuacion.Trim
+
+        Dim _Formula = Split(_Ecuacion, "#")
+
+        _Fx = _Formula(0)
+
+        Dim _Tiene_Cor As Boolean = InStr(1, _Ecuacion, "[")
+
+        Try
+
+            Try
+                _Kolt = _RowPrecios.Item("KOLT")
+            Catch ex As Exception
+                _Kolt = String.Empty
+            End Try
+
+            If String.IsNullOrEmpty(_Kolt) Then
+                Throw New System.Exception(vbCrLf & vbCrLf & "No se encontro lista de precios")
+            End If
+
+            If _Tiene_Cor Then
+
+                Dim _Ecuacion_Copy = Replace(_Ecuacion, "]", "")
+                Dim _Ecuacion_1 = Split(_Ecuacion_Copy, "#")
+                Dim _Ecuacion_2 = Split(_Ecuacion_1(0).ToString.Trim, "[")
+                Dim _PrecioR1 As Double
+
+                For i = 1 To _Ecuacion_2.Length
+
+                    Dim _Ecuacion_3
+
+                    Try
+                        _Ecuacion_3 = Split(_Ecuacion_2(i), ",")
+                    Catch ex As Exception
+                        Exit For
+                    End Try
+
+                    Dim _Cant1_Ecu As Double = De_Txt_a_Num_01(_Ecuacion_3(0), 5)
+                    Dim _Cant2_Ecu As Double = De_Txt_a_Num_01(_Ecuacion_3(1), 5)
+                    Dim _Campo_Ecu As String = _Ecuacion_3(2)
+
+                    _Ecuacion = Replace(_Ecuacion, " ", "")
+
+                    Dim _Corchete1 = Split(_Ecuacion, "[")
+                    Dim _Corchete2 = Split(_Ecuacion, "]")
+                    Dim _Corchete3 = Split(_Ecuacion, "][")
+
+                    If _Fx.Contains("-[") Then
+                        _Fx = _Ecuacion
+                        Throw New System.Exception(vbCrLf & vbCrLf & "Esto no esta permitido -> '-['")
+                    End If
+
+                    If _Fx.Contains("]-") Then
+                        _Fx = _Ecuacion
+                        Throw New System.Exception(vbCrLf & vbCrLf & "Esto no esta permitido -> ']-'")
+                    End If
+
+                    If _Corchete1.Length > _Corchete2.Length Then
+                        Throw New System.Exception(vbCrLf & vbCrLf & "Falta un cierre de corchetes")
+                    End If
+
+                    If _Corchete1.Length < _Corchete2.Length Then
+                        Throw New System.Exception(vbCrLf & vbCrLf & "Falta una apertura de corchetes")
+                    End If
+
+                    If Not String.IsNullOrEmpty(_Ecuacion_2(0).Trim) Then
+                        _Fx = _Ecuacion
+                        Throw New System.Exception(vbCrLf & vbCrLf & "Error cerca de " & _Ecuacion_2(0).Trim)
+                    End If
+
+                    'If Not String.IsNullOrEmpty(_Corchete2(_Corchete2.Length - 1).Trim) Then
+                    '    If Not (_Corchete2(_Corchete2.Length - 1).Trim).Contains("#") Then
+                    '        _Fx = _Ecuacion
+                    '        Throw New System.Exception(vbCrLf & vbCrLf & "Error cerca de " & _Corchete2(_Corchete2.Length - 1).Trim)
+                    '    End If
+                    'End If
+
+                    'If _Corchete3.Length <> _Ecuacion_2.Length - 1 Then
+                    '    Throw New System.Exception(vbCrLf & vbCrLf & "Error en un cierre y apertura de corchetes")
+                    'End If
+
+                    Dim _Ejecutar_Consulta = False
+
+                    If _Campo_Ecu.ToUpper = "CAPRCO1" Then
+                        If _Caprco1 >= _Cant1_Ecu And _Caprco1 <= _Cant2_Ecu Then
+                            _Ejecutar_Consulta = True
+                        End If
+                    End If
+
+                    If _Campo_Ecu.ToUpper = "CAPRCO2" Then
+                        If _Caprco2 >= _Cant1_Ecu And _Caprco2 <= _Cant2_Ecu Then
+                            _Ejecutar_Consulta = True
+                        End If
+                    End If
+
+                    If _Caprco1 = 0 And _Caprco2 = 0 Then
+                        _Ejecutar_Consulta = True
+                    End If
+
+                    Try
+                        _Ecuacion = _Ecuacion_3(3) & "#" & _Ecuacion_1(1)
+                    Catch ex As Exception
+                        _Ecuacion = _Ecuacion_3(3)
+                    End Try
+
+                    If i = 1 Then
+                        _PrecioR1 = Fx_Precio_Formula_Random_Ecuacion(_Empresa, _Sucursal, _RowPrecios, _Campo_Precio, _Ecuacion, Nothing, True, _Koen, _Caprco1, _Caprco2, _MostrarError)
+                    End If
+
+                    If _Ejecutar_Consulta Then
+
+                        _PrecioLinea = Fx_Precio_Formula_Random_Ecuacion(_Empresa, _Sucursal, _RowPrecios,
+                                                 _Campo_Precio,
+                                                 _Ecuacion,
+                                                 Nothing,
+                                                 True,
+                                                 _Koen,
+                                                 _Caprco1,
+                                                 _Caprco2,
+                                                 _MostrarError)
+                        Return _PrecioLinea
+
+                    End If
+
+                Next
+
+                If _PrecioLinea = 0 Then
+                    _PrecioLinea = _PrecioR1
+                End If
+
+            Else
+
+                _PrecioLinea = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, _Campo_Precio, _Campo_Ecuacion, Nothing, True, _Koen, _Caprco1, _Caprco1)
+
+            End If
+
+            Return _PrecioLinea
+
+        Catch ex As Exception
+
+            'If Not IsNothing(_Formulario) And _MostrarError Then
+            '    MessageBoxEx.Show(_Formulario, "La función que viene desde la lista " & _Kolt & " tiene errores" & vbCrLf & vbCrLf & _Fx & " " & ex.Message, "Validación",
+            '          MessageBoxButtons.OK, MessageBoxIcon.Stop)
+            'End If
+
+        End Try
+
+        Return 0
+
+    End Function
+
+    Function Fx_Precio_Formula_Random_Ecuacion(_Empresa As String,
+                                               _Sucursal As String,
+                                               _RowPrecio As DataRow,
+                                               _Campo_Precio As String,
+                                               _Ecuacion As String,
+                                               _RowCostos_PM As DataRow,
+                                               _Aplicar_Formula_Dinamica As Boolean,
+                                               _Koen As String,
+                                               _vCantUd1 As Double,
+                                               _vCantUd2 As Double,
+                                               Optional _MostrarError As Boolean = True)
+
+        Dim _Sql As New Class_SQL()
+
+        If (_RowPrecio Is Nothing) Then
+            Return 0
+        End If
+
+        Dim _Lista = _RowPrecio.Item("KOLT")
+        Dim _Codigo = _RowPrecio.Item("KOPR")
+
+        Dim _Rtu = De_Num_a_Tx_01(_RowPrecio.Item("RLUD"), False, 5)
+        Dim _Precio As Double
+
+        Dim _Formula
+
+        Dim _Tiene_Cor As Boolean = InStr(1, _Ecuacion, "[")
+
+        If _Tiene_Cor Then
+            _Precio = Fx_Funcion_Ecuacion_Random(_Empresa, _Sucursal, "", _Ecuacion, _Codigo, 1, _RowPrecio, 1, 1, 1)
+            Return _Precio
+        End If
+
+
+        Dim _Ejecutar_Ecuacion = False
+
+        If _Aplicar_Formula_Dinamica Then
+
+            If Not String.IsNullOrEmpty(_Ecuacion) Then
+                _Ejecutar_Ecuacion = (_Ecuacion = LCase(_Ecuacion))
+            End If
+
+        Else
+
+            _Ejecutar_Ecuacion = True
+
+        End If
+
+
+        _Precio = NuloPorNro(_RowPrecio.Item(_Campo_Precio), 0)
+        Dim _New_Precio As Double
+
+        If _Ejecutar_Ecuacion Then
+
+            _Formula = Split(_Ecuacion, "#")
+
+            Dim _Pp01ud = De_Num_a_Tx_01(_RowPrecio.Item("PP01UD"), False, 5)
+            Dim _Pp02ud = De_Num_a_Tx_01(_RowPrecio.Item("PP02UD"), False, 5)
+
+            Dim _CantUd1 = De_Num_a_Tx_01(_vCantUd1, False, 5)
+            Dim _CantUd2 = De_Num_a_Tx_01(_vCantUd2, False, 5)
+
+            Dim _Mg01ud = De_Num_a_Tx_01(_RowPrecio.Item("MG01UD"), False, 5)
+            Dim _Mg02ud = De_Num_a_Tx_01(_RowPrecio.Item("MG02UD"), False, 5)
+
+            Dim _Dtma01ud = De_Num_a_Tx_01(_RowPrecio.Item("DTMA01UD"), False, 5)
+            Dim _Dtma02ud = De_Num_a_Tx_01(_RowPrecio.Item("DTMA02UD"), False, 5)
+
+            Dim _Pm As String = 0
+            Dim _Ppul01 As String = 0
+            Dim _Ppul02 As String = 0
+            Dim _Pmsuc As String = 0
+
+            If (_RowCostos_PM Is Nothing) Then
+
+                Consulta_sql = "Select Top 1 PM,PM As PM01,PPUL01,PPUL02,Isnull(Round(PMSUC,5),0) As PMSUC
+                                From MAEPREM EM
+                                Left Join MAEPMSUC SUC On EM.EMPRESA = SUC.EMPRESA AND SUC.KOSU = '" & _Sucursal & "' AND EM.KOPR = SUC.KOPR
+                                Where EM.EMPRESA = '" & _Empresa & "' And EM.KOPR = '" & _Codigo & "'"
+
+                _RowCostos_PM = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            End If
+
+            If Not (_RowCostos_PM Is Nothing) Then
+
+                _Pm = Math.Round(NuloPorNro(_RowCostos_PM.Item("PM01"), 0), 5)
+                _Ppul01 = Math.Round(NuloPorNro(_RowCostos_PM.Item("PPUL01"), 0), 5)
+                _Ppul02 = Math.Round(NuloPorNro(_RowCostos_PM.Item("PPUL02"), 0), 5)
+                _Pmsuc = Math.Round(NuloPorNro(_RowCostos_PM.Item("PMSUC"), 0), 5)
+
+            End If
+
+            Dim _Fx1, _Redondeo
+
+
+            _Fx1 = UCase(_Formula(0))
+
+            If _Formula.Length > 1 Then
+                _Redondeo = Trim(_Formula(1))
+            Else
+                _Redondeo = 0
+            End If
+
+            If String.IsNullOrEmpty(_Fx1) Then
+
+                _New_Precio = 0
+
+            Else
+
+                If _Fx1.ToString.Contains("<") Then
+                    '_Fx1 = Fx_Traer_Campo_Desde_Otra_Lista(_Codigo, _Fx1, _Koen, _vCantUd1, _vCantUd2)
+                    _Fx1 = Fx_Traer_Campo_Desde_Otra_Lista(_Empresa, _Sucursal, _Codigo, _Ecuacion, _Koen, _vCantUd1, _vCantUd2)
+                End If
+
+                _Fx1 = Replace(_Fx1, "RLUD", _Rtu)
+
+                _Fx1 = Replace(_Fx1, "PMSUC", _Pmsuc)
+                _Fx1 = Replace(_Fx1, "PM", _Pm)
+                _Fx1 = Replace(_Fx1, "PPUL01", _Ppul01)
+                _Fx1 = Replace(_Fx1, "PPUL02", _Ppul02)
+                _Fx1 = Replace(_Fx1, "PP01UD", _Pp01ud)
+                _Fx1 = Replace(_Fx1, "PP02UD", _Pp02ud)
+
+                _Fx1 = Replace(_Fx1, "MG01UD", _Mg01ud)
+                _Fx1 = Replace(_Fx1, "MG02UD", _Mg02ud)
+
+                _Fx1 = Replace(_Fx1, "DTMA01UD", _Dtma01ud)
+                _Fx1 = Replace(_Fx1, "DTMA02UD", _Dtma02ud)
+
+                _Fx1 = Replace(_Fx1, "CAPRCO1", _CantUd1)
+                _Fx1 = Replace(_Fx1, "CAPRCO2", _CantUd2)
+
+                _Fx1 = Replace(_Fx1, ",", ".")
+                _Fx1 = UCase(_Fx1)
+
+                Sb_Buscar_Valor_En_Dimensiones(_Empresa, _Fx1, _Codigo, _Koen)
 
                 Consulta_sql = "Select " & _Fx1 & " As Valor"
                 Dim _RowPr As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
@@ -674,7 +1042,112 @@ Public Module Funciones_Especiales_BakApp
 
     End Function
 
-    Function Fx_Traer_Campo_Desde_Otra_Lista(_Empresa As String, _Sucursal As String, _Codigo As String, _Ecuacion As String, _Koen As String) As String
+    'Function Fx_Traer_Campo_Desde_Otra_Lista(_Empresa As String, _Sucursal As String, _Codigo As String, _Ecuacion As String, _Koen As String) As String
+
+    '    Dim _Sql As New Class_SQL()
+
+    '    Dim _Ecuacion_Original As String = _Ecuacion
+
+    '    Dim _Ecuaciones = Split(_Ecuacion, ">")
+    '    Dim _Listas() As String
+    '    Dim _Filtro_Listas As String
+
+    '    Dim _Cont = 0
+
+    '    For i = 0 To _Ecuaciones.Length - 1
+
+    '        Dim _Lt = _Ecuaciones(i)
+
+    '        If _Lt.Contains("<") Then
+    '            _Lt = Replace(_Lt, "<", "")
+    '            ReDim Preserve _Listas(_Cont)
+    '            _Listas(_Cont) = _Lt
+    '            _Cont += 1
+    '        End If
+
+    '    Next
+
+    '    _Filtro_Listas = Generar_Filtro_IN_Arreglo(_Listas, False)
+
+    '    Consulta_sql = "Select * From TABPP Where KOLT In (" & _Filtro_Listas & ")"
+    '    Dim _Tbl_Listas As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
+
+    '    Dim _Campo As String
+
+    '    For Each _FLista As DataRow In _Tbl_Listas.Rows
+
+    '        Dim _Kolt As String = _FLista.Item("KOLT")
+    '        _Campo = "<" & _Kolt & ">"
+
+    '        If _Ecuacion.Contains(_Campo) Then
+
+    '            Consulta_sql = "Select * From TABPRE Where KOLT = '" & _Kolt & "' And KOPR = '" & _Codigo & "'"
+    '            Dim _RowPrecio As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+    '            Dim _Contador = 0
+
+    '            Consulta_sql = "Select COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = 'TABPRE'"
+    '            Dim _Tbl_Campos_Tabpre As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
+
+    '            For Each _FColumnas As DataRow In _Tbl_Campos_Tabpre.Rows
+
+    '                Dim _Columna As String = _FColumnas.Item("COLUMN_NAME").ToString.Trim
+    '                Dim _Campo_Lista As String = _Campo & _Columna
+    '                'Dim _Resultado As String
+
+    '                Dim _Campo_Precio As String = _Columna
+    '                Dim _Campo_Ecacion As String = String.Empty
+
+    '                If _Ecuacion.Contains(_Campo_Lista) Then
+
+    '                    Select Case _Campo_Precio
+    '                        Case "PP01UD"
+    '                            _Campo_Ecacion = "ECUACION"
+    '                        Case "PP02UD"
+    '                            _Campo_Ecacion = "ECUACIONU2"
+    '                        Case "MG01UD"
+    '                            _Campo_Ecacion = "EMG01UD"
+    '                        Case "MG02UD"
+    '                            _Campo_Ecacion = "EMG01UD"
+    '                        Case "DTMA01UD"
+    '                            _Campo_Ecacion = "EDTMA01UD"
+    '                        Case "DTMA02UD"
+    '                            _Campo_Ecacion = "DTMA02UD"
+    '                        Case Else
+    '                            If _Contador = 28 Then
+    '                                _Campo_Ecacion = _Tbl_Campos_Tabpre.Rows(_Contador + 1).Item("COLUMN_NAME")
+    '                            End If
+    '                    End Select
+
+    '                    Dim _Valor = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecio, _Campo_Precio, _Campo_Ecacion, Nothing, False, _Koen, 0, 0)
+
+    '                    _Ecuacion = Replace(_Ecuacion, _Campo_Lista, LCase(_Valor))
+
+    '                    If _Ecuacion <> _Ecuacion_Original Then
+    '                        Return _Ecuacion
+    '                    End If
+
+    '                End If
+
+    '                _Contador += 1
+
+    '            Next
+
+    '        End If
+
+    '    Next
+
+    '    Return _Ecuacion
+
+    'End Function
+
+    Function Fx_Traer_Campo_Desde_Otra_Lista(_Empresa As String,
+                                             _Sucursal As String,
+                                             _Codigo As String,
+                                             _Ecuacion As String,
+                                             _Koen As String,
+                                             _vCantUd1 As Double,
+                                             _vCantUd2 As Double) As String
 
         Dim _Sql As New Class_SQL()
 
@@ -686,15 +1159,34 @@ Public Module Funciones_Especiales_BakApp
 
         Dim _Cont = 0
 
+        Consulta_sql = "Select * From TABPP"
+        Dim _TblListas As DataTable = _Sql.Fx_Get_DataTable(Consulta_sql)
+
         For i = 0 To _Ecuaciones.Length - 1
 
             Dim _Lt = _Ecuaciones(i)
 
             If _Lt.Contains("<") Then
+
                 _Lt = Replace(_Lt, "<", "")
+                _Lt = Replace(_Lt, "(", "")
+                _Lt = Replace(_Lt, ")", "")
+
                 ReDim Preserve _Listas(_Cont)
-                _Listas(_Cont) = _Lt
+
+                For Each _Fl As DataRow In _TblListas.Rows
+
+                    Dim _Lista As String = _Fl.Item("KOLT")
+
+                    If _Lt.Contains(_Lista) Then
+                        _Listas(_Cont) = _Lista
+                        Exit For
+                    End If
+
+                Next
+
                 _Cont += 1
+
             End If
 
         Next
@@ -710,6 +1202,9 @@ Public Module Funciones_Especiales_BakApp
 
             Dim _Kolt As String = _FLista.Item("KOLT")
             _Campo = "<" & _Kolt & ">"
+
+            'Consulta_sql = "Select * From PNOMDIM Where CODIGO <> ''"
+            'Dim _Tbl_Dimensiones As DataTable = _Sql.Fx_Get_Tablas(Consulta_sql)
 
             If _Ecuacion.Contains(_Campo) Then
 
@@ -751,13 +1246,27 @@ Public Module Funciones_Especiales_BakApp
                                 End If
                         End Select
 
-                        Dim _Valor = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecio, _Campo_Precio, _Campo_Ecacion, Nothing, False, _Koen)
+                        Dim _Precio As Double
+                        Dim _Valor
+
+                        Try
+                            _Precio = _Sql.Fx_Trae_Dato("TABPRE", _Campo_Precio, "KOLT = '" & _Kolt & "' And KOPR = '" & _Codigo & "'", True, False, 0)
+                        Catch ex As Exception
+                            _Precio = 0
+                        End Try
+
+                        If CBool(_Precio) Then
+                            _Valor = _Precio
+                        Else
+                            _Valor = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecio, _Campo_Precio, _Campo_Ecacion, Nothing, False, _Koen, _vCantUd1, _vCantUd2)
+                        End If
 
                         _Ecuacion = Replace(_Ecuacion, _Campo_Lista, LCase(_Valor))
 
                         If _Ecuacion <> _Ecuacion_Original Then
                             Return _Ecuacion
                         End If
+                        'Sb_Buscar_Valor_En_Dimensiones(_Ecuacion, _Codigo, _Koen)
 
                     End If
 

@@ -434,7 +434,7 @@ Public Class Ws_BakApp
                 _Ecuacion = NuloPorNro(_RowPrecios.Item("ECUACION2"), "")
             End If
 
-            Dim _DescMaximo = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "DTMA0" & UnTrans & "UD", "EDTMA0" & UnTrans & "UD", Nothing, True, Koen)
+            Dim _DescMaximo = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "DTMA0" & UnTrans & "UD", "EDTMA0" & UnTrans & "UD", Nothing, True, Koen, 0, 0)
 
             'Dim _Campo_Precio
             'Dim _Campo_Ecuacion
@@ -444,8 +444,8 @@ Public Class Ws_BakApp
             Dim _Precio As Double
             'Dim _StockBodega As Double
 
-            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, Koen)
-            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, Koen)
+            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, Koen, 0, 0)
+            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(Empresa, Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, Koen, 0, 0)
 
             If UnTrans = 1 Then
                 _Precio = _PrecioListaUd1
@@ -806,7 +806,7 @@ Public Class Ws_BakApp
 
                     Dim _Campo_Ecuacion As String = "FORM_" & numero_(_i + 1, 3)
 
-                    _Valor_Fx = Fx_Precio_Formula_Random(_Empresa, _Sucursa, _RowPrecios, _Nombre_Columna, _Campo_Ecuacion, Nothing, True, _Koen)
+                    _Valor_Fx = Fx_Precio_Formula_Random(_Empresa, _Sucursa, _RowPrecios, _Nombre_Columna, _Campo_Ecuacion, Nothing, True, _Koen, 0, 0)
 
                     If _Valor = 0 Then _Valor = _Valor_Fx
 
@@ -2742,7 +2742,8 @@ Public Class Ws_BakApp
                                          _Empresa As String,
                                          _Sucursal As String,
                                          _Bodega As String,
-                                         _CodAlternativo As String)
+                                         _CodAlternativo As String,
+                                         _KopralLeido As Boolean)
 
         Dim js As New JavaScriptSerializer
 
@@ -2756,7 +2757,14 @@ Public Class Ws_BakApp
 
         Dim _Cl_Imprimir_Barra As New Class_Imprimir_Barras
 
-        _Mensaje = _Cl_Imprimir_Barra.Fx_Imprimir_Etiquea_Producto(_NombreEtiqueta, _Codigo, _CodLista, _Empresa, _Sucursal, _Bodega, _CodAlternativo)
+        _Mensaje = _Cl_Imprimir_Barra.Fx_Imprimir_Etiquea_Producto(_NombreEtiqueta,
+                                                                   _Codigo,
+                                                                   _CodLista,
+                                                                   _Empresa,
+                                                                   _Sucursal,
+                                                                   _Bodega,
+                                                                   _CodAlternativo,
+                                                                   _KopralLeido)
 
         If Not _Mensaje.EsCorrecto Then
 
@@ -2784,6 +2792,58 @@ Public Class Ws_BakApp
         Context.Response.End()
 
     End Sub
+
+    '<WebMethod(True)>
+    '<Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    'Public Sub Sb_ImprimirEtiquetaZPL_02(_NombreEtiqueta As String,
+    '                                     _Codigo As String,
+    '                                     _CodLista As String,
+    '                                     _Empresa As String,
+    '                                     _Sucursal As String,
+    '                                     _Bodega As String,
+    '                                     _CodAlternativo As String,
+    '                                     _KopralLeido As Boolean)
+
+    '    Dim js As New JavaScriptSerializer
+
+    '    Dim _ImpEtiqueta As New ImpEtiqueta
+
+    '    _Sql = New Class_SQL
+
+    '    _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'").ToString.Trim & ".dbo."
+
+    '    Dim _Mensaje As New LsValiciones.Mensajes
+
+    '    Dim _Cl_Imprimir_Barra As New Class_Imprimir_Barras
+
+    '    _Mensaje = _Cl_Imprimir_Barra.Fx_Imprimir_Etiquea_Producto(_NombreEtiqueta, _Codigo, _CodLista, _Empresa, _Sucursal, _Bodega, _CodAlternativo, _KopralLeido)
+
+    '    If Not _Mensaje.EsCorrecto Then
+
+    '        _ImpEtiqueta.EsCorrecto = False
+    '        _ImpEtiqueta.Etiqueta = String.Empty
+    '        _ImpEtiqueta.Mensaje = _Mensaje.Mensaje
+
+    '    Else
+
+    '        _ImpEtiqueta.EsCorrecto = True
+    '        _ImpEtiqueta.Etiqueta = _Mensaje.Tag
+    '        _ImpEtiqueta.Mensaje = _Mensaje.Mensaje
+
+    '    End If
+
+    '    ' Convert the data to JSON format
+    '    Dim json As String = Newtonsoft.Json.JsonConvert.SerializeObject(_ImpEtiqueta)
+
+    '    ' Set the response content type to "application/json"
+    '    HttpContext.Current.Response.ContentType = "application/json"
+
+    '    ' Write the JSON data to the response
+    '    HttpContext.Current.Response.Write(json)
+
+    '    Context.Response.End()
+
+    'End Sub
 
 #End Region
 
@@ -2915,8 +2975,8 @@ WHERE " & condicion
                             Where KOLT = '" & _Lista & "' And KOPR = '" & _Codigo & "'"
             Dim _RowPrecios As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
 
-            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, "")
-            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, "")
+            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, "", 0, 0)
+            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, "", 0, 0)
 
             _Ds.Tables(0).Rows(0).Item("PrecioListaUd1") = _PrecioListaUd1
             _Ds.Tables(0).Rows(0).Item("PrecioListaUd2") = _PrecioListaUd2
@@ -2938,13 +2998,12 @@ WHERE " & condicion
 
     <WebMethod(True)>
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
-    Public Sub Sb_Inv_TraerProductoInventarioTicket(
-                                              _Empresa As String,
-                                              _Sucursal As String,
-                                              _Bodega As String,
-                                              _Tipo As String,
-                                              _Codigo As String,
-                                               _Lista As String)
+    Public Sub Sb_Inv_TraerProductoInventarioTicket(_Empresa As String,
+                                                    _Sucursal As String,
+                                                    _Bodega As String,
+                                                    _Tipo As String,
+                                                    _Codigo As String,
+                                                    _Lista As String)
 
         _Sql = New Class_SQL
         _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
@@ -2998,8 +3057,8 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
                             Where KOLT = '" & _Lista & "' And KOPR = '" & _Codigo & "'"
             Dim _RowPrecios As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
 
-            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, "")
-            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, "")
+            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, "", 0, 0)
+            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, "", 0, 0)
 
             _Ds.Tables(0).Rows(0).Item("PrecioListaUd1") = _PrecioListaUd1
             _Ds.Tables(0).Rows(0).Item("PrecioListaUd2") = _PrecioListaUd2
@@ -3066,8 +3125,8 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
                             Where KOLT = '" & _Lista & "' And KOPR = '" & _Codigo & "'"
             Dim _RowPrecios As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
 
-            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, "")
-            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, "")
+            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, "", 0, 0)
+            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, "", 0, 0)
 
             _Ds.Tables(0).Rows(0).Item("PrecioListaUd1") = _PrecioListaUd1
             _Ds.Tables(0).Rows(0).Item("PrecioListaUd2") = _PrecioListaUd2
@@ -3134,8 +3193,8 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
                             Where KOLT = '" & _Lista & "' And KOPR = '" & _Codigo & "'"
             Dim _RowPrecios As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
 
-            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, "")
-            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, "")
+            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, "", 0, 0)
+            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, "", 0, 0)
 
             _Ds.Tables(0).Rows(0).Item("PrecioListaUd1") = _PrecioListaUd1
             _Ds.Tables(0).Rows(0).Item("PrecioListaUd2") = _PrecioListaUd2
