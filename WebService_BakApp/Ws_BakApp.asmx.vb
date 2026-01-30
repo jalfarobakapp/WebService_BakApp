@@ -3298,6 +3298,267 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
     End Sub
 
     <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Sb_Inv_TraerInfoProductoXbodega(
+                                              _Empresa As String,
+                                              _Sucursal As String,
+                                              _Bodega As String,
+                                              _Tipo As String,
+                                              _Codigo As String)
+
+        _Sql = New Class_SQL
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
+
+        Dim js As New JavaScriptSerializer
+        Dim donde As String = ""
+
+        If _Tipo = "Principal" Then
+            donde = "KOPR"
+        ElseIf _Tipo = "Tecnico" Then
+            donde = "KOPRTE"
+        ElseIf _Tipo = "Rapido" Then
+            donde = "KOPRRA"
+        End If
+
+        Consulta_sql = "Select MP.KOPR as Principal ,MP.KOPRRA as Rapido, MP.KOPRTE as Tecnico,RLUD As Rtu,UD01PR As Ud1,UD02PR As Ud2,NOKOPR as Descripcion,
+Round(Isnull(Ft.StFisicoUd1,0),3) as StFisicoUd1, Round(Isnull(Ft.StFisicoUd2,0),3) as StFisicoUd2,
+Isnull(MP.FMPR, '') as SuperFamilia ,Isnull(TABFM.NOKOFM,'') as NombreSuper, 
+Isnull(MP.PFPR, '') as Familia ,Isnull(TABPF.NOKOPF,'') as NombreFamilia, 
+Isnull(MP.HFPR, '') as SubFamilia, Isnull(TABHF.NOKOHF, '') as NombreSub, MP.MRPR ,Isnull(NOKOMR,'') As MARCA,Cast(0 As float) As PrecioListaUd1,Cast(0 As float) As PrecioListaUd2
+FROM MAEPR MP 
+--INNER JOIN MAEST ST ON MP.KOPR = ST.KOPR
+LEFT JOIN TABFM ON  MP.FMPR = TABFM.KOFM
+LEFT JOIN TABPF ON  MP.FMPR = TABPF.KOFM AND MP.PFPR = TABPF.KOPF
+LEFT JOIN TABHF ON  MP.FMPR = TABHF.KOFM AND MP.PFPR = TABHF.KOPF AND  MP.HFPR = TABHF.KOHF
+LEFT JOIN TABMR On MP.MRPR = TABMR.KOMR
+Left Join " & _Global_BaseBk & "Zw_Inv_FotoInventario Ft On Ft.Codigo = MP.KOPR And Ft.Empresa = '" & _Empresa & "' AND Ft.Sucursal = '" & _Sucursal & "' AND Ft.Bodega = '" & _Bodega & "' 
+WHERE MP." & donde & " = '" & _Codigo & "'"
+
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Try
+
+            Dim _Lista As String = "01P"
+
+            Consulta_sql = "SELECT Top 1 *,--PP01UD,PP02UD,DTMA01UD As DSCTOMAX,ECUACION,
+                            (SELECT top 1 MELT FROM TABPP Where KOLT = '" & _Lista & "') As MELT FROM TABPRE
+                            Where KOLT = '" & _Lista & "' And KOPR = '" & _Codigo & "'"
+            Dim _RowPrecios As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, "")
+            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, "")
+
+            _Ds.Tables(0).Rows(0).Item("PrecioListaUd1") = _PrecioListaUd1
+            _Ds.Tables(0).Rows(0).Item("PrecioListaUd2") = _PrecioListaUd2
+
+        Catch ex As Exception
+
+            Consulta_sql = "Select 'Error_" & Replace(ex.Message, "'", "''") & "' As Codigo,'" & _Version & "' As Version"
+            _Ds = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        End Try
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+
+    End Sub
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub Sb_Stmp_Trae_Pickeo(
+                                             _Empresa As String,
+                                             _KOFU As String,
+                                             _Sucursal As String)
+
+        _Sql = New Class_SQL
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
+        'PREPA
+        Dim js As New JavaScriptSerializer
+        Dim donde As String = ""
+        Consulta_sql = "Select Enc.Observacion as Observacion,Enc.Tido as Tido,Enc.Nudo as Nudo, Enc.Ruta as Ruta, Enc.OrdenRuta as OrdenRuta, Enc.Id as Id, Enc.CodFuncionario_Crea as CodFuncionario_Crea , Enc.Idmaeedo as Idmaeedo , Enc.Numero as Numero, " &
+"CONVERT(VARCHAR(8), Enc.FechaCreacion, 3) AS FechaCreacion, " &
+"FORMAT(Enc.FechaPlanificacion, 'dd/MM/yyyy HH:mm') As FechaPlanificacion, " &
+"e.NOKOEN As 'RazonSocial', " &
+"COUNT(Det.Id) As Items, " &
+"SUM(Det.Caprco1_Ori) As Total_Cant1, " &
+"SUM(Det.Caprco2_Ori) As Total_Cant2 " &
+"From " & _Global_BaseBk & "Zw_Stmp_Enc Enc " &
+"Left Join MAEEDO Edo On Edo.IDMAEEDO = Enc.Idmaeedo " &
+"Left Join MAEEN e On e.KOEN = Edo.ENDO And e.SUEN = Edo.SUENDO " &
+"Inner Join " & _Global_BaseBk & "Zw_Stmp_Det Det On Enc.Id = Det.Id_Enc " &
+"Where Enc.Estado = 'PREPA' And " &
+"Enc.Empresa = '" & _Empresa & "' And " &
+"Enc.Sucursal = '" & _Sucursal & "' And " &
+"Enc.CodFuncionario_Pickea = '" & _KOFU & "' " &
+"Group By  Enc.Observacion ,Enc.Nudo,Enc.Tido,Enc.Id, Enc.CodFuncionario_Crea, Enc.Idmaeedo, Enc.Numero, Enc.FechaCreacion, e.NOKOEN, Enc.FechaPlanificacion, Enc.Ruta, Enc.OrdenRuta " &
+"ORDER BY Enc.Ruta, Enc.OrdenRuta"
+        Dim aux As String = Consulta_sql
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+
+    End Sub
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub Sb_Stmp_Trae_Pickeo_detalle(
+                                             _Id_enc As String
+                                            )
+
+        _Sql = New Class_SQL
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
+        Dim js As New JavaScriptSerializer
+        Dim donde As String = ""
+
+        Consulta_sql = "Select Id, Idmaeddo,Idmaeedo, Codigo, Descripcion, Udtrpr, RtuVariable, Rlud_Real, Udpr, Cantidad, Caprco1_Ori,Caprco1_Real,Ud01pr,Caprco2_Ori,Caprco2_Real,Ud02pr,Pickeado  from " & _Global_BaseBk & "Zw_Stmp_Det  Where Id_Enc = '" & _Id_enc & "'"
+        Dim aux As String = Consulta_sql
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+    End Sub
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub Sb_WMS_TRae_Paquete(
+                                             _Empresa As String,
+                                             _Tag As String,
+                                             _IdMaeedo As String,
+                                             _CodEnc As String
+                                            )
+
+
+        _Sql = New Class_SQL
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'", , False).ToString.Trim & ".dbo."
+
+        Consulta_sql = "SELECT CodPaquete,Sku,Qty,Qty2,Reservado,Ubicacion
+                    FROM " & _Global_BaseBk & "Zw_WMS_Paquetes  
+                    WHERE CodPaquete = '" & _Tag & "' AND Empresa = '" & _Empresa & "'"
+
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+
+        If _Ds.Tables(0).Rows.Count > 0 Then
+
+            Dim reservado As Boolean = CBool(_Ds.Tables(0).Rows(0)("Reservado"))
+
+            If reservado Then
+                Context.Response.Write("{""Error"":""Paquete reservado""}")
+            Else
+                Dim R As String = Sb_Reserva_Paquete(_Empresa, _Tag, _IdMaeedo, _CodEnc)
+                If R = "" Then
+                    Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+                Else
+                    Context.Response.Write("{""Error"":""" & R & """}")
+                End If
+
+            End If
+
+        Else
+            Context.Response.Write("{""Error"":""No existe el paquete""}")
+        End If
+
+        Context.Response.Flush()
+        Context.Response.End()
+
+
+    End Sub
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub Sb_ReconfirmaPickeo(ID_Enc As String)
+
+        _Sql = New Class_SQL
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'", , False).ToString.Trim & ".dbo."
+
+        ' 1. Corregimos la Query para buscar por Id correctamente
+        Consulta_sql = "Select Id, Estado, Numero From " & _Global_BaseBk & "Zw_Stmp_Enc Where Id = " & ID_Enc
+
+        Dim _Ds As DataSet = _Sql.Fx_Get_DataSet(Consulta_sql)
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+
+        If _Ds.Tables(0).Rows.Count > 0 Then
+
+            ' 2. Obtenemos el valor del Estado
+            Dim _Estado As String = _Ds.Tables(0).Rows(0).Item("Estado").ToString().Trim()
+
+            ' 3. Validamos que sea estrictamente "INGRE"
+            If _Estado = "PREPA" Then
+                ' Si es INGRE, retornamos el Dataset (éxito)
+                Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Ds, Newtonsoft.Json.Formatting.None))
+            Else
+                ' Si es cualquier otra cosa (PREPA, COMPL, NULO), devolvemos Error
+                Dim _Msj As String = "El documento ya no encuentra en estado de preparación "
+                Context.Response.Write("{""Error"":""" & _Msj & """}")
+            End If
+
+        Else
+            Context.Response.Write("{""Error"":""No se encontró el encabezado con ID: " & ID_Enc & """}")
+        End If
+
+        Context.Response.Flush()
+        Context.Response.End()
+
+    End Sub
+
+
+    Public Function Sb_Reserva_Paquete(_Empresa As String, _Tag As String, IdMaeedo As String, NumeroEnc As String) As String
+
+        _Sql = New Class_SQL
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'", , False).ToString.Trim & ".dbo."
+
+        Dim Consulta_sql As String =
+        "UPDATE " & _Global_BaseBk & "Zw_WMS_Paquetes " &
+        "SET Reservado = 1 , Idmaeedo =" & IdMaeedo & ", Id_Enc = " & NumeroEnc & " " &
+        " WHERE CodPaquete = '" & _Tag & "' AND Empresa = '" & _Empresa & "'"
+
+        If _Sql.Fx_Ej_consulta_IDU(Consulta_sql) Then
+            Return ""
+        Else
+            Return _Sql.Pro_Error
+        End If
+
+
+
+    End Function
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub Sb_Devuelve_Paquete(
+                                             _Empresa As String,
+                                             _Tag As String,
+                                             _Ubicacion As String
+                                            )
+
+        _Sql = New Class_SQL
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'",, False).ToString.Trim & ".dbo."
+        Dim js As New JavaScriptSerializer
+        Dim donde As String = ""
+
+        Consulta_sql = "update " & _Global_BaseBk & "Zw_WMS_Paquetes  set Reservado = 0,  Idmaeedo = NULL , Ubicacion = '" & _Ubicacion & "' Where CodPaquete = '" & _Tag & "' and Empresa = '" & _Empresa & "'"
+        Dim aux As String = Consulta_sql
+
+        If _Sql.Fx_Ej_consulta_IDU(Consulta_sql) Then
+            Context.Response.Write("{""Correcto:"":""Paquete devuelto""}")
+        Else
+            Context.Response.Write("{""Error"":""" & _Sql.Pro_Error & """}")
+        End If
+
+
+    End Sub
+
+    <WebMethod(True)>
     <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
     Public Sub JS_ProcesarHojas(InventarioJson As String)
         Try
@@ -3332,6 +3593,267 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
         End Try
     End Sub
 
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub Sb_Devuelve_Paquete_ALL(
+                                   JsonString As String)
+
+        Try
+
+            _Sql = New Class_SQL
+            _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC",
+                                           "KOTABLA = 'BAKAPP'", , False).ToString.Trim & ".dbo."
+
+
+            Dim js As New JavaScriptSerializer()
+            Dim Lista As List(Of Dictionary(Of String, Object))
+            Lista = js.Deserialize(Of List(Of Dictionary(Of String, Object)))(JsonString)
+
+            Dim Procesados As Integer = 0
+
+            For Each item As Dictionary(Of String, Object) In Lista
+
+                Dim _Tag As String = item("CodPaquete").ToString()
+                Dim _Ubicacion As String = item("Ubicacion").ToString()
+                Dim _Empresa As String = item("Empresa").ToString()
+                Dim Consulta_sql =
+                "UPDATE " & _Global_BaseBk & "Zw_WMS_Paquetes SET " &
+                "Reservado = 0, Idmaeedo = NULL, Ubicacion = '" & _Ubicacion & "' " &
+                "WHERE CodPaquete = '" & _Tag & "' AND Empresa = '" & _Empresa & "'"
+
+                If _Sql.Fx_Ej_consulta_IDU(Consulta_sql) Then
+                    Procesados += 1
+                End If
+
+            Next
+
+            Context.Response.Write("{""Correcto"":""Procesados: " & Procesados & """}")
+
+        Catch ex As Exception
+            Context.Response.Write("{""Error"":""" & ex.Message & """}")
+        End Try
+
+    End Sub
+
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub Sb_EnviaPickeo(JsonDetalle As String, JsonEncabezado As String, nombre As String)
+
+        ' 1. Instanciamos tu clase de respuesta
+        Dim _Mensaje As New LsValiciones.Mensajes
+        _Mensaje.Fecha = DateTime.Now
+        _Mensaje.EsCorrecto = False ' Por defecto false hasta que termine el proceso
+
+        _Sql = New Class_SQL
+
+        ' Obtenemos la base de datos
+        _Global_BaseBk = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'").ToString.Trim & ".dbo."
+
+
+        Try
+            ' -------------------------------------------------------------------------
+            ' 2. Deserializar los objetos
+            ' -------------------------------------------------------------------------
+            Dim _ObjEncabezado As EncabezadoPickeo = JsonConvert.DeserializeObject(Of EncabezadoPickeo)(JsonEncabezado)
+            Dim _ListaDetalle As List(Of PickeoInfoDTO) = JsonConvert.DeserializeObject(Of List(Of PickeoInfoDTO))(JsonDetalle)
+
+            If _ObjEncabezado Is Nothing Or _ListaDetalle Is Nothing Then
+                Throw New Exception("Los datos recibidos (Encabezado o Detalle) están vacíos o corruptos.")
+            End If
+
+            ' -------------------------------------------------------------------------
+            ' 3. Construir el Script SQL Gigante
+            ' -------------------------------------------------------------------------
+            Dim _Sb As New StringBuilder()
+            Dim _FechaStr As String = DateTime.Now.ToString("yyyyMMdd HH:mm:ss")
+            Dim _NombreEquipo As String = nombre
+            _Sb.AppendLine("SET XACT_ABORT ON;")
+            _Sb.AppendLine("BEGIN TRANSACTION;")
+            _Sb.AppendLine("BEGIN TRY")
+            ' --- BUCLE 1: Recorrer Productos (Hojas) ---
+            For Each _Info As PickeoInfoDTO In _ListaDetalle
+                Dim _Hoja As DetalleHoja = _Info.Hoja_detalle
+                Dim _Acum_QtyReal As Double = 0
+                Dim _Acum_Qty2 As Double = 0
+
+                ' --- BUCLE 2: Recorrer Paquetes e Insertar ---
+                If _Info.Detalle IsNot Nothing Then
+                    For Each _Paq As PaquetePickeo In _Info.Detalle
+                        Dim _DescSanitizada As String = Replace(_Hoja.Descripcion, "'", "''")
+
+                        _Sb.AppendLine("INSERT INTO " & _Global_BaseBk & "Zw_Stmp_DetPick ")
+                        _Sb.AppendLine("(Id_Enc, Idmaeedo, Idmaeddo, Tido, Nudo, Sku, Sku_desc, Tag, Udtrpr, Qty, Loc, Cont, Qty2) VALUES (")
+                        _Sb.AppendLine(_ObjEncabezado.Id & ", " & _Hoja.Idmaeedo & ", " & _Hoja.Idmaeddo & ", 'NVV', '" & _ObjEncabezado.Numero_NVV & "', ")
+                        _Sb.AppendLine("'" & _Paq.Sku & "', '" & _DescSanitizada & "', '" & _Paq.CodPaquete & "', '" & _Hoja.Udtrpr & "', ")
+                        _Sb.AppendLine(Replace(_Paq.Qty.ToString(), ",", ".") & ", '" & _Paq.Ubicacion & "', '" & _Paq.Pallet & "', " & Replace(_Paq.Qty2.ToString(), ",", ".") & ")")
+
+                        _Acum_QtyReal += _Paq.Qty
+                        _Acum_Qty2 += _Paq.Qty2
+                    Next
+                End If
+
+                ' Calcular RTU
+                Dim _RtuReal As Double = 0
+                If _Acum_Qty2 > 0 Then _RtuReal = _Acum_QtyReal / _Acum_Qty2
+
+                ' --- UPDATE Zw_Stmp_Det (Línea Padre) ---
+                _Sb.AppendLine("UPDATE " & _Global_BaseBk & "Zw_Stmp_Det SET ")
+                _Sb.AppendLine("Caprco1_Real = " & Replace(_Acum_QtyReal.ToString(), ",", ".") & ", ")
+                _Sb.AppendLine("Caprco2_Real = " & Replace(_Acum_Qty2.ToString(), ",", ".") & ", ")
+                _Sb.AppendLine("Rlud_Real = " & Replace(_RtuReal.ToString(), ",", ".") & ", ")
+                _Sb.AppendLine("Pickeado = 1, CodFuncionario_Pickea = '" & _ObjEncabezado.CodFuncionario_Pickea & "', EnProceso = 0 ")
+                _Sb.AppendLine("WHERE Id = " & _Hoja.Id & " And Pickeado = 0")
+            Next
+
+            ' --- UPDATE Zw_Stmp_Enc (Encabezado) ---
+            _Sb.AppendLine("UPDATE " & _Global_BaseBk & "Zw_Stmp_Enc SET ")
+            _Sb.AppendLine("Estado = 'COMPL', ConfirmadoWMS = 1, FechaPickeado = '" & _FechaStr & "', ")
+            _Sb.AppendLine("NombreEquipo_Pickea = '" & _NombreEquipo & "', CodFuncionario_Pickea = '" & _ObjEncabezado.CodFuncionario_Pickea & "' ")
+            _Sb.AppendLine("WHERE Id = " & _ObjEncabezado.Id)
+
+
+            _Sb.AppendLine("COMMIT TRANSACTION;")
+            _Sb.AppendLine("END TRY")
+            _Sb.AppendLine("BEGIN CATCH")
+            ' Si hubo CUALQUIER error, deshacemos todo (ROLLBACK)
+            _Sb.AppendLine("    IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;")
+            ' Y lanzamos el error hacia VB.NET para que el Try/Catch de tu código lo capture
+            _Sb.AppendLine("    THROW;")
+            _Sb.AppendLine("END CATCH")
+            ' -------------------------------------------------------------------------
+            ' 4. Ejecutar Transacción
+            ' -------------------------------------------------------------------------
+            If _Sql.Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(_Sb.ToString()) Then
+
+                ' --- CASO ÉXITO ---
+                _Mensaje.EsCorrecto = True
+                _Mensaje.Mensaje = "Pickeo finalizado correctamente"
+                _Mensaje.Id = _ObjEncabezado.Id.ToString() ' Guardamos el ID en la propiedad Id
+                _Mensaje.Resultado = "Proceso Completado"
+                _Mensaje.Icono = "Ok"
+
+            Else
+                ' --- CASO ERROR SQL ---
+                Throw New Exception(_Sql.Pro_Error)
+            End If
+
+        Catch ex As Exception
+            ' --- CASO ERROR GENERAL / SQL ---
+            _Mensaje.EsCorrecto = False
+            _Mensaje.Mensaje = ex.Message
+            _Mensaje.Detalle = ex.StackTrace
+            _Mensaje.ErrorDeConexionSQL = True ' Asumimos error de datos/conexión
+            _Mensaje.Icono = ""
+        End Try
+
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Mensaje, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+
+    End Sub
+    <WebMethod(True)>
+    <Script.Services.ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Sub Sb_enviaLog(JsonLog As String)
+
+        ' 1. Instanciamos tu clase de respuesta
+        Dim _Mensaje As New LsValiciones.Mensajes
+        _Mensaje.Fecha = DateTime.Now
+        _Mensaje.EsCorrecto = False
+
+        _Sql = New Class_SQL
+
+        ' Referencia a la base de datos (Ej: BAKAPP_CISTERNASR.dbo.)
+        Dim _Global_BaseBk As String = _Sql.Fx_Trae_Dato("TABCARAC", "NOKOCARAC", "KOTABLA = 'BAKAPP'").ToString.Trim & ".dbo."
+
+        Try
+            ' -------------------------------------------------------------------------
+            ' 2. Deserializar
+            ' -------------------------------------------------------------------------
+            Dim _ListaLogs As List(Of LogPickeoDTO) = JsonConvert.DeserializeObject(Of List(Of LogPickeoDTO))(JsonLog)
+
+            If _ListaLogs Is Nothing OrElse _ListaLogs.Count = 0 Then
+                Throw New Exception("La lista de logs recibida está vacía.")
+            End If
+
+            ' -------------------------------------------------------------------------
+            ' 3. Construir el Script SQL
+            ' -------------------------------------------------------------------------
+            Dim _Sb As New StringBuilder()
+
+            _Sb.AppendLine("SET XACT_ABORT ON;")
+            _Sb.AppendLine("BEGIN TRANSACTION;")
+            _Sb.AppendLine("BEGIN TRY")
+
+            For Each _Log As LogPickeoDTO In _ListaLogs
+
+                ' Limpieza de caracteres peligrosos
+                Dim _SkuSanitizado As String = Replace(_Log.SKU, "'", "''")
+                Dim _TagSanitizado As String = Replace(_Log.Tag, "'", "''")
+                Dim _AccionSanitizada As String = Replace(_Log.Accion, "'", "''")
+                Dim _ObsSanitizada As String = Replace(_Log.Observaciones, "'", "''")
+                Dim _FechaParaSQL As String
+                Dim _Timestamp As Long
+                If Long.TryParse(_Log.Fecha_Accion, _Timestamp) Then
+                    Dim _Epoch As New DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                    ' Convertimos y formateamos SIN GUIONES (yyyyMMdd)
+                    _FechaParaSQL = _Epoch.AddMilliseconds(_Timestamp).ToLocalTime().ToString("yyyyMMdd HH:mm:ss")
+
+                    ' B. Si ya es una fecha string o viene vacía
+                ElseIf IsDate(_Log.Fecha_Accion) Then
+                    ' Intentamos convertirla al formato seguro
+                    _FechaParaSQL = CDate(_Log.Fecha_Accion).ToString("yyyyMMdd HH:mm:ss")
+                Else
+                    ' C. Si es basura o vacío, usamos la fecha actual del servidor SQL
+                    ' Esto evita que el INSERT falle por culpa de la fecha
+                    _FechaParaSQL = DateTime.Now.ToString("yyyyMMdd HH:mm:ss")
+                End If
+                ' NOTA: La variable 'nombre' se ignora porque no hay campo donde guardarla en la tabla
+
+                _Sb.AppendLine("INSERT INTO " & _Global_BaseBk & "Zw_WMS_Picking_Log ")
+                _Sb.AppendLine("(Id_Enc, Idmaeedo, Idmaeddo, SKU, Tag, Accion, Fecha_Accion, Observaciones) VALUES (")
+                _Sb.AppendLine(_Log.Id_Enc & ", " & _Log.Idmaeedo & ", " & _Log.Idmaeddo & ", ")
+                _Sb.AppendLine("'" & _SkuSanitizado & "', '" & _TagSanitizado & "', '" & _AccionSanitizada & "', ")
+                _Sb.AppendLine("'" & _FechaParaSQL & "', '" & _ObsSanitizada & "')")
+            Next
+
+            _Sb.AppendLine("COMMIT TRANSACTION;")
+            _Sb.AppendLine("END TRY")
+            _Sb.AppendLine("BEGIN CATCH")
+            _Sb.AppendLine("    IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;")
+            _Sb.AppendLine("    THROW;")
+            _Sb.AppendLine("END CATCH")
+
+            ' -------------------------------------------------------------------------
+            ' 4. Ejecutar
+            ' -------------------------------------------------------------------------
+            If _Sql.Fx_Eje_Condulta_Insert_Update_Delte_TRANSACCION(_Sb.ToString()) Then
+                _Mensaje.EsCorrecto = True
+                _Mensaje.Mensaje = "Logs guardados correctamente"
+                _Mensaje.Resultado = "Proceso Completado"
+                _Mensaje.Icono = "Ok"
+            Else
+                Throw New Exception(_Sql.Pro_Error)
+            End If
+
+        Catch ex As Exception
+            _Mensaje.EsCorrecto = False
+            _Mensaje.Mensaje = ex.Message
+            _Mensaje.Detalle = ex.StackTrace
+            _Mensaje.ErrorDeConexionSQL = True
+            _Mensaje.Icono = "Error"
+        End Try
+
+        Context.Response.Cache.SetExpires(DateTime.Now.AddHours(-1))
+        Context.Response.ContentType = "application/json"
+        Context.Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(_Mensaje, Newtonsoft.Json.Formatting.None))
+        Context.Response.Flush()
+        Context.Response.End()
+
+    End Sub
 #End Region
 
 End Class
