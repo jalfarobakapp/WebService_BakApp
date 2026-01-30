@@ -3345,8 +3345,8 @@ WHERE MP." & donde & " = '" & _Codigo & "'"
                             Where KOLT = '" & _Lista & "' And KOPR = '" & _Codigo & "'"
             Dim _RowPrecios As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
 
-            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, "")
-            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, "")
+            Dim _PrecioListaUd1 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP01UD", "ECUACION", Nothing, True, "", 0, 0)
+            Dim _PrecioListaUd2 As Double = Fx_Precio_Formula_Random(_Empresa, _Sucursal, _RowPrecios, "PP02UD", "ECUACIONU2", Nothing, True, "", 0, 0)
 
             _Ds.Tables(0).Rows(0).Item("PrecioListaUd1") = _PrecioListaUd1
             _Ds.Tables(0).Rows(0).Item("PrecioListaUd2") = _PrecioListaUd2
