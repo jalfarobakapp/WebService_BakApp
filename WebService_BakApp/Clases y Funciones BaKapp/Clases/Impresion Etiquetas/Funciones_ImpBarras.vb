@@ -376,6 +376,10 @@
         _Texto = Replace(_Texto, "<MAY_DESCRIPCION_1>", _May_Descripcion_1)
         _Texto = Replace(_Texto, "<MAY_DESCRIPCION_2>", _May_Descripcion_2)
 
+        If _KopralLeido Then
+            _Codigo_principal = _CodAlternativo
+        End If
+
     End Sub
 
     ''' <summary>
@@ -759,6 +763,10 @@
         Consulta_sql = "Select Top 1 *,(Select top 1 MELT From TABPP Where KOLT = '" & _CodLista & "') As MELT From TABPRE
                             Where KOLT = '" & _CodLista & "' And KOPR = '" & _Codigo & "'"
         Dim _RowPrecios As DataRow = _Sql.Fx_Get_DataRow(Consulta_sql)
+
+        If IsNothing(_RowPrecios) Then
+            Throw New System.Exception("Producto no asignado a la lista de precios " & _CodLista)
+        End If
 
         Dim _Ecuacion As String
         Dim _Ecuacionu2 As String
